@@ -3,6 +3,8 @@ package org.vagabond.engine.email.kafka.service;
 import io.quarkus.logging.Log;
 import io.quarkus.mailer.Mailer;
 import io.smallrye.mutiny.Uni;
+import io.smallrye.reactive.messaging.annotations.Blocking;
+import io.smallrye.reactive.messaging.annotations.Broadcast;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -16,6 +18,7 @@ public class EmailKafkaService {
 
     @Inject
     @Channel("mail")
+    @Broadcast
     Emitter<EmailKafkaRequest> emailEmitter;
 
     @Inject
