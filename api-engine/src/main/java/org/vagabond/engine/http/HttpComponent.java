@@ -13,7 +13,7 @@ import org.vagabond.engine.exeption.TechnicalException;
 @ApplicationScoped
 public class HttpComponent {
 
-    public <T> T httpGet(String url, Class<T> payloadCLass) throws InterruptedException {
+    public <T> T httpGet(String url, Class<T> payloadCLass) {
         HttpClient client = HttpClient.newHttpClient();
         try {
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("Accept", "application/json").GET().build();
@@ -21,8 +21,11 @@ public class HttpComponent {
             client.close();
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(response.body(), objectMapper.getTypeFactory().constructType(payloadCLass));
-        } catch (UnsupportedOperationException | IOException e) {
-            throw new TechnicalException(e.getMessage(), e);
+        } catch (UnsupportedOperationException | IOException exception) {
+            throw new TechnicalException(exception.getMessage(), exception);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new TechnicalException(exception.getMessage(), exception);
         } finally {
             client.close();
         }

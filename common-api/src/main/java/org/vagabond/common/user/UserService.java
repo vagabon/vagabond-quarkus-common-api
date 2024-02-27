@@ -9,6 +9,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.vagabond.common.auth.service.AuthEmailService;
+import org.vagabond.common.profile.ProfileRepository;
 import org.vagabond.common.user.payload.UserResponse;
 import org.vagabond.engine.auth.utils.AuthUtils;
 import org.vagabond.engine.crud.repository.BaseRepository;
@@ -24,6 +25,9 @@ public class UserService extends BaseService<UserEntity> {
 
     @Inject
     private UserRepository userRepository;
+
+    @Inject
+    private ProfileRepository profileRepository;
 
     @Inject
     AuthEmailService authEmailService;
@@ -75,6 +79,17 @@ public class UserService extends BaseService<UserEntity> {
         user.password = AuthUtils.encrypePassword(newPassword);
         userRepository.getEntityManager().merge(user);
         return user;
+    }
+
+    @Transactional
+    public void addProfileToUser(UserEntity user, String profileName) {
+        var profileCreator = profileRepository.findBy("name", profileName);
+        var profiles = user.getProfiles();
+        var profileCreatorFind = profiles.stream().filter(profile -> profileName.equals(profile.name)).count();
+        if (profileCreatorFind == 0) {
+            user.getProfiles().add(profileCreator);
+        }
+        persist(user);
     }
 
     public List<UserResponse> findTop50(String username) {
