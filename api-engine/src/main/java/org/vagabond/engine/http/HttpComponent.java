@@ -22,7 +22,7 @@ public class HttpComponent {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(response.body(), objectMapper.getTypeFactory().constructType(payloadCLass));
         } catch (UnsupportedOperationException | IOException e) {
-            throw new TechnicalException("HTTP GET", e);
+            throw new TechnicalException(e.getMessage(), e);
         } finally {
             client.close();
         }
