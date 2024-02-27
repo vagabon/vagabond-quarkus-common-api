@@ -68,7 +68,7 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
     @POST
     @Path("/google-connect")
     @Transactional
-    public Response googleConnect(GoogleRequest googleRequest) throws InterruptedException {
+    public Response googleConnect(GoogleRequest googleRequest) {
         var url = URL_GOOGLE + googleRequest.googleToken();
         var googleResponse = httpComponent.httpGet(url, GoogleResponse.class);
         UserEntity user = authService.googleConnect(googleResponse);
@@ -78,7 +78,7 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
     @POST
     @Path("/facebook-connect")
     @Transactional
-    public Response facebookConnect(@RequestBody FacebookRequest facebookRequest) throws InterruptedException {
+    public Response facebookConnect(@RequestBody FacebookRequest facebookRequest) {
         String url = URL_FACEBOOK + facebookRequest.accessToken();
         var facebookResponse = httpComponent.httpGet(url, FacebookResponse.class);
         UserEntity user = authService.facebookConnect(facebookResponse);

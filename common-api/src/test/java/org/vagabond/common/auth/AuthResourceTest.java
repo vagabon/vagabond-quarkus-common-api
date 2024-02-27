@@ -119,7 +119,7 @@ class AuthResourceTest extends BaseDataTest {
 
         @Test
         @TestSecurity(user = "admin")
-        void googleAndFacebookConnect() throws InterruptedException {
+        void googleAndFacebookConnect() {
 
                 var googleRequest = new GoogleRequest("token");
                 var googleResponse = new GoogleResponse();
