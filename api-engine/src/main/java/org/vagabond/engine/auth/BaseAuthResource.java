@@ -28,7 +28,7 @@ import org.vagabond.engine.crud.resource.BaseResource;
 public abstract class BaseAuthResource<T extends BaseUserEntity<P>, P extends BaseProfileEntity> implements BaseResource {
 
     @Inject
-    private JWTParser parser;
+    protected JWTParser parser;
 
     @PermitAll
     @POST

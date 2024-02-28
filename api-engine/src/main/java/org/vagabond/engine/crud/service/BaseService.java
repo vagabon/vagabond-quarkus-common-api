@@ -23,12 +23,31 @@ public abstract class BaseService<T extends BaseEntity> implements IService<T>, 
         return entity;
     }
 
+    @Transactional
     public T findById(Long id) {
         return getRepository().findById(id);
     }
 
+    @Transactional
     public PageResponse findByPage(Integer page, Integer max, String sort) {
         return queryPage("where active = ?1", page, max, sort, true);
+    }
+
+    private PageResponse queryPage(String sql, Integer page, Integer max, String sort, Object... values) {
+        if (sort != null && !sort.isEmpty()) {
+            sql += " order by " + sort;
+        }
+        PanacheQuery<T> activeQuery = getRepository().find(sql, values);
+        if (page == null) {
+            page = 0;
+        }
+        if (max == null || max > 500) {
+            max = 500;
+        }
+        activeQuery.page(Page.ofSize(max));
+        var numberOfPages = activeQuery.pageCount();
+        var count = activeQuery.count();
+        return new PageResponse(page, numberOfPages, count, max, activeQuery.page(Page.of(page, max)).list());
     }
 
     @Transactional
@@ -70,23 +89,7 @@ public abstract class BaseService<T extends BaseEntity> implements IService<T>, 
         return entity;
     }
 
-    protected PageResponse queryPage(String sql, Integer page, Integer max, String sort, Object... values) {
-        if (sort != null && !sort.isEmpty()) {
-            sql += " order by " + sort;
-        }
-        PanacheQuery<T> activeQuery = getRepository().find(sql, values);
-        if (page == null) {
-            page = 0;
-        }
-        if (max == null || max > 500) {
-            max = 500;
-        }
-        activeQuery.page(Page.ofSize(max));
-        var numberOfPages = activeQuery.pageCount();
-        var count = activeQuery.count();
-        return new PageResponse(page, numberOfPages, count, max, activeQuery.page(Page.of(page, max)).list());
-    }
-
+    @Transactional
     public PageResponse constructQuery(Integer first, Integer max, String champs, Object... tabValues) {
         var query = getQuery(champs, tabValues);
         query.page(Page.ofSize(max));
@@ -112,10 +115,12 @@ public abstract class BaseService<T extends BaseEntity> implements IService<T>, 
         return getRepository().find(sqlQuery, values.toArray());
     }
 
+    @Transactional
     public Long countBy(String sql, Object... values) {
         return getRepository().countBy(sql, values);
     }
 
+    @Transactional
     public List<T> findBy(String sql, Object... values) {
         return getRepository().findBy(sql, values);
     }
