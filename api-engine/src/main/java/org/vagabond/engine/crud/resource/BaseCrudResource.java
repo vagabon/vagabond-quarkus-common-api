@@ -45,6 +45,7 @@ public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurit
     public Response update(@Context SecurityContext contexte, @RequestBody T entity) {
         var userConnected = hasRole(contexte, roleModify);
         doBeforeUpdate(userConnected, entity);
+        // TODO : pas de merge de données ????
         var update = service.update(entity);
         doAfterUpdate(userConnected, update);
         return responseOk(doAfterFindById(userConnected, update));

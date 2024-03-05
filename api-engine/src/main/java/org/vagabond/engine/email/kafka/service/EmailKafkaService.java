@@ -2,6 +2,7 @@ package org.vagabond.engine.email.kafka.service;
 
 import io.quarkus.logging.Log;
 import io.quarkus.mailer.Mailer;
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -27,6 +28,7 @@ public class EmailKafkaService {
     Mailer mailer;
 
     @Incoming("mail")
+    @Blocking
     public Uni<Void> consume(EmailKafkaRequest email) {
         Log.infof("kafka receive mail %s", email);
         return emailService.send(email.to(), email.subject(), email.html()).onFailure()

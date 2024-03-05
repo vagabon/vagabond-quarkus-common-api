@@ -122,7 +122,6 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         return !(tooManyAttempts && isAttemptTooSoon);
     }
 
-    @Transactional
     public T signup(T user) {
         if (getRepository().existBy(USERNAME, user.username)) {
             throw new MetierException("Username is already taken");
@@ -135,10 +134,15 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         user.password = AuthUtils.encrypePassword(user.password);
 
         doBeforeSignUp(user);
-        getRepository().getEntityManager().merge(user);
+        persistUser(user);
         doAfterSignUp(user);
 
         return user;
+    }
+
+    @Transactional
+    public void persistUser(T user) {
+        getRepository().getEntityManager().merge(user);
     }
 
     public abstract void doBeforeSignUp(T user);
