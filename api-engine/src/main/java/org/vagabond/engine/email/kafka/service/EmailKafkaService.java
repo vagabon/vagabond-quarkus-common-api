@@ -17,7 +17,7 @@ import org.vagabond.engine.email.service.EmailService;
 public class EmailKafkaService {
 
     @Inject
-    @Channel("mail")
+    @Channel("mail-out")
     @Broadcast
     Emitter<EmailKafkaRequest> emailEmitter;
 
