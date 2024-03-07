@@ -2,7 +2,6 @@ package org.vagabond.engine.crud.resource;
 
 import java.util.Map;
 
-import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -12,6 +11,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
@@ -19,6 +19,8 @@ import org.vagabond.engine.crud.dto.PageResponse;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.utils.SecurityUtils;
+
+import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
 public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurityResource<T> {
@@ -45,7 +47,6 @@ public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurit
     public Response update(@Context SecurityContext contexte, @RequestBody T entity) {
         var userConnected = hasRole(contexte, roleModify);
         doBeforeUpdate(userConnected, entity);
-        // TODO : pas de merge de données ????
         var update = service.update(entity);
         doAfterUpdate(userConnected, update);
         return responseOk(doAfterFindById(userConnected, update));
