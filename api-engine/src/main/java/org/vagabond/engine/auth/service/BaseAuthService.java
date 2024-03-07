@@ -5,9 +5,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import io.quarkus.elytron.security.common.BcryptUtil;
-import io.smallrye.jwt.build.Jwt;
 import jakarta.transaction.Transactional;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
@@ -16,6 +15,9 @@ import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.exeption.TechnicalException;
+
+import io.quarkus.elytron.security.common.BcryptUtil;
+import io.smallrye.jwt.build.Jwt;
 
 public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends BaseProfileEntity> extends BaseService<T> {
 
@@ -124,11 +126,11 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
 
     public T signup(T user) {
         if (getRepository().existBy(USERNAME, user.username)) {
-            throw new MetierException("Username is already taken");
+            throw new MetierException("ERRORS:USERNAME_ALREADY_EXIST");
         }
 
         if (getRepository().existBy("email", user.email) && !user.email.equals("gonzague.clement@gmail.com")) {
-            throw new MetierException("Email is already in use");
+            throw new MetierException("ERRORS:EMAIL_ALREADY_EXIST");
         }
 
         user.password = AuthUtils.encrypePassword(user.password);
