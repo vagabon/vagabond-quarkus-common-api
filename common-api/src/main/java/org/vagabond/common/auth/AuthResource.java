@@ -64,8 +64,8 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
     @POST
     @Path("/checkIdentityToken")
     public Response checkIdentityToken(@RequestBody ActivationRequest activationRequest) {
-        var user = authService.checkIdentityToken(activationRequest.token());
-        return responseOk(Map.of(TOKEN, user.identityToken));
+        var identityToken = authService.checkIdentityToken(activationRequest.token());
+        return responseOk(Map.of(TOKEN, identityToken));
     }
 
     @POST

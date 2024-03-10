@@ -1,17 +1,19 @@
 package org.vagabond.engine.email.kafka.service;
 
-import io.quarkus.logging.Log;
-import io.quarkus.mailer.Mailer;
-import io.smallrye.common.annotation.Blocking;
-import io.smallrye.mutiny.Uni;
-import io.smallrye.reactive.messaging.annotations.Broadcast;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.vagabond.engine.email.kafka.payload.EmailKafkaRequest;
 import org.vagabond.engine.email.service.EmailService;
+
+import io.quarkus.logging.Log;
+import io.quarkus.mailer.Mailer;
+import io.smallrye.common.annotation.Blocking;
+import io.smallrye.mutiny.Uni;
+import io.smallrye.reactive.messaging.annotations.Broadcast;
 
 @ApplicationScoped
 public class EmailKafkaService {

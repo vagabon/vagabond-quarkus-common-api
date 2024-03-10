@@ -7,7 +7,7 @@ import org.vagabond.engine.crud.entity.BaseEntity;
 
 public interface IRepository<T extends BaseEntity> extends PanacheRepository<T> {
 
-    T findBy(String field, String value);
+    T findByOneField(String field, String value);
 
     List<T> findBy(String sql, Object... values);
 

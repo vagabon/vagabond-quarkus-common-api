@@ -9,6 +9,7 @@ import java.util.UUID;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.vagabond.common.auth.payload.response.FacebookResponse;
 import org.vagabond.common.auth.payload.response.GoogleResponse;
@@ -69,23 +70,22 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
 
     @Transactional
     public UserEntity activationUser(String token) {
-        var user = userRepository.findBy("activationToken", token);
+        var user = userRepository.findByOneField("activationToken", token);
         user.emailActivation = true;
         user.activationToken = "";
         persist(user);
         return user;
     }
 
-    @Transactional
     public UserEntity createIdentityToken(String email) {
-        var user = userRepository.findBy("email", email);
-        addIdentityToken(user);
+        var user = addIdentityToken(email);
         authEmailService.sendIdentityTokenMail(user);
         return user;
     }
 
     @Transactional
-    protected UserEntity addIdentityToken(UserEntity user) {
+    protected UserEntity addIdentityToken(String email) {
+        var user = userRepository.findByOneField("email", email);
         user.identityToken = AuthUtils.generateIdentityToken();
         var now = LocalDateTime.now();
         user.identityTokenDateEnd = now.plus(10, ChronoUnit.MINUTES);
@@ -94,13 +94,11 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
     }
 
     @Transactional
-    public UserEntity checkIdentityToken(String token) {
+    public String checkIdentityToken(String token) {
         var user = userRepository.getUserFromIdentityToken(token);
-        resetIdentityToken(user);
-        return user;
+        return user.identityToken;
     }
 
-    @Transactional
     public UserEntity resetPassword(String token) {
         var user = userRepository.getUserFromIdentityToken(token);
         String newPassword = UUID.randomUUID().toString();
@@ -118,7 +116,7 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
 
     @Transactional
     public UserEntity googleConnect(GoogleResponse googleResponse) {
-        UserEntity user = userRepository.findBy("googleId", googleResponse.id);
+        UserEntity user = userRepository.findByOneField("googleId", googleResponse.id);
         if (user == null) {
             return saveNewUser(googleResponse.id, null, googleResponse.name, googleResponse.email, googleResponse.picture);
         } else if (user.avatar == null) {
@@ -130,7 +128,7 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
 
     @Transactional
     public UserEntity facebookConnect(FacebookResponse facebookResponse) {
-        UserEntity user = userRepository.findBy("facebookId", facebookResponse.id());
+        UserEntity user = userRepository.findByOneField("facebookId", facebookResponse.id());
         if (user == null) {
             return saveNewUser(null, facebookResponse.id(), facebookResponse.name(), facebookResponse.email(),
                     facebookResponse.picture().data().url());

@@ -44,7 +44,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
     public String generateTokenJwt(T user, Long customDuration) {
         var profiles = user.getProfiles();
         if (user.getProfiles() == null || user.getProfiles().isEmpty()) {
-            var userProfile = getProfileRepository().findBy("name", "USER");
+            var userProfile = getProfileRepository().findByOneField("name", "USER");
             profiles = new ArrayList<>();
             profiles.add(userProfile);
             user.setProfiles(profiles);
@@ -54,12 +54,12 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
     }
 
     public T findByUsername(String username) {
-        return getRepository().findBy(USERNAME, username);
+        return getRepository().findByOneField(USERNAME, username);
     }
 
     public T signIn(String username, String password) {
 
-        var user = getRepository().findBy(USERNAME, username);
+        var user = getRepository().findByOneField(USERNAME, username);
 
         if (user == null) {
             throw new MetierException(LOGIN_ERROR);

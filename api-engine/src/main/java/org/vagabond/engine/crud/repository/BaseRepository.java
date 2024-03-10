@@ -12,12 +12,12 @@ public abstract class BaseRepository<T extends BaseEntity> implements IRepositor
     public static final String EQUAL_PARAM = " = ?1";
     public static final String ENTITY_NOT_FOUND_EXCEPTION = "ENTITY_NOT_FOUND";
 
-    public T findBy(String field, String value) {
+    public T findByOneField(String field, String value) {
         return find(WHERE + field + EQUAL_PARAM, value).firstResult();
     }
 
     public T findByOrThrow(String field, String value) {
-        var entity = findBy(field, value);
+        var entity = findByOneField(field, value);
         if (entity == null) {
             throw new MetierException(ENTITY_NOT_FOUND_EXCEPTION);
         }
