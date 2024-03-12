@@ -2,11 +2,12 @@ package org.vagabond.engine.crud.resource;
 
 import java.util.Map;
 
-import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
 @Produces(MediaType.APPLICATION_JSON)

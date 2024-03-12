@@ -10,7 +10,7 @@
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>common-api</artifactId>
+    <artifactId>common-kafka</artifactId>
 
     <dependencies>
         <dependency>
@@ -18,11 +18,10 @@
             <artifactId>common-core</artifactId>
             <version>1.0.3-SNAPSHOT</version>
         </dependency>
-
+        <!-- scheduler -->
         <dependency>
-            <groupId>com.google.firebase</groupId>
-            <artifactId>firebase-admin</artifactId>
-            <version>9.1.1</version>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-scheduler</artifactId>
         </dependency>
         <!-- test -->
         <dependency>
@@ -33,31 +32,16 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5-mockito</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mockito</groupId>
-                    <artifactId>mockito-subclass</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-h2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-jacoco</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-test-security-jwt</artifactId>
+            <artifactId>quarkus-jacoco</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

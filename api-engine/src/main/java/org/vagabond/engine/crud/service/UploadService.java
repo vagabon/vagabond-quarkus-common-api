@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import jakarta.enterprise.context.ApplicationScoped;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.reactive.server.multipart.FormValue;
 import org.vagabond.engine.exeption.MetierException;
@@ -16,7 +17,7 @@ import org.vagabond.engine.exeption.MetierException;
 @ApplicationScoped
 public class UploadService {
 
-    @ConfigProperty(name = "upload.directory", defaultValue = "/")
+    @ConfigProperty(name = "upload.directory", defaultValue = "/tmp")
     private String uploadDirectory;
 
     public String uploadFile(FormValue file, String directory, Long id) {

@@ -7,11 +7,13 @@
     <groupId>org.vagabond.quarkus</groupId>
     <artifactId>auth-api</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <name>Vabagond Quarkus Common Api</name>
 
     <modules>
         <module>api-engine</module>
+        <module>common-core</module>
+        <module>common-kafka</module>
         <module>common-api</module>
     </modules>
 
