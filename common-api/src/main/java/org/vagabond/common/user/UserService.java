@@ -3,10 +3,11 @@ package org.vagabond.common.user;
 import java.util.List;
 import java.util.UUID;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-
 import org.vagabond.common.auth.service.AuthEmailService;
 import org.vagabond.common.profile.ProfileRepository;
 import org.vagabond.common.user.payload.UserResponse;
@@ -16,9 +17,6 @@ import org.vagabond.engine.crud.service.BaseService;
 import org.vagabond.engine.crud.utils.QueryUtils;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.mapper.MapperUtils;
-
-import io.quarkus.elytron.security.common.BcryptUtil;
-import io.quarkus.panache.common.Page;
 
 @ApplicationScoped
 public class UserService extends BaseService<UserEntity> {
@@ -61,13 +59,12 @@ public class UserService extends BaseService<UserEntity> {
         }
     }
 
-    @Transactional
     public UserEntity updateEmail(Long userId, String email) {
         var user = userRepository.findById(userId);
         user.email = email;
         user.emailActivation = false;
         user.activationToken = UUID.randomUUID().toString();
-        userRepository.getEntityManager().merge(user);
+        persist(user);
         authEmailService.sendCreationMail(user);
         return user;
     }

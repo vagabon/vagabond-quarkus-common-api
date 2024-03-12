@@ -16,7 +16,7 @@ import org.vagabond.engine.exeption.MetierException;
 @ApplicationScoped
 public class UploadService {
 
-    @ConfigProperty(name = "upload.directory")
+    @ConfigProperty(name = "upload.directory", defaultValue = "/")
     private String uploadDirectory;
 
     public String uploadFile(FormValue file, String directory, Long id) {

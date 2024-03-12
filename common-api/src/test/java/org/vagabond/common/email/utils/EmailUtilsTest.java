@@ -1,16 +1,16 @@
-package org.vagabond.engine.email.utils;
+package org.vagabond.common.email.utils;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.vagabond.engine.email.dto.ResponseBodyDto;
 import org.vagabond.engine.email.dto.TempateSelectorDto;
-
-import io.quarkus.test.junit.QuarkusTest;
+import org.vagabond.engine.email.utils.EmailUtils;
 
 @QuarkusTest
 class EmailUtilsTest {

@@ -18,7 +18,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
 import org.vagabond.engine.crud.entity.BaseEntity;
-import org.vagabond.engine.crud.service.IService;
+import org.vagabond.engine.crud.service.ICrudService;
 import org.vagabond.engine.crud.utils.SecurityUtils;
 import org.vagabond.engine.exeption.MetierException;
 
@@ -27,7 +27,7 @@ public abstract class BaseSecurityResource<T extends BaseEntity> implements Base
 
     public static final String ADMIN = "ADMIN";
 
-    protected IService<T> service;
+    protected ICrudService<T> service;
 
     protected String roleModify = ADMIN;
     protected String roleRead = "";

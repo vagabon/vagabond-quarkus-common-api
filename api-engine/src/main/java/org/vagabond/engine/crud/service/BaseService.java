@@ -3,8 +3,9 @@ package org.vagabond.engine.crud.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
 import jakarta.transaction.Transactional;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.vagabond.engine.crud.dto.PageResponse;
 import org.vagabond.engine.crud.entity.BaseEntity;
@@ -14,10 +15,7 @@ import org.vagabond.engine.crud.utils.EntityUtils;
 import org.vagabond.engine.crud.utils.QueryUtils;
 import org.vagabond.engine.exeption.MetierException;
 
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
-import io.quarkus.panache.common.Page;
-
-public abstract class BaseService<T extends BaseEntity> implements IService<T>, IQueryUtils {
+public abstract class BaseService<T extends BaseEntity> implements ICrudService<T>, IQueryUtils {
 
     @Transactional
     public T persist(T entity) {

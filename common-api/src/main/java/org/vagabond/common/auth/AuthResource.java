@@ -2,12 +2,12 @@ package org.vagabond.common.auth;
 
 import java.util.Map;
 
+import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
@@ -27,8 +27,6 @@ import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.http.HttpComponent;
 import org.vagabond.engine.mapper.MapperUtils;
 
-import io.smallrye.common.annotation.RunOnVirtualThread;
-
 @RunOnVirtualThread
 @Path("/auth")
 public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
@@ -38,7 +36,7 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
     private static final String URL_FACEBOOK = "https://graph.facebook.com/v9.0/me?&fields=name,email,picture&method=get&pretty=0&sdk=joey&suppress_http_code=1&access_token=";
     private static final String URL_CAPTCHA = "https://www.google.com/recaptcha/api/siteverify?secret=";
 
-    @ConfigProperty(name = "api.captcha.token")
+    @ConfigProperty(name = "api.captcha.token", defaultValue = "NO_TOKEN")
     public String captchaPrivateKey;
 
     @Inject

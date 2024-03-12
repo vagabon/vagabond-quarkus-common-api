@@ -5,8 +5,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
+import io.smallrye.jwt.build.Jwt;
 import jakarta.transaction.Transactional;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
@@ -16,19 +17,16 @@ import org.vagabond.engine.crud.service.BaseService;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.exeption.TechnicalException;
 
-import io.quarkus.elytron.security.common.BcryptUtil;
-import io.smallrye.jwt.build.Jwt;
-
 public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends BaseProfileEntity> extends BaseService<T> {
 
     private static final String USERNAME = "username";
     public static final String LOGIN_ERROR = "AUTH:ERROR.LOGIN_ERROR";
     public static final String ATTEMPT_TOO_SOON = "AUTH:ERROR.ATTEMPT_TOO_SOON";
 
-    @ConfigProperty(name = "mp.jwt.verify.issuer")
+    @ConfigProperty(name = "mp.jwt.verify.issuer", defaultValue = "JWT_ISUSSER")
     public String issuer;
 
-    @ConfigProperty(name = "mp.jwt.duration")
+    @ConfigProperty(name = "mp.jwt.duration", defaultValue = "10000")
     public Long duration;
 
     @ConfigProperty(name = "auth.attemp-max", defaultValue = "5")

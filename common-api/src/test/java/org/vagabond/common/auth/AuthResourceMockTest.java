@@ -1,9 +1,13 @@
 package org.vagabond.common.auth;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.core.Response;
-
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -12,12 +16,6 @@ import org.vagabond.common.profile.ProfileRepository;
 import org.vagabond.common.user.UserEntity;
 import org.vagabond.common.user.UserRepository;
 import org.vagabond.engine.auth.payload.request.AuthRequest;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import io.quarkus.elytron.security.common.BcryptUtil;
-import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 class AuthResourceMockTest {
