@@ -5,18 +5,13 @@ import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Test;
 import org.vagabond.common.email.EmailEntity;
-import org.vagabond.common.email.EmailService;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 class EmailKafkaIncomingServiceTest {
-
-    @InjectMock
-    EmailService emailService;
 
     @Inject
     EmailKafkaIncomingService emailKafkaService;
