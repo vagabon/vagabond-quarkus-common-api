@@ -13,11 +13,11 @@ public class MapperUtils {
     public static final ModelMapper mapper = new ModelMapper();
 
     public static <T, U> U toDto(T data, Class<U> dtoClass) {
-        return mapper.map(data, dtoClass);
+        return data != null ? mapper.map(data, dtoClass) : null;
     }
 
     public static <T, U> List<U> toList(List<T> datas, Class<U> dtoClass) {
-        return datas.stream().map(data -> mapper.map(data, dtoClass)).toList();
+        return datas != null ? datas.stream().map(data -> mapper.map(data, dtoClass)).toList() : null;
     }
 
     public static <U> PageResponse toPage(PageResponse response, Class<U> dtoClass) {
