@@ -7,10 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Table;
 
 @MappedSuperclass
-@Table(schema = "public")
 public abstract class BaseEntity implements IEntity {
 
     @Id

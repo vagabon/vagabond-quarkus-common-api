@@ -11,11 +11,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+
+import org.vagabond.common.profile.ProfileEntity;
+import org.vagabond.engine.auth.entity.BaseUserEntity;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.vagabond.common.profile.ProfileEntity;
-import org.vagabond.engine.auth.entity.BaseUserEntity;
 
 @Entity
 @Table(name = "user", schema = "public")

@@ -3,13 +3,13 @@ package org.vagabond.common.news;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
+
 import org.vagabond.common.user.UserEntity;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 
+import lombok.EqualsAndHashCode;
+
 @MappedSuperclass
-@Table(schema = "public")
 @EqualsAndHashCode(callSuper = true)
 public abstract class BaseNewsEntity extends BaseCrudEntity {
 

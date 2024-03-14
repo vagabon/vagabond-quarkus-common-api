@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import io.smallrye.common.annotation.RunOnVirtualThread;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -14,6 +13,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
@@ -21,6 +21,8 @@ import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.service.ICrudService;
 import org.vagabond.engine.crud.utils.SecurityUtils;
 import org.vagabond.engine.exeption.MetierException;
+
+import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
 public abstract class BaseSecurityResource<T extends BaseEntity> implements BaseResource {

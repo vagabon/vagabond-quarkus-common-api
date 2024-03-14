@@ -15,7 +15,7 @@ import io.smallrye.mutiny.Uni;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 
 @ApplicationScoped
-public class EmailKafkaIncomingService implements IKafkaUniService<EmailEntity> {
+public class EmailKafkaIncomingComponent implements IKafkaUniService<EmailEntity> {
 
     @Inject
     private EmailService emailService;

@@ -3,13 +3,15 @@ package org.vagabond.common.email;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+
+import org.vagabond.engine.crud.entity.BaseCrudEntity;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.vagabond.engine.crud.entity.BaseCrudEntity;
 
 @Entity
-@Table(name = "email-queue")
+@Table(name = "email-queue", schema = "public")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
