@@ -17,10 +17,12 @@ import jakarta.ws.rs.core.SecurityContext;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
+import org.vagabond.engine.crud.dto.BaseResponse;
 import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.service.ICrudService;
 import org.vagabond.engine.crud.utils.SecurityUtils;
 import org.vagabond.engine.exeption.MetierException;
+import org.vagabond.engine.mapper.MapperUtils;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
@@ -33,6 +35,8 @@ public abstract class BaseSecurityResource<T extends BaseEntity> implements Base
 
     protected String roleModify = ADMIN;
     protected String roleRead = "";
+
+    protected Class<? extends BaseResponse> responseClass;
 
     @Inject
     JsonWebToken jwt;
@@ -55,7 +59,9 @@ public abstract class BaseSecurityResource<T extends BaseEntity> implements Base
         return toDto(response);
     }
 
-    public abstract Object toDto(T entity);
+    public Object toDto(T entity) {
+        return responseClass != null ? MapperUtils.toDto(entity, responseClass) : entity;
+    }
 
     @SuppressWarnings("unchecked")
     @Transactional

@@ -7,9 +7,7 @@ import jakarta.ws.rs.Path;
 import org.vagabond.common.profile.ProfileEntity;
 import org.vagabond.common.profile.ProfileService;
 import org.vagabond.common.profile.payload.ProfileResponse;
-import org.vagabond.engine.crud.dto.PageResponse;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
-import org.vagabond.engine.mapper.MapperUtils;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
@@ -23,15 +21,6 @@ public class ProfileResource extends BaseCrudResource<ProfileEntity> {
     @PostConstruct
     public void postConstruct() {
         service = profileService;
-    }
-
-    @Override
-    public Object toDto(ProfileEntity entity) {
-        return MapperUtils.toDto(entity, ProfileResponse.class);
-    }
-
-    @Override
-    public PageResponse toPage(PageResponse response) {
-        return MapperUtils.toPage(response, ProfileResponse.class);
+        responseClass = ProfileResponse.class;
     }
 }

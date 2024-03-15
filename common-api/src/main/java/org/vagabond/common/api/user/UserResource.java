@@ -10,17 +10,14 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 
-import com.google.firebase.remoteconfig.internal.TemplateResponse.UserResponse;
-
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.vagabond.common.user.UserEntity;
 import org.vagabond.common.user.UserService;
 import org.vagabond.common.user.payload.PasswordRequest;
+import org.vagabond.common.user.payload.UserResponse;
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
-import org.vagabond.engine.crud.dto.PageResponse;
 import org.vagabond.engine.crud.resource.BaseUploadResource;
-import org.vagabond.engine.mapper.MapperUtils;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
@@ -38,6 +35,7 @@ public class UserResource extends BaseUploadResource<UserEntity> {
         service = userService;
         roleRead = ADMIN;
         roleModify = ADMIN;
+        responseClass = UserResponse.class;
     }
 
     @Override
@@ -77,15 +75,5 @@ public class UserResource extends BaseUploadResource<UserEntity> {
     @Path("/find50")
     public Response findTop50(@QueryParam("username") String username) {
         return responseOk(userService.findTop50(username));
-    }
-
-    @Override
-    public Object toDto(UserEntity entity) {
-        return MapperUtils.toDto(entity, UserResponse.class);
-    }
-
-    @Override
-    public PageResponse toPage(PageResponse response) {
-        return MapperUtils.toPage(response, UserResponse.class);
     }
 }

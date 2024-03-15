@@ -2,15 +2,16 @@ package org.vagabond.common.news.payload;
 
 import java.time.LocalDateTime;
 
+import org.vagabond.common.user.payload.UserResponse;
+import org.vagabond.engine.crud.dto.BaseResponse;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.vagabond.common.user.payload.UserResponse;
 
 @Getter
 @Setter
-public class NewsResponse {
+public class NewsResponse extends BaseResponse {
 
-    private Long id;
     private String title;
     private String avatar;
     private String image;

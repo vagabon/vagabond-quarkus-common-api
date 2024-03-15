@@ -19,6 +19,7 @@ import org.vagabond.engine.crud.dto.PageResponse;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.utils.SecurityUtils;
+import org.vagabond.engine.mapper.MapperUtils;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
@@ -122,5 +123,7 @@ public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurit
         return toPage(response);
     }
 
-    public abstract PageResponse toPage(PageResponse response);
+    public PageResponse toPage(PageResponse response) {
+        return responseClass != null ? MapperUtils.toPage(response, responseClass) : response;
+    }
 }

@@ -7,9 +7,7 @@ import jakarta.ws.rs.Path;
 import org.vagabond.common.news.NewsEntity;
 import org.vagabond.common.news.NewsService;
 import org.vagabond.common.news.payload.NewsResponse;
-import org.vagabond.engine.crud.dto.PageResponse;
 import org.vagabond.engine.crud.resource.BaseUploadResource;
-import org.vagabond.engine.mapper.MapperUtils;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
@@ -25,20 +23,11 @@ public class NewsResource extends BaseUploadResource<NewsEntity> {
     @PostConstruct
     public void postConstruct() {
         service = newsService;
+        responseClass = NewsResponse.class;
     }
 
     @Override
     public String getDirectoryName() {
         return UPLOAD_DIRECTORY;
-    }
-
-    @Override
-    public Object toDto(NewsEntity entity) {
-        return MapperUtils.toDto(entity, NewsResponse.class);
-    }
-
-    @Override
-    public PageResponse toPage(PageResponse response) {
-        return MapperUtils.toPage(response, NewsResponse.class);
     }
 }
