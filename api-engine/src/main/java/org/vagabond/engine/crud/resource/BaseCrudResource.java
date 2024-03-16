@@ -1,5 +1,6 @@
 package org.vagabond.engine.crud.resource;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import jakarta.ws.rs.DELETE;
@@ -79,6 +80,7 @@ public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurit
         doBeforeDelete(userConnected, entityBefore);
         if (entityBefore instanceof BaseCrudEntity crudEntity) {
             crudEntity.active = false;
+            crudEntity.deletedDate = LocalDateTime.now();
         }
         var entity = service.persist(entityBefore);
         doAfterDelete(userConnected, entity);
