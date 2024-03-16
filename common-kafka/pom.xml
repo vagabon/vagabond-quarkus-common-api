@@ -18,6 +18,12 @@
             <artifactId>common-core</artifactId>
             <version>1.0.3-SNAPSHOT</version>
         </dependency>
+        <!-- firebase -->
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.1.1</version>
+        </dependency>
         <!-- scheduler -->
         <dependency>
             <groupId>io.quarkus</groupId>
