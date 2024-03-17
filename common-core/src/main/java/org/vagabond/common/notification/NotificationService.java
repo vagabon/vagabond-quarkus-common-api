@@ -62,7 +62,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
         newEntity.active = true;
         persist(newEntity);
 
-        if (getCountLastSend(entityId, userConnected.id) < 10L) {
+        if (getCountLastSend(entityId, userConnected.id) == 0) {
             notification.tokens = getTokens(userIds);
             notificationKafkaService.registerNotification(notification);
         }

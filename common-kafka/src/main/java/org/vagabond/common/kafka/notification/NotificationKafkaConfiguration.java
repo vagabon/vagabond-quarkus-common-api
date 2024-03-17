@@ -1,7 +1,10 @@
 package org.vagabond.common.kafka.notification;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -13,6 +16,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.vagabond.common.notification.kafka.NotificationKafkaService;
 import org.vagabond.common.notification.payload.NotificationRequest;
@@ -22,14 +26,18 @@ import io.quarkus.logging.Log;
 @ApplicationScoped
 public class NotificationKafkaConfiguration {
 
+    @ConfigProperty(name = "firebase.path")
+    private String firebasePath;
+
     public FirebaseMessaging messaging;
 
     @Inject
     NotificationKafkaService notificationKafkaService;
 
-    public NotificationKafkaConfiguration() {
+    @PostConstruct
+    public void postConstruct() throws IOException {
 
-        var serviceAccount = getClass().getClassLoader().getResourceAsStream("firebase-account-service.json");
+        var serviceAccount = Files.newInputStream(Paths.get(firebasePath));
         FirebaseOptions options = null;
         try {
             options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
