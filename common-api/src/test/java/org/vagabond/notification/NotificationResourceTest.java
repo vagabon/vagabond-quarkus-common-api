@@ -1,7 +1,5 @@
 package org.vagabond.notification;
 
-import java.util.Arrays;
-
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 
@@ -20,8 +18,8 @@ class NotificationResourceTest extends BaseDataTest {
     @Test
     @TestSecurity(user = "user")
     void sendNotification() {
-        given().body(Arrays.asList(1L)).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-                .post("/notification/send-notification").then().statusCode(200);
+        given().body(user.id).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+                .post("/notification/send-notification/" + user.id).then().statusCode(200);
     }
 
     @Test

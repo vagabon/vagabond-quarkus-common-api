@@ -8,7 +8,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
@@ -69,8 +68,8 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity> {
     }
 
     @POST
-    @Path("/send-notification")
-    public Response sendNotification(@Context SecurityContext contexte, @QueryParam("userId") Long userId) {
+    @Path("/send-notification/{userId}")
+    public Response sendNotification(@Context SecurityContext contexte, Long userId) {
         var user = userService.findById(userId);
         var notification = new NotificationRequest("test", "test", "http://localhost:3003/todolist/");
         notificationService.sendNotification(user, Arrays.asList(userId), notification, null, "test", "test", "test");
