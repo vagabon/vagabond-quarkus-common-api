@@ -70,6 +70,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
 
     @Transactional
     public List<String> getTokens(List<Long> userIds) {
+        // TODO : distinct token
         var entityTokens = notificationTokenRepository.find("WHERE user.id in ?1", userIds).list();
         return entityTokens.stream().map(entity -> entity.token).toList();
     }
