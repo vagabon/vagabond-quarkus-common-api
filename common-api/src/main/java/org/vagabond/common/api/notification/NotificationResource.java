@@ -68,11 +68,11 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity> {
     }
 
     @POST
-    @Path("/send-notification/{userId}")
-    public Response sendNotification(@Context SecurityContext contexte, Long userId) {
-        var user = userService.findById(userId);
-        var notification = new NotificationRequest("test", "test", "http://localhost:3003/todolist/");
-        notificationService.sendNotification(user, Arrays.asList(userId), notification, null, "test", "test", "test");
+    @Path("/send")
+    public Response sendNotification(@Context SecurityContext contexte) {
+        UserEntity userConnected = hasRole(contexte, "ADMIN");
+        var notification = new NotificationRequest("test", "test", "/notification");
+        notificationService.sendNotification(userConnected, Arrays.asList(userConnected.id), notification, null, "test", "test", "test");
         return responseOkJson();
     }
 }

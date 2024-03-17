@@ -16,10 +16,10 @@ import io.quarkus.test.security.TestSecurity;
 class NotificationResourceTest extends BaseDataTest {
 
     @Test
-    @TestSecurity(user = "user")
+    @TestSecurity(user = "admin")
     void sendNotification() {
-        given().body(user.id).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-                .post("/notification/send-notification/" + user.id).then().statusCode(200);
+        given().body(user.id).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/notification/send").then()
+                .statusCode(200);
     }
 
     @Test

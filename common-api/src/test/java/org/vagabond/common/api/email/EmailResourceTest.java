@@ -1,18 +1,24 @@
 package org.vagabond.common.api.email;
 
+import java.security.Principal;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.vagabond.common.email.EmailEntity;
 import org.vagabond.common.email.EmailService;
+import org.vagabond.utils.BaseDataTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-class EmailResourceTest {
+class EmailResourceTest extends BaseDataTest {
 
     @Inject
     EmailService emailService;
@@ -23,7 +29,11 @@ class EmailResourceTest {
     @Test
     void testProduce() {
 
-        Response response = emailResource.produce();
+        var contexteMock = Mockito.mock(SecurityContext.class);
+        var principale = Mockito.mock(Principal.class);
+        when(contexteMock.getUserPrincipal()).thenReturn(principale);
+        when(principale.getName()).thenReturn("admin");
+        Response response = emailResource.produce(contexteMock);
 
         var email = new EmailEntity();
         email.to = "vagabond.git@gmail.com";

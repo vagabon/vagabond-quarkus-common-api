@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.vagabond.common.notification.kafka.NotificationKafkaService;
 import org.vagabond.common.notification.payload.NotificationRequest;
@@ -49,7 +50,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
         var newEntity = new NotificationEntity();
         newEntity.title = notification.title;
         newEntity.message = notification.body;
-        newEntity.url = websiteUrl + notification.url;
+        newEntity.url = websiteUrl + (StringUtils.isEmpty(notification.url) ? "/profile" : notification.url);
         newEntity.superType = superType;
         newEntity.category = category;
         newEntity.type = type;
@@ -62,7 +63,8 @@ public class NotificationService extends BaseService<NotificationEntity> {
         newEntity.active = true;
         persist(newEntity);
 
-        if (getCountLastSend(entityId, userConnected.id) < 2L) {
+        if (getCountLastSend(category, type, userConnected.id) < 2L
+                || userConnected.profiles.stream().filter(profile -> "ADMIN".equals(profile.name)).count() == 1) {
             notification.tokens = getTokens(userIds);
             notificationKafkaService.registerNotification(notification);
         }
@@ -70,15 +72,15 @@ public class NotificationService extends BaseService<NotificationEntity> {
 
     @Transactional
     public List<String> getTokens(List<Long> userIds) {
-        // TODO : distinct token
         var entityTokens = notificationTokenRepository.find("WHERE user.id in ?1", userIds).list();
-        return entityTokens.stream().map(entity -> entity.token).toList();
+        return entityTokens.stream().map(entity -> entity.token).distinct().toList();
     }
 
     @Transactional
-    public Long getCountLastSend(Long entityId, Long userId) {
+    public Long getCountLastSend(String category, String type, Long userId) {
         var date = LocalDateTime.now().plusMinutes(-5);
-        return notificationRepository.count("where creationDate > ?1 and entityId = ?2 and user.id = ?3", date, entityId, userId);
+        return notificationRepository.count("where creationDate > ?1 and category = ?2 and type = ?3 and user.id = ?4", date, category,
+                type, userId);
     }
 
 }
