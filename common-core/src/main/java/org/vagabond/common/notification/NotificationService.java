@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.vagabond.common.notification.kafka.NotificationKafkaService;
 import org.vagabond.common.notification.payload.NotificationRequest;
 import org.vagabond.common.notification.token.NotificationTokenRepository;
@@ -16,6 +17,8 @@ import org.vagabond.engine.crud.service.BaseService;
 
 @ApplicationScoped
 public class NotificationService extends BaseService<NotificationEntity> {
+    @ConfigProperty(name = "website.url")
+    private String websiteUrl;
 
     @Inject
     private NotificationRepository notificationRepository;
@@ -46,7 +49,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
         var newEntity = new NotificationEntity();
         newEntity.title = notification.title;
         newEntity.message = notification.body;
-        newEntity.url = notification.url;
+        newEntity.url = websiteUrl + notification.url;
         newEntity.superType = superType;
         newEntity.category = category;
         newEntity.type = type;
@@ -59,7 +62,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
         newEntity.active = true;
         persist(newEntity);
 
-        if (getCountLastSend(entityId, userConnected.id) == 0L) {
+        if (getCountLastSend(entityId, userConnected.id) < 10L) {
             notification.tokens = getTokens(userIds);
             notificationKafkaService.registerNotification(notification);
         }

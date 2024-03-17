@@ -49,7 +49,7 @@ public class NotificationKafkaConfiguration {
 
     @Incoming("notification")
     public void consume(NotificationRequest notification) {
-        Log.infof("kafka receive notification %s", notification);
+        Log.infof("kafka receive notification %s %s", notification.title, notification.tokens);
 
         if (!notification.tokens.isEmpty()) {
             var notificationToSend = Notification.builder().setTitle(notification.title).setBody(notification.body).build();
