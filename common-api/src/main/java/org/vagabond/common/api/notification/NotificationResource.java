@@ -1,6 +1,6 @@
 package org.vagabond.common.api.notification;
 
-import java.util.List;
+import java.util.Arrays;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
@@ -18,6 +18,7 @@ import org.vagabond.common.notification.NotificationService;
 import org.vagabond.common.notification.payload.NotificationRequest;
 import org.vagabond.common.notification.payload.NotificationResponse;
 import org.vagabond.common.user.UserEntity;
+import org.vagabond.common.user.UserService;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
@@ -28,6 +29,9 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity> {
 
     @Inject
     NotificationService notificationService;
+
+    @Inject
+    UserService userService;
 
     @Override
     public void doBeforeCreate(Object userConnected, NotificationEntity notification) {
@@ -66,10 +70,10 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity> {
 
     @POST
     @Path("/send-notification")
-    public Response sendNotification(@Context SecurityContext contexte, @QueryParam("userId") List<Long> userId) {
-        UserEntity userConnected = hasRole(contexte, roleRead);
+    public Response sendNotification(@Context SecurityContext contexte, @QueryParam("userId") Long userId) {
+        var user = userService.findById(userId);
         var notification = new NotificationRequest("test", "test", "http://localhost:3003/todolist/");
-        notificationService.sendNotification(userConnected, userId, notification, null, "test", "test", "test");
+        notificationService.sendNotification(user, Arrays.asList(userId), notification, null, "test", "test", "test");
         return responseOkJson();
     }
 }
