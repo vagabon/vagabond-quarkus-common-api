@@ -42,12 +42,6 @@ public class NotificationService extends BaseService<NotificationEntity> {
 
     public void sendNotification(UserEntity userConnected, List<Long> userIds, NotificationRequest notification, Long entityId,
             String superType, String category, String type) {
-        var entityTokens = notificationTokenRepository.find("WHERE user.id in ?1", userIds).list();
-        var tokens = entityTokens.stream().map(entity -> entity.token).toList();
-
-        var date = LocalDateTime.now().plusMinutes(-5);
-        var count = notificationRepository.count("where creationDate > ?1 and entityId = ?2 and user.id = ?3", date, entityId,
-                userConnected.id);
 
         var newEntity = new NotificationEntity();
         newEntity.title = notification.title;
@@ -65,10 +59,22 @@ public class NotificationService extends BaseService<NotificationEntity> {
         newEntity.active = true;
         persist(newEntity);
 
-        if (count == 0L) {
-            notification.tokens = tokens;
+        if (getCountLastSend(entityId, userConnected.id) == 0L) {
+            notification.tokens = getTokens(userIds);
             notificationKafkaService.registerNotification(notification);
         }
+    }
+
+    @Transactional
+    public List<String> getTokens(List<Long> userIds) {
+        var entityTokens = notificationTokenRepository.find("WHERE user.id in ?1", userIds).list();
+        return entityTokens.stream().map(entity -> entity.token).toList();
+    }
+
+    @Transactional
+    public Long getCountLastSend(Long entityId, Long userId) {
+        var date = LocalDateTime.now().plusMinutes(-5);
+        return notificationRepository.count("where creationDate > ?1 and entityId = ?2 and user.id = ?3", date, entityId, userId);
     }
 
 }

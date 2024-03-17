@@ -28,10 +28,10 @@ public class NotificationEntity extends BaseCrudEntity {
     @Column(length = 500)
     public String message;
 
-    public String category;
-    public String type;
     @Column(name = "super_type")
     public String superType;
+    public String category;
+    public String type;
 
     public String url;
 
