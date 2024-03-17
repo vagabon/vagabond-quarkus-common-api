@@ -29,14 +29,17 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity> {
     @Inject
     NotificationService notificationService;
 
+    @Override
     public void doBeforeCreate(Object userConnected, NotificationEntity notification) {
         verifyUserConnected((UserEntity) userConnected, notification.user.id);
     }
 
+    @Override
     public void doBeforeUpdate(Object userConnected, NotificationEntity notification) {
         verifyUserConnected((UserEntity) userConnected, notification.user.id);
     }
 
+    @Override
     public void doBeforeDelete(Object userConnected, NotificationEntity notification) {
         verifyUserConnected((UserEntity) userConnected, notification.user.id);
     }
