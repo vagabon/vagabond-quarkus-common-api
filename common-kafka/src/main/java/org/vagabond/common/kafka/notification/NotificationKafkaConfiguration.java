@@ -26,7 +26,10 @@ import io.quarkus.logging.Log;
 @ApplicationScoped
 public class NotificationKafkaConfiguration {
 
-    @ConfigProperty(name = "firebase.path")
+    @ConfigProperty(name = "firebase.name")
+    private String firebaseName;
+
+    @ConfigProperty(name = "firebase.path", defaultValue = "localhost")
     private String firebasePath;
 
     public FirebaseMessaging messaging;
@@ -48,9 +51,9 @@ public class NotificationKafkaConfiguration {
         }
         FirebaseApp app = null;
         try {
-            app = FirebaseApp.initializeApp(options, "blogui");
+            app = FirebaseApp.initializeApp(options, firebaseName);
         } catch (IllegalStateException e) {
-            app = FirebaseApp.getInstance("blogui");
+            app = FirebaseApp.getInstance(firebaseName);
         }
         messaging = FirebaseMessaging.getInstance(app);
     }
