@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 
 @MappedSuperclass
@@ -29,4 +30,13 @@ public abstract class BaseUserEntity<P extends BaseProfileEntity> extends BaseCr
 
     public abstract void setProfiles(List<P> newProfiles);
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }
