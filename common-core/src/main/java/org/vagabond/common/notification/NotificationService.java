@@ -36,12 +36,13 @@ public class NotificationService extends BaseService<NotificationEntity> {
     }
 
     public Long countByMemberOrCreator(Long userId) {
-        return notificationRepository.count("where active = true and read = false and user.id = ?1", userId);
+        return notificationRepository.count("where active = true and (read is null or read = false) and user.id = ?1", userId);
     }
 
     @Transactional
     public int readAll(Long userId) {
-        return notificationRepository.update("read = ?1 where active = true and read = false and user.id = ?2", true, userId);
+        return notificationRepository.update("read = ?1 where active = true and (read is null or read = false) and user.id = ?2", true,
+                userId);
     }
 
     public void sendNotification(UserEntity userConnected, List<Long> userIds, NotificationRequest notification, Long entityId,
