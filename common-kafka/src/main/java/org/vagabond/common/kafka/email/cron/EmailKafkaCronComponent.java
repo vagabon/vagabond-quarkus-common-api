@@ -29,7 +29,7 @@ public class EmailKafkaCronComponent implements ICronComponent {
 
     @Scheduled(cron = "{cron.email:40 0/1 * * * ?}")
     public void runCron() {
-        var date = LocalDateTime.now().minus(MINUTE_ADD_TO_CHECK, ChronoUnit.MINUTES);
+        var date = LocalDateTime.now().minus(SECONDES_ADD_TO_CHECK, ChronoUnit.SECONDS);
         String hql = "where send = false and error is null and active = true and creationDate <= ?1";
 
         var emails = emailService.getRepository().find(hql, date).page(0, MAX_EMAIL).list();
