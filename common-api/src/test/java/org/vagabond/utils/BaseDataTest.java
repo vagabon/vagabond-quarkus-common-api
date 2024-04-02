@@ -5,6 +5,7 @@ import java.util.List;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.vagabond.common.profile.ProfileEntity;
 import org.vagabond.common.profile.ProfileService;
@@ -22,6 +23,7 @@ public abstract class BaseDataTest {
 
     protected ProfileEntity profileAdmin;
     protected ProfileEntity profileUser;
+    protected ProfileEntity profilePremium;
 
     protected UserEntity admin;
     protected UserEntity user;
@@ -31,6 +33,7 @@ public abstract class BaseDataTest {
     public void prepareTest() {
         profileAdmin = getProfile("ADMIN", "ADMIN, USER");
         profileUser = getProfile("USER", "USER");
+        profilePremium = getProfile("PREMIUM", "USER,PREMIUM");
 
         admin = getUser("admin", Arrays.asList(profileAdmin, profileUser));
         user = getUser("user", Arrays.asList(profileUser));

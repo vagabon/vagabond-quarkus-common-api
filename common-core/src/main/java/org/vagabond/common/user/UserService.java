@@ -1,14 +1,17 @@
 package org.vagabond.common.user;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import io.quarkus.elytron.security.common.BcryptUtil;
-import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+
 import org.vagabond.common.auth.service.AuthEmailService;
+import org.vagabond.common.profile.ProfileEntity;
 import org.vagabond.common.profile.ProfileRepository;
 import org.vagabond.common.user.payload.UserResponse;
 import org.vagabond.engine.auth.utils.AuthUtils;
@@ -18,10 +21,16 @@ import org.vagabond.engine.crud.utils.QueryUtils;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.mapper.MapperUtils;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.logging.Log;
+import io.quarkus.panache.common.Page;
+
 @ApplicationScoped
 public class UserService extends BaseService<UserEntity> {
 
     public static final String USERNAME = "username";
+    public static final String PREMIUM = "PREMIUM";
+    private static final int PLAN_MONTH = 30;
 
     @Inject
     private UserRepository userRepository;
@@ -89,6 +98,37 @@ public class UserService extends BaseService<UserEntity> {
             user.getProfiles().add(profileCreator);
         }
         persist(user);
+    }
+
+    @Transactional
+    public LocalDateTime addOrUpdateProfilePremium(UserEntity user) {
+        var profilePremium = profileRepository.findByOneField("name", PREMIUM);
+        if (profilePremium == null) {
+            Log.error("PREMIUM PROFILE NOT PRESENT PLZ INSERT IT");
+            return LocalDateTime.now();
+        }
+
+        var isPremium = user.getProfiles().stream().filter(profile -> PREMIUM.equals(profile.name)).count() > 0;
+        var premiumDateEnd = LocalDateTime.now();
+        if (isPremium) {
+            var newProfiles = new ArrayList<ProfileEntity>();
+            var profiles = user.getProfiles();
+            for (var profile : profiles) {
+                var endPlan = profile.endPlan;
+                if (endPlan == null || LocalDateTime.now().isAfter(endPlan)) {
+                    endPlan = LocalDateTime.now();
+                }
+                profile.endPlan = endPlan.plus(PLAN_MONTH, ChronoUnit.DAYS);
+                newProfiles.add(profile);
+            }
+            user.setProfiles(newProfiles);
+        } else {
+            profilePremium.endPlan = LocalDateTime.now().plus(PLAN_MONTH, ChronoUnit.DAYS);
+            premiumDateEnd = profilePremium.endPlan;
+            user.getProfiles().add(profilePremium);
+        }
+        persist(user);
+        return premiumDateEnd;
     }
 
     public List<UserResponse> findTop50(String username) {
