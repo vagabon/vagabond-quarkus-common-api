@@ -28,22 +28,22 @@ import io.quarkus.logging.Log;
 public abstract class AbstractStripeResource extends BaseSecurityResource<UserEntity> {
 
     @ConfigProperty(name = "stripe.plan.amount")
-    private int amount;
+    protected int amount;
 
     @ConfigProperty(name = "website.url")
-    private String websiteUrl;
+    protected String websiteUrl;
 
     @ConfigProperty(name = "website.url.payment.ok")
-    private String websiteUrlPaymentOk;
+    protected String websiteUrlPaymentOk;
 
     @ConfigProperty(name = "website.url.payment.ko")
-    private String websiteUrlPaymentKo;
+    protected String websiteUrlPaymentKo;
 
     @Inject
-    private StripeConfiguration stripeConfiguration;
+    protected StripeConfiguration stripeConfiguration;
 
     @Inject
-    private UserPaymentService userPaymentService;
+    protected UserPaymentService userPaymentService;
 
     @POST
     @Path("/payment-intent")
