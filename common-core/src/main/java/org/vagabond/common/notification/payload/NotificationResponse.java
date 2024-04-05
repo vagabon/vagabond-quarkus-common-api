@@ -26,5 +26,7 @@ public class NotificationResponse extends BaseResponse {
 
     private String users;
 
+    private Boolean read;
+
     private UserSmallResponse user;
 }
