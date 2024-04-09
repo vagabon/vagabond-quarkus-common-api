@@ -26,13 +26,13 @@ public class EmailService extends BaseService<EmailEntity> {
     @Inject
     @Channel("mail-out")
     @Broadcast
-    Emitter<EmailEntity> emailEmitter;
+    private Emitter<EmailEntity> emailEmitter;
 
     @Inject
-    ReactiveMailer reactiveMailer;
+    private ReactiveMailer reactiveMailer;
 
     @Inject
-    Mailer mailer;
+    private Mailer mailer;
 
     public EmailRequest sendEmailOutgoing(EmailRequest emailRequest) {
         var email = createEmail(emailRequest);
@@ -48,8 +48,7 @@ public class EmailService extends BaseService<EmailEntity> {
         email.text = emailRequest.html();
         email.userId = emailRequest.user() != null ? emailRequest.user().id : null;
         email.send = false;
-        persist(email);
-        return email;
+        return persist(email);
     }
 
     @Transactional
@@ -62,8 +61,7 @@ public class EmailService extends BaseService<EmailEntity> {
     public EmailEntity finishEmailWithError(EmailEntity email) {
         email.send = false;
         email.error = true;
-        persist(email);
-        return email;
+        return persist(email);
     }
 
     public boolean sendMail(EmailEntity email) {

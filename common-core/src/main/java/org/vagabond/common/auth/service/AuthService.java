@@ -73,8 +73,7 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         var user = userRepository.findByOneField("activationToken", token);
         user.emailActivation = true;
         user.activationToken = "";
-        persist(user);
-        return user;
+        return persist(user);
     }
 
     public UserEntity createIdentityToken(String email) {
@@ -89,8 +88,7 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         user.identityToken = AuthUtils.generateIdentityToken();
         var now = LocalDateTime.now();
         user.identityTokenDateEnd = now.plus(10, ChronoUnit.MINUTES);
-        persist(user);
-        return user;
+        return persist(user);
     }
 
     @Transactional
@@ -103,15 +101,15 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         var user = userRepository.getUserFromIdentityToken(token);
         String newPassword = UUID.randomUUID().toString();
         user.password = AuthUtils.encrypePassword(newPassword);
-        resetIdentityToken(user);
+        user = resetIdentityToken(user);
         authEmailService.sendResetPassword(user, newPassword);
         return user;
     }
 
     @Transactional
-    public void resetIdentityToken(UserEntity user) {
+    public UserEntity resetIdentityToken(UserEntity user) {
         user.identityToken = "";
-        persist(user);
+        return persist(user);
     }
 
     @Transactional
@@ -121,7 +119,7 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
             return saveNewUser(googleResponse.id, null, googleResponse.name, googleResponse.email, googleResponse.picture);
         } else if (user.avatar == null) {
             user.avatar = googleResponse.picture;
-            persist(user);
+            user = persist(user);
         }
         return user;
     }
@@ -148,8 +146,7 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         if (userProfile != null) {
             googleUser.profiles = new ArrayList<>(Arrays.asList(userProfile));
         }
-        persist(googleUser);
-        return googleUser;
+        return persist(googleUser);
     }
 
 }

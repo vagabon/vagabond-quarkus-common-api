@@ -73,7 +73,7 @@ public class UserService extends BaseService<UserEntity> {
         user.email = email;
         user.emailActivation = false;
         user.activationToken = UUID.randomUUID().toString();
-        persist(user);
+        user = persist(user);
         authEmailService.sendCreationMail(user);
         return user;
     }
@@ -90,14 +90,14 @@ public class UserService extends BaseService<UserEntity> {
     }
 
     @Transactional
-    public void addProfileToUser(UserEntity user, String profileName) {
+    public UserEntity addProfileToUser(UserEntity user, String profileName) {
         var profileCreator = profileRepository.findByOneField("name", profileName);
         var profiles = user.getProfiles();
         var profileCreatorFind = profiles.stream().filter(profile -> profileName.equals(profile.name)).count();
         if (profileCreatorFind == 0) {
             user.getProfiles().add(profileCreator);
         }
-        persist(user);
+        return persist(user);
     }
 
     @Transactional

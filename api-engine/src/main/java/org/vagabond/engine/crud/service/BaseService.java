@@ -21,8 +21,7 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
 
     @Transactional
     public T persist(T entity) {
-        getRepository().getEntityManager().merge(entity);
-        return entity;
+        return getRepository().getEntityManager().merge(entity);
     }
 
     @Transactional
@@ -58,8 +57,7 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
             throw new MetierException("Id is not null");
         }
         doBeforeCreate(entity);
-        getRepository().getEntityManager().merge(entity);
-        return entity;
+        return getRepository().getEntityManager().merge(entity);
     }
 
     public void doBeforeCreate(T entity) {
@@ -74,8 +72,7 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
         doBeforeMerge(entity, entityNew);
         EntityUtils.setEntity(entityNew, entity);
         doAfterMerge(entityNew);
-        getRepository().getEntityManager().merge(entityNew);
-        return entityNew;
+        return getRepository().getEntityManager().merge(entityNew);
     }
 
     public void doBeforeMerge(T entity, T entityNew) {

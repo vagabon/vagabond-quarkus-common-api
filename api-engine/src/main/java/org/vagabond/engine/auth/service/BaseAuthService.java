@@ -5,9 +5,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import io.quarkus.elytron.security.common.BcryptUtil;
-import io.smallrye.jwt.build.Jwt;
 import jakarta.transaction.Transactional;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
@@ -16,6 +15,9 @@ import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.exeption.TechnicalException;
+
+import io.quarkus.elytron.security.common.BcryptUtil;
+import io.smallrye.jwt.build.Jwt;
 
 public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends BaseProfileEntity> extends BaseService<T> {
 
@@ -79,24 +81,22 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         }
 
         doBeforeSignin(user);
-        resetConnectionTrials(user);
-
-        return user;
+        return resetConnectionTrials(user);
     }
 
     @Transactional
-    public void doConnectionTrials(T user) {
+    public T doConnectionTrials(T user) {
         user.lastFailedTrialDate = LocalDateTime.now();
         var connectionTrials = user.connectionTrials != null ? user.connectionTrials : 0;
         user.connectionTrials = connectionTrials + 1;
-        getRepository().getEntityManager().merge(user);
+        return getRepository().getEntityManager().merge(user);
     }
 
     @Transactional
-    public void resetConnectionTrials(T user) {
+    public T resetConnectionTrials(T user) {
         user.connectionTrials = 0;
         user.lastConnexionDate = LocalDateTime.now();
-        getRepository().getEntityManager().merge(user);
+        return getRepository().getEntityManager().merge(user);
     }
 
     public abstract void doBeforeSignin(T user);
@@ -134,15 +134,15 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         user.password = AuthUtils.encrypePassword(user.password);
 
         doBeforeSignUp(user);
-        persistUser(user);
+        user = persistUser(user);
         doAfterSignUp(user);
 
         return user;
     }
 
     @Transactional
-    public void persistUser(T user) {
-        getRepository().getEntityManager().merge(user);
+    public T persistUser(T user) {
+        return getRepository().getEntityManager().merge(user);
     }
 
     public abstract void doBeforeSignUp(T user);

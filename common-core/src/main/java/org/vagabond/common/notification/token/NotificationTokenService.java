@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+
 import org.vagabond.common.user.UserEntity;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
@@ -30,8 +31,7 @@ public class NotificationTokenService extends BaseService<NotificationTokenEntit
             newEntity.creationDate = LocalDateTime.now();
             newEntity.updatedDate = LocalDateTime.now();
             newEntity.active = true;
-            persist(newEntity);
-            return newEntity;
+            return persist(newEntity);
         }
         return entity.get();
     }

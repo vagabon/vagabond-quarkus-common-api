@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
@@ -18,7 +17,6 @@ import com.google.firebase.messaging.Notification;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.vagabond.common.notification.kafka.NotificationKafkaService;
 import org.vagabond.common.notification.payload.NotificationRequest;
 
 import io.quarkus.logging.Log;
@@ -32,10 +30,7 @@ public class NotificationKafkaConfiguration {
     @ConfigProperty(name = "firebase.path", defaultValue = "localhost")
     private String firebasePath;
 
-    public FirebaseMessaging messaging;
-
-    @Inject
-    NotificationKafkaService notificationKafkaService;
+    private FirebaseMessaging messaging;
 
     @PostConstruct
     public void postConstruct() throws IOException {

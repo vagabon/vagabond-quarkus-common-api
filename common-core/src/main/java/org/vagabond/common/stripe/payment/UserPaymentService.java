@@ -50,9 +50,7 @@ public class UserPaymentService extends BaseService<UserPaymentEntity> {
         creatorPayment.paymentMethod = intent.getPaymentMethod();
         creatorPayment.source = intent.getSource();
         creatorPayment.status = intent.getStatus();
-        persist(creatorPayment);
-
-        return creatorPayment;
+        return persist(creatorPayment);
     }
 
     public void addPremiumPlan(UserEntity user) {

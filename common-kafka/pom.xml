@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.vagabond.quarkus</groupId>
         <artifactId>auth-api</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>1.0.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>common-kafka</artifactId>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.vagabond.quarkus</groupId>
             <artifactId>common-core</artifactId>
-            <version>1.0.5-SNAPSHOT</version>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <!-- firebase -->
         <dependency>
@@ -43,6 +43,11 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jdbc-h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jacoco</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

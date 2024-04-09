@@ -59,7 +59,7 @@ class UserResourceTest extends BaseDataTest {
         newUser.email = "newEmail@google.fr";
         given().body(newUser).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().put("/user/email").then().statusCode(200);
 
-        userService.addProfileToUser(newUser, "MEMBER");
+        newUser = userService.addProfileToUser(newUser, "MEMBER");
 
         var passwordRequest = new PasswordRequest(newUser.id, "password", "newPassword");
         given().body(passwordRequest).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().put("/user/password").then()

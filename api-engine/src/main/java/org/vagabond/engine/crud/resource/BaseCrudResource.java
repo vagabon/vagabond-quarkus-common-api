@@ -34,7 +34,7 @@ public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurit
         doBeforeCreate(userConnected, entity);
         var entityCreate = service.create(entity);
         doAfterCreate(userConnected, entityCreate);
-        return responseOk(doAfterFindById(userConnected, entity));
+        return responseOk(doAfterFindById(userConnected, entityCreate));
     }
 
     public void doBeforeCreate(Object userConnected, T entity) {
