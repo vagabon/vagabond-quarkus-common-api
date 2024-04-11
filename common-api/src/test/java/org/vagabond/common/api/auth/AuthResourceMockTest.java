@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.core.Response;
 
+import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.vagabond.common.profile.ProfileEntity;
@@ -16,7 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
 
+@QuarkusTest
 class AuthResourceMockTest {
 
     @InjectMock
@@ -31,6 +34,7 @@ class AuthResourceMockTest {
     @Inject
     AuthResource authResource;
 
+    @Test
     void testSignin() {
 
         var user = new UserEntity();
@@ -39,6 +43,7 @@ class AuthResourceMockTest {
         user.password = "test";
         user.connectionTrials = 0;
         user.emailActivation = true;
+        Mockito.when(entityManager.merge(user)).thenReturn(user);
         Mockito.when(userRepository.getEntityManager()).thenReturn(entityManager);
         Mockito.when(userRepository.findByOneField("username", "test")).thenReturn(user);
         var profile = new ProfileEntity();
