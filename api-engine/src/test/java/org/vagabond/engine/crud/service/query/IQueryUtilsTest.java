@@ -1,11 +1,12 @@
 package org.vagabond.engine.crud.service.query;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.List;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 class IQueryUtilsTest {
@@ -71,10 +72,19 @@ class IQueryUtilsTest {
 
     @Test
     void given_QueryUtils_when_initQueryDtoWitAllDate_then_ReturnSqlRequest() {
-        String sqlQuery = getSqlResult(false, "user.idAnd((usernameAnd|Date>=)AndProduct.name)AndDate<AndDate<=AndDate>AndDate#AndDate",
-                "1", "test", "2015", "plouf", "plouf", "plouf", "plouf", "plouf");
+        String sqlQuery = getSqlResult(false, "user.idAnd((usernameAnd|Date>=)AndProduct.name)AndDate<AndDate<=AndDate>AndDate#", "1",
+                "test", "2015", "plouf", "plouf", "plouf", "plouf", "plouf", "plouf");
         assertEquals(
                 " WHERE user.id = ?1 AND (( UPPER(username) = UPPER(?2) OR date >= ?3 ) AND UPPER(product.name) = UPPER(?4) ) AND UPPER(date) < UPPER(?5) AND UPPER(date) <= UPPER(?6) AND UPPER(date) > UPPER(?7) AND UPPER(date) = UPPER(?8)",
+                sqlQuery);
+    }
+
+    @Test
+    void given_QueryUtils_when_initQueryDtoWitAllDate_then_ReturnSqlRequest2() {
+        String sqlQuery = getSqlResult(false, "(name%And|Function%And|User.username%)AndActiveAnd(IsPrivate~And|IsPrivate!~)", "1", "test",
+                "2015", "plouf", "null", "true", "null", "true");
+        assertEquals(
+                " WHERE ( UPPER(name) like UPPER(?1) OR UPPER(function) like UPPER(?2) OR UPPER(user.username) like UPPER(?3) ) AND UPPER(active) = UPPER(?4) AND ( isPrivate is null OR isPrivate is not true )",
                 sqlQuery);
     }
 }

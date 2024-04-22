@@ -26,6 +26,7 @@ public interface IQueryUtils {
     String CONDITION_INFERIOR_EGAL = "<=";
     String CONDITION_DIFFERENT = "!=";
     String CONDITION_LIKE = "%";
+    String CONDITION_IS_NOT = "!~";
     String CONDITION_IS = "~";
     String CONDITION_EGAL = "=";
     String CONDITION_BRACKET_OPEN = "(";
@@ -110,8 +111,10 @@ public interface IQueryUtils {
         } else if (BooleanUtils.isTrue(queryDto.bracketOpen)) {
             requete.append(" ").append(CONDITION_BRACKET_OPEN);
         }
-        if (CONDITION_IS.equals(queryDto.condition)) {
-            requete.append(" ").append(queryDto.field).append(" is null ");
+        if (CONDITION_IS_NOT.equals(queryDto.condition)) {
+            requete.append(" ").append(queryDto.field).append(" is not true");
+        } else if (CONDITION_IS.equals(queryDto.condition)) {
+            requete.append(" ").append(queryDto.field).append(" is null");
         } else if (BooleanUtils.isTrue(queryDto.like)) {
             requete.append(" UPPER(").append(queryDto.field).append(") ").append(queryDto.condition).append(" UPPER(?")
                     .append(queryDto.indice + 1).append(")");
@@ -131,9 +134,10 @@ public interface IQueryUtils {
     default String getFieldName(String fieldName) {
         return StringUtils.uncapitalize(fieldName.replace(CONDITION_SUPERIOR_EGAL, "").replace(CONDITION_INFERIOR_EGAL, "")
                 .replace(CONDITION_SUPERIOR, "").replace(CONDITION_INFERIOR, "").replace(CONDITION_DIFFERENT, "")
-                .replace(CONDITION_LIKE, "").replace(CONDITION_IS, "").replace(CONDITION_EGAL, "").replace(CONDITION_BRACKET_OPEN, "")
-                .replace(CONDITION_BRACKET_CLOSE, "").replace(CONDITION_DOUBLE_BRACKET_OPEN, "").replace(CONDITION_DOUBLE_BRACKET_CLOSE, "")
-                .replace(CONDITATION_OR, "").replace(" asc", "").replace(" desc", "").replace(FORCE_UPPER, ""));
+                .replace(CONDITION_LIKE, "").replace(CONDITION_IS_NOT, "").replace(CONDITION_IS, "").replace(CONDITION_EGAL, "")
+                .replace(CONDITION_BRACKET_OPEN, "").replace(CONDITION_BRACKET_CLOSE, "").replace(CONDITION_DOUBLE_BRACKET_OPEN, "")
+                .replace(CONDITION_DOUBLE_BRACKET_CLOSE, "").replace(CONDITATION_OR, "").replace(" asc", "").replace(" desc", "")
+                .replace(FORCE_UPPER, ""));
     }
 
     default String getFieldCondition(String fieldName) {
@@ -149,6 +153,10 @@ public interface IQueryUtils {
             return CONDITION_DIFFERENT;
         } else if (fieldName.contains(CONDITION_LIKE)) {
             return LIKE;
+        } else if (fieldName.contains(CONDITION_IS_NOT)) {
+            return CONDITION_IS_NOT;
+        } else if (fieldName.contains(CONDITION_IS)) {
+            return CONDITION_IS;
         }
         return CONDITION_EGAL;
     }
