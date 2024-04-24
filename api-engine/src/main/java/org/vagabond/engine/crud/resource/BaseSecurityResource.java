@@ -33,8 +33,9 @@ public abstract class BaseSecurityResource<T extends BaseEntity> implements Base
 
     protected ICrudService<T> service;
 
-    protected String roleModify = ADMIN;
     protected String roleRead = "";
+    protected String roleFindBy = "";
+    protected String roleModify = ADMIN;
 
     protected Class<? extends BaseResponse> responseClass;
 

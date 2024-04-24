@@ -106,7 +106,7 @@ public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurit
     @Path("/findBy")
     public Response findBy(@Context SecurityContext contexte, @QueryParam("fields") String fields, @QueryParam("values") String values,
             @QueryParam("first") Integer first, @QueryParam("max") Integer max) {
-        var userConnected = hasRole(contexte, roleRead);
+        var userConnected = hasRole(contexte, roleFindBy);
         if (first == null) {
             first = 0;
         }
