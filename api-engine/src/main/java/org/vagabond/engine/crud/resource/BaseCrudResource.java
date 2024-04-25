@@ -14,7 +14,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
 import org.vagabond.engine.crud.dto.PageResponse;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
@@ -25,7 +24,7 @@ import org.vagabond.engine.mapper.MapperUtils;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
-public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurityResource<T> {
+public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserEntity<?>> extends BaseSecurityResource<T, U> {
 
     @POST
     @Path("/")
@@ -37,11 +36,10 @@ public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurit
         return responseOk(doAfterFindById(userConnected, entityCreate));
     }
 
-    public void doBeforeCreate(Object userConnected, T entity) {
-
+    public void doBeforeCreate(U userConnected, T entity) {
     }
 
-    public void doAfterCreate(Object userConnected, T entity) {
+    public void doAfterCreate(U userConnected, T entity) {
     }
 
     @PUT
@@ -54,11 +52,10 @@ public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurit
         return responseOk(doAfterFindById(userConnected, update));
     }
 
-    public void doBeforeUpdate(Object userConnected, T entity) {
-
+    public void doBeforeUpdate(U userConnected, T entity) {
     }
 
-    public void doAfterUpdate(Object userConnected, T entity) {
+    public void doAfterUpdate(U userConnected, T entity) {
     }
 
     @DELETE
@@ -87,10 +84,10 @@ public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurit
         return responseOk(Map.of("id", id));
     }
 
-    public void doBeforeDelete(Object userConnected, T entityBefore) {
+    public void doBeforeDelete(U userConnected, T entityBefore) {
     }
 
-    public void doAfterDelete(Object userConnected, T entity) {
+    public void doAfterDelete(U userConnected, T entity) {
     }
 
     @GET
@@ -117,8 +114,7 @@ public abstract class BaseCrudResource<T extends BaseEntity> extends BaseSecurit
         return responseOk(doAfterFindBy(userConnected, response));
     }
 
-    protected <U extends BaseUserEntity<P>, P extends BaseProfileEntity> PageResponse doAfterFindBy(U userConnected,
-            PageResponse response) {
+    protected PageResponse doAfterFindBy(U userConnected, PageResponse response) {
         if (SecurityUtils.hasRole(userConnected, ADMIN)) {
             return response;
         }

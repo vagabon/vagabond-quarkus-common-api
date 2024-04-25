@@ -15,15 +15,13 @@ import org.vagabond.common.user.UserEntity;
 import org.vagabond.common.user.UserService;
 import org.vagabond.common.user.payload.PasswordRequest;
 import org.vagabond.common.user.payload.UserResponse;
-import org.vagabond.engine.auth.entity.BaseProfileEntity;
-import org.vagabond.engine.auth.entity.BaseUserEntity;
 import org.vagabond.engine.crud.resource.BaseUploadResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/user")
 @RunOnVirtualThread
-public class UserResource extends BaseUploadResource<UserEntity> {
+public class UserResource extends BaseUploadResource<UserEntity, UserEntity> {
 
     public static final String UPLOAD_DIRECTORY = "/user";
 
@@ -39,7 +37,7 @@ public class UserResource extends BaseUploadResource<UserEntity> {
     }
 
     @Override
-    public void doBeforeUpload(BaseUserEntity<BaseProfileEntity> userConnected, Long id) {
+    public void doBeforeUpload(UserEntity userConnected, Long id) {
         verifyUserConnected(userConnected, id);
     }
 

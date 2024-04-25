@@ -7,13 +7,14 @@ import jakarta.ws.rs.Path;
 import org.vagabond.common.news.NewsEntity;
 import org.vagabond.common.news.NewsService;
 import org.vagabond.common.news.payload.NewsResponse;
+import org.vagabond.common.user.UserEntity;
 import org.vagabond.engine.crud.resource.BaseUploadResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/news")
 @RunOnVirtualThread
-public class NewsResource extends BaseUploadResource<NewsEntity> {
+public class NewsResource extends BaseUploadResource<NewsEntity, UserEntity> {
 
     public static final String UPLOAD_DIRECTORY = "/news";
 

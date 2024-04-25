@@ -9,6 +9,7 @@ import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.exeption.dto.ExceptionResponse;
 
@@ -19,6 +20,7 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
 
     @Override
     public Response toResponse(RuntimeException exception) {
+        var message = exception.getMessage();
         if (exception instanceof MetierException || exception instanceof NotFoundException) {
             StackTraceElement[] stackTraces = exception.getStackTrace();
             StackTraceElement[] stackTraceElements = Arrays.stream(stackTraces)
@@ -29,9 +31,11 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
             }
             exception.setStackTrace(stack);
         }
+        if (exception instanceof ConstraintViolationException) {
+            message = "ERRORS.CONTRAINTS_VIOLATION";
+        }
         Log.error(ExceptionUtils.getStackTrace(exception));
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new ExceptionResponse(LocalDateTime.now(), exception.getMessage(), ExceptionUtils.getStackTrace(exception)))
-                .build();
+                .entity(new ExceptionResponse(LocalDateTime.now(), message, ExceptionUtils.getStackTrace(exception))).build();
     }
 }

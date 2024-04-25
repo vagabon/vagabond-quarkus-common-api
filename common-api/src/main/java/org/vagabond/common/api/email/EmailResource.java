@@ -14,7 +14,7 @@ import org.vagabond.common.user.UserEntity;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
 @Path("/email")
-public class EmailResource extends BaseSecurityResource<NotificationEntity> {
+public class EmailResource extends BaseSecurityResource<NotificationEntity, UserEntity> {
 
     @Inject
     EmailService emailService;

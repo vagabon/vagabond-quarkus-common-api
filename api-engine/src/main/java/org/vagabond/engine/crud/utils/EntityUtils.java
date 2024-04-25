@@ -3,9 +3,10 @@ package org.vagabond.engine.crud.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-import io.quarkus.logging.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.vagabond.engine.crud.entity.BaseEntity;
+
+import io.quarkus.logging.Log;
 
 public class EntityUtils {
 
@@ -56,5 +57,14 @@ public class EntityUtils {
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             Log.error("expcetion EntityUtils.doSetValue : " + setterName);
         }
+    }
+
+    public static boolean isObjectDiff(Object first, Object second) {
+        if (first == null && second == null) {
+            return false;
+        } else if (first == null) {
+            return true;
+        }
+        return !first.equals(second);
     }
 }

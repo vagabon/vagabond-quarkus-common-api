@@ -25,7 +25,7 @@ import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
 import io.quarkus.logging.Log;
 
-public abstract class AbstractStripeResource extends BaseSecurityResource<UserEntity> {
+public abstract class AbstractStripeResource extends BaseSecurityResource<UserEntity, UserEntity> {
 
     @ConfigProperty(name = "stripe.plan.amount")
     protected int amount;

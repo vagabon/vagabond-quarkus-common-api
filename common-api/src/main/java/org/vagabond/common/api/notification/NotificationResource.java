@@ -24,7 +24,7 @@ import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/notification")
 @RunOnVirtualThread
-public class NotificationResource extends BaseCrudResource<NotificationEntity> {
+public class NotificationResource extends BaseCrudResource<NotificationEntity, UserEntity> {
 
     @Inject
     NotificationService notificationService;
@@ -33,18 +33,18 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity> {
     UserService userService;
 
     @Override
-    public void doBeforeCreate(Object userConnected, NotificationEntity notification) {
-        verifyUserConnected((UserEntity) userConnected, notification.user.id);
+    public void doBeforeCreate(UserEntity userConnected, NotificationEntity notification) {
+        verifyUserConnected(userConnected, notification.user.id);
     }
 
     @Override
-    public void doBeforeUpdate(Object userConnected, NotificationEntity notification) {
-        verifyUserConnected((UserEntity) userConnected, notification.user.id);
+    public void doBeforeUpdate(UserEntity userConnected, NotificationEntity notification) {
+        verifyUserConnected(userConnected, notification.user.id);
     }
 
     @Override
-    public void doBeforeDelete(Object userConnected, NotificationEntity notification) {
-        verifyUserConnected((UserEntity) userConnected, notification.user.id);
+    public void doBeforeDelete(UserEntity userConnected, NotificationEntity notification) {
+        verifyUserConnected(userConnected, notification.user.id);
     }
 
     @PostConstruct

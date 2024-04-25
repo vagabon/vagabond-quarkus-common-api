@@ -3,7 +3,6 @@ package org.vagabond.engine.crud.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
 import org.vagabond.engine.exeption.MetierException;
 
@@ -34,7 +33,7 @@ public class SecurityUtils {
         }
     }
 
-    public static <U extends BaseUserEntity<P>, P extends BaseProfileEntity> boolean hasRole(U user, String role) {
+    public static <U extends BaseUserEntity<?>> boolean hasRole(U user, String role) {
         if (user != null && user.getProfiles() != null) {
             var profiles = user.getProfiles().stream().map(profile -> profile.name).toList();
             return profiles.contains(role);

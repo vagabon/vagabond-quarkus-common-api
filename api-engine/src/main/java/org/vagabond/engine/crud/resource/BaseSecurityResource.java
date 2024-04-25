@@ -15,7 +15,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
 import org.vagabond.engine.crud.dto.BaseResponse;
 import org.vagabond.engine.crud.entity.BaseEntity;
@@ -27,7 +26,7 @@ import org.vagabond.engine.mapper.MapperUtils;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
-public abstract class BaseSecurityResource<T extends BaseEntity> implements BaseResource {
+public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseUserEntity<?>> implements BaseResource {
 
     public static final String ADMIN = "ADMIN";
 
@@ -53,7 +52,7 @@ public abstract class BaseSecurityResource<T extends BaseEntity> implements Base
         return responseOk(doAfterFindById(userConnected, entity));
     }
 
-    protected <U extends BaseUserEntity<P>, P extends BaseProfileEntity> Object doAfterFindById(U userConnected, T response) {
+    protected Object doAfterFindById(U userConnected, T response) {
         if (SecurityUtils.hasRole(userConnected, ADMIN)) {
             return response;
         }
@@ -66,7 +65,7 @@ public abstract class BaseSecurityResource<T extends BaseEntity> implements Base
 
     @SuppressWarnings("unchecked")
     @Transactional
-    protected <U extends BaseUserEntity<P>, P extends BaseProfileEntity> U hasRole(SecurityContext contexte, String roles) {
+    protected U hasRole(SecurityContext contexte, String roles) {
         U user = null;
         List<String> groups = new ArrayList<>();
         if (contexte != null && contexte.getUserPrincipal() != null) {
@@ -84,7 +83,7 @@ public abstract class BaseSecurityResource<T extends BaseEntity> implements Base
         return user;
     }
 
-    protected <U extends BaseUserEntity<P>, P extends BaseProfileEntity> void verifyUserConnected(U user, Long id) {
+    protected void verifyUserConnected(U user, Long id) {
         if (!user.id.equals(id) && user.getProfiles().stream().filter(profile -> profile.roles.contains((ADMIN))).toList().isEmpty()) {
             throw new MetierException("ERRORS.NOT_ALLOWED");
         }

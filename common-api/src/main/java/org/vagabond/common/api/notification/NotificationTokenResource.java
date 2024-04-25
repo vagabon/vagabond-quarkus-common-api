@@ -20,7 +20,7 @@ import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/notification/token")
 @RunOnVirtualThread
-public class NotificationTokenResource extends BaseSecurityResource<NotificationTokenEntity> {
+public class NotificationTokenResource extends BaseSecurityResource<NotificationTokenEntity, UserEntity> {
 
     @Inject
     NotificationTokenService notificationService;
