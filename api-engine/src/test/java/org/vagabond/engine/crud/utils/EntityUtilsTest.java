@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.vagabond.engine.crud.entity.BaseEntity;
 
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
 class EntityUtilsTest {
 
     @Test
@@ -20,6 +23,14 @@ class EntityUtilsTest {
 
         Assertions.assertEquals("name2", entity1.name);
         Assertions.assertEquals("username", entity1.username);
+    }
+
+    @Test
+    void Given_EntityUtilsTest_When_isObjectDiff_Then_return_correcValue() {
+        Assertions.assertEquals(false, EntityUtils.isObjectDiff(null, null));
+        Assertions.assertEquals(true, EntityUtils.isObjectDiff(null, "test"));
+        Assertions.assertEquals(false, EntityUtils.isObjectDiff("test", "test"));
+        Assertions.assertEquals(true, EntityUtils.isObjectDiff("test", "test2"));
     }
 
     class Entity extends BaseEntity {
