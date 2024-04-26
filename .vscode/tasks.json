@@ -1,0 +1,14 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "sonarqube",
+      "type": "shell",
+      "problemMatcher": [],
+      "command": "mvn clean install sonar:sonar -Dsonar.token=$SONAR_TOKEN -Dsonar.host.url=http://localhost:9000",
+      "group": {
+          "kind": "build",
+      }
+    }
+  ]
+}
