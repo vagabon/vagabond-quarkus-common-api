@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.exeption.TechnicalException;
 
+import io.quarkus.logging.Log;
+
 @ApplicationScoped
 public class HttpComponent {
 
@@ -30,9 +32,13 @@ public class HttpComponent {
     }
 
     public HttpResponse<String> send(HttpRequest request) {
-        HttpClient client = HttpClient.newHttpClient();
+        var client = HttpClient.newHttpClient();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                Log.errorf("%s %s", request.uri(), response.body());
+                throw new MetierException("ERRORS:HTTP_CALL_ERROR");
+            }
             client.close();
             return response;
         } catch (UnsupportedOperationException | IOException exception) {
