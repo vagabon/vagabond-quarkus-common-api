@@ -2,10 +2,12 @@ package org.vagabond.common.profile;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+
+import org.vagabond.engine.auth.entity.BaseProfileEntity;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.vagabond.engine.auth.entity.BaseProfileEntity;
 
 @Entity
 @Table(name = "profile", schema = "public")

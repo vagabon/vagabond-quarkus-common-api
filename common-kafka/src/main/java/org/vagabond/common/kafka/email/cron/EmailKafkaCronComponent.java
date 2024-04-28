@@ -27,7 +27,7 @@ public class EmailKafkaCronComponent implements ICronComponent {
     @Inject
     Mailer mailer;
 
-    @Scheduled(cron = "{cron.email:40 0/1 * * * ?}")
+    @Scheduled(cron = "{cron.email:0/30 * * * * ?}")
     public void runCron() {
         var date = LocalDateTime.now().minus(SECONDES_ADD_TO_CHECK, ChronoUnit.SECONDS);
         String hql = "where send = false and error is null and active = true and creationDate <= ?1";

@@ -83,7 +83,6 @@ public abstract class AbstractStripeResource extends BaseSecurityResource<UserEn
     }
 
     public void doAfterCreatePayment(UserEntity user) {
-        userPaymentService.addPremiumPlan(user);
     }
 
 }

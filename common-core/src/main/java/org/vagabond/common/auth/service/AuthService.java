@@ -119,6 +119,7 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
             return saveNewUser(googleResponse.id, null, googleResponse.name, googleResponse.email, googleResponse.picture);
         } else if (user.avatar == null) {
             user.avatar = googleResponse.picture;
+            user.lastConnexionDate = LocalDateTime.now();
             user = persist(user);
         }
         return user;
@@ -142,6 +143,7 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         googleUser.email = email;
         googleUser.emailActivation = true;
         googleUser.avatar = avatar;
+        googleUser.lastConnexionDate = LocalDateTime.now();
         ProfileEntity userProfile = profileRepository.getProfileUser();
         if (userProfile != null) {
             googleUser.profiles = new ArrayList<>(Arrays.asList(userProfile));
