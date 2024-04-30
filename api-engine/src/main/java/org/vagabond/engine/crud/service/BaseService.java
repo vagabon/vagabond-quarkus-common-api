@@ -8,7 +8,6 @@ import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.BooleanUtils;
 import org.vagabond.engine.crud.dto.PageResponse;
 import org.vagabond.engine.crud.entity.BaseEntity;
-import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.query.IQueryUtils;
 import org.vagabond.engine.crud.utils.EntityUtils;
 import org.vagabond.engine.crud.utils.QueryUtils;
@@ -123,6 +122,4 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
     public List<T> findBy(String sql, Object... values) {
         return getRepository().findBy(sql, values);
     }
-
-    public abstract BaseRepository<T> getRepository();
 }

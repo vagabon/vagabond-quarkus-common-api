@@ -57,6 +57,5 @@ class AuthResourceMockTest {
         Response response = authResource.signin(new AuthRequest("test", "test"));
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-
     }
 }
