@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.vagabond.common.email.payload.EmailRequest;
@@ -19,6 +20,9 @@ import io.smallrye.reactive.messaging.annotations.Broadcast;
 
 @ApplicationScoped
 public class EmailService extends BaseService<EmailEntity> {
+
+    @ConfigProperty(name = "quarkus.mailer.from", defaultValue = "from_not_found")
+    public String from;
 
     @Inject
     private EmailRepository emailRepository;
@@ -67,7 +71,9 @@ public class EmailService extends BaseService<EmailEntity> {
     public boolean sendMail(EmailEntity email) {
         Log.infof("%s %s %s", email.to, email.subject, email.text);
         try {
-            mailer.send(Mail.withHtml(email.to, email.subject, email.text));
+            var mailWithHtml = Mail.withHtml(email.to, email.subject, email.text);
+            mailWithHtml.setFrom(from);
+            mailer.send(mailWithHtml);
             finishEmail(email);
             return true;
         } catch (Exception exception) {
@@ -78,7 +84,9 @@ public class EmailService extends BaseService<EmailEntity> {
 
     public Uni<Void> sendMailReactiv(EmailEntity email) {
         Log.infof("%s %s %s", email.to, email.subject, email.text);
-        return reactiveMailer.send(Mail.withHtml(email.to, email.subject, email.text));
+        var mailWithHtml = Mail.withHtml(email.to, email.subject, email.text);
+        mailWithHtml.setFrom(from);
+        return reactiveMailer.send(mailWithHtml);
     }
 
     @Override
