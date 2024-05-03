@@ -148,7 +148,6 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         user.emailActivation = true;
         user.avatar = avatar;
         user.lastConnexionDate = LocalDateTime.now();
-        user.isCreated = true;
         ProfileEntity userProfile = profileRepository.getProfileUser();
         if (userProfile != null) {
             user.profiles = new ArrayList<>(Arrays.asList(userProfile));

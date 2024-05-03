@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 import org.vagabond.common.profile.ProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
@@ -46,7 +45,4 @@ public class UserEntity extends BaseUserEntity<ProfileEntity> {
     public String googleId;
     @Column(name = "facebook_id")
     public String facebookId;
-
-    @Transient
-    public boolean isCreated;
 }
