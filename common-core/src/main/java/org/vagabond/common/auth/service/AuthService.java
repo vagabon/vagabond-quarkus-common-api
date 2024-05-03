@@ -43,6 +43,10 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
 
     @Override
     public void doBeforeSignUp(UserEntity user) {
+        user.username = user.username.trim();
+        user.password = user.password.trim();
+        user.email = user.email.trim();
+
         user.activationToken = UUID.randomUUID().toString();
         user.emailActivation = false;
 
@@ -116,7 +120,8 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
     public UserEntity googleConnect(GoogleResponse googleResponse) {
         UserEntity user = userRepository.findByOneField("googleId", googleResponse.id);
         if (user == null) {
-            return saveNewUser(googleResponse.id, null, googleResponse.name, googleResponse.email, googleResponse.picture);
+            var name = AuthUtils.getUsername(googleResponse.givenName);
+            return saveNewUser(googleResponse.id, null, name, googleResponse.email, googleResponse.picture);
         } else if (user.avatar == null) {
             user.avatar = googleResponse.picture;
             user.lastConnexionDate = LocalDateTime.now();
@@ -128,9 +133,9 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
     @Transactional
     public UserEntity facebookConnect(FacebookResponse facebookResponse) {
         UserEntity user = userRepository.findByOneField("facebookId", facebookResponse.id());
+        var name = AuthUtils.getUsername(facebookResponse.name());
         if (user == null) {
-            return saveNewUser(null, facebookResponse.id(), facebookResponse.name(), facebookResponse.email(),
-                    facebookResponse.picture().data().url());
+            return saveNewUser(null, facebookResponse.id(), name, facebookResponse.email(), facebookResponse.picture().data().url());
         }
         return user;
     }
