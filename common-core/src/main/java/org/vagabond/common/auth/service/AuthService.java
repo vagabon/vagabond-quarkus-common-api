@@ -122,11 +122,10 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         if (user == null) {
             var name = AuthUtils.getUsername(googleResponse.givenName);
             return saveNewUser(googleResponse.id, null, name, googleResponse.email, googleResponse.picture);
-        } else if (user.avatar == null) {
-            user.avatar = googleResponse.picture;
-            user.lastConnexionDate = LocalDateTime.now();
-            user = persist(user);
         }
+        user.avatar = googleResponse.picture;
+        user.lastConnexionDate = LocalDateTime.now();
+        user = persist(user);
         return user;
     }
 
@@ -141,19 +140,20 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
     }
 
     private UserEntity saveNewUser(String googleId, String facebookId, String name, String email, String avatar) {
-        UserEntity googleUser = new UserEntity();
-        googleUser.googleId = googleId;
-        googleUser.facebookId = facebookId;
-        googleUser.username = name;
-        googleUser.email = email;
-        googleUser.emailActivation = true;
-        googleUser.avatar = avatar;
-        googleUser.lastConnexionDate = LocalDateTime.now();
+        UserEntity user = new UserEntity();
+        user.googleId = googleId;
+        user.facebookId = facebookId;
+        user.username = name;
+        user.email = email;
+        user.emailActivation = true;
+        user.avatar = avatar;
+        user.lastConnexionDate = LocalDateTime.now();
+        user.isCreated = true;
         ProfileEntity userProfile = profileRepository.getProfileUser();
         if (userProfile != null) {
-            googleUser.profiles = new ArrayList<>(Arrays.asList(userProfile));
+            user.profiles = new ArrayList<>(Arrays.asList(userProfile));
         }
-        return persist(googleUser);
+        return persist(user);
     }
 
 }
