@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.vagabond.common.auth.service.AuthEmailService;
 import org.vagabond.common.profile.ProfileRepository;
 import org.vagabond.common.user.payload.UserResponse;
@@ -50,14 +51,16 @@ public class UserService extends BaseService<UserEntity> {
 
     @Override
     public void doBeforeMerge(UserEntity entity, UserEntity entityNew) {
-        try {
-            if (!entity.password.equals(entityNew.password) && !BcryptUtil.matches(entity.password, entityNew.password)) {
-                entity.password = AuthUtils.encrypePassword(entity.password);
-            } else {
-                entity.password = entityNew.password;
+        if (StringUtils.isEmpty(entity.googleId) && StringUtils.isEmpty(entity.facebookId)) {
+            try {
+                if (!entity.password.equals(entityNew.password) && !BcryptUtil.matches(entity.password, entityNew.password)) {
+                    entity.password = AuthUtils.encrypePassword(entity.password);
+                } else {
+                    entity.password = entityNew.password;
+                }
+            } catch (RuntimeException exception) {
+                throw new MetierException("AUTH:ERROR.PASSWORD_ERROR", exception);
             }
-        } catch (RuntimeException exception) {
-            throw new MetierException("AUTH:ERROR.PASSWORD_ERROR", exception);
         }
     }
 
