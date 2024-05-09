@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 
 import org.junit.jupiter.api.Test;
+import org.vagabond.common.file.FileEntity;
 import org.vagabond.common.news.NewsEntity;
 import org.vagabond.utils.BaseDataTest;
 
@@ -48,9 +49,9 @@ class NewsResourceTest extends BaseDataTest {
     @TestSecurity(user = "admin")
     void upload() {
         var image = given().header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA).multiPart("file", FILE, "text/plain").when()
-                .post("/news/upload?id=1").then().statusCode(200).extract().body().asString();
+                .post("/file/upload?directory=/news").then().statusCode(200).extract().body().as(FileEntity.class);
 
-        given().when().get("/download?fileName=" + image).then().statusCode(200);
+        given().when().get("/file/download?fileName=" + image.path).then().statusCode(200);
     }
 
     @Test

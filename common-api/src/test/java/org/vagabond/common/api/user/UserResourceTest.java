@@ -66,7 +66,7 @@ class UserResourceTest extends BaseDataTest {
                 .statusCode(200);
 
         given().header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA).multiPart("file", FILE, "text/plain").when()
-                .post("/user/upload?id=" + newUser.id).then().statusCode(200);
+                .post("/file/upload?directory=/user").then().statusCode(200);
 
         given().when().delete("/user/desactivate?id=" + newUser.id).then().statusCode(200);
         given().when().delete("/user/?id=" + newUser.id).then().statusCode(200);

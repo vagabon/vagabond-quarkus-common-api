@@ -8,15 +8,13 @@ import org.vagabond.common.news.NewsEntity;
 import org.vagabond.common.news.NewsService;
 import org.vagabond.common.news.payload.NewsResponse;
 import org.vagabond.common.user.UserEntity;
-import org.vagabond.engine.crud.resource.BaseUploadResource;
+import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/news")
 @RunOnVirtualThread
-public class NewsResource extends BaseUploadResource<NewsEntity, UserEntity> {
-
-    public static final String UPLOAD_DIRECTORY = "/news";
+public class NewsResource extends BaseCrudResource<NewsEntity, UserEntity> {
 
     @Inject
     NewsService newsService;
@@ -27,8 +25,4 @@ public class NewsResource extends BaseUploadResource<NewsEntity, UserEntity> {
         responseClass = NewsResponse.class;
     }
 
-    @Override
-    public String getDirectoryName() {
-        return UPLOAD_DIRECTORY;
-    }
 }
