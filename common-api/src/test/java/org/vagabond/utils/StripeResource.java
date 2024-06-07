@@ -12,4 +12,8 @@ import org.vagabond.common.api.stripe.AbstractStripeResource;
 @Consumes(MediaType.APPLICATION_JSON)
 public class StripeResource extends AbstractStripeResource {
 
+    public StripeResource() {
+        super(100, "pro");
+    }
+
 }

@@ -27,15 +27,10 @@ import io.quarkus.logging.Log;
 
 public abstract class AbstractStripeResource extends BaseSecurityResource<UserEntity, UserEntity> {
 
-    @ConfigProperty(name = "stripe.plan.amount")
-    protected int amount;
-
     @ConfigProperty(name = "website.url")
     protected String websiteUrl;
-
     @ConfigProperty(name = "website.url.payment.ok")
     protected String websiteUrlPaymentOk;
-
     @ConfigProperty(name = "website.url.payment.ko")
     protected String websiteUrlPaymentKo;
 
@@ -44,6 +39,14 @@ public abstract class AbstractStripeResource extends BaseSecurityResource<UserEn
 
     @Inject
     protected UserPaymentService userPaymentService;
+
+    protected int amount;
+    protected String plan;
+
+    protected AbstractStripeResource(int amount, String plan) {
+        this.amount = amount;
+        this.plan = plan;
+    }
 
     @POST
     @Path("/payment-intent")
@@ -64,7 +67,7 @@ public abstract class AbstractStripeResource extends BaseSecurityResource<UserEn
         PaymentIntent intent = stripeConfiguration.retrieve(paymentIntent);
         String htmlPageUrl = websiteUrl + websiteUrlPaymentKo;
         if (intent != null && pamentIntentCLientSecret.equals(intent.getClientSecret())) {
-            htmlPageUrl = websiteUrl + websiteUrlPaymentOk + paymentIntent + "/" + pamentIntentCLientSecret;
+            htmlPageUrl = websiteUrl + websiteUrlPaymentOk + plan + "/" + paymentIntent + "/" + pamentIntentCLientSecret;
         }
         return Response.status(Response.Status.FOUND).header("Location", htmlPageUrl).build();
     }
