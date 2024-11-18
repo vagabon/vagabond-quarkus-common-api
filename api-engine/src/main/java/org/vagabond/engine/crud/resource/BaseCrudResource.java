@@ -131,7 +131,7 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
         var valuesSplits = fields.split(">>");
 
         hqlQuery.append("AND e.active = true ");
-        hqlQuery.append(" ORDER BY e.").append(valuesSplits[1].replace("Desc", " desc"));
+        hqlQuery.append("ORDER BY e.").append(valuesSplits[1].replace("Desc", " desc"));
 
         var query = service.getRepository().find(hqlQuery.toString(), QueryUtils.getLike(values));
         query.page(Page.ofSize(max));

@@ -17,6 +17,7 @@ import org.vagabond.common.auth.payload.request.FacebookRequest;
 import org.vagabond.common.auth.payload.request.GoogleRequest;
 import org.vagabond.common.auth.payload.response.CaptchaResponse;
 import org.vagabond.common.auth.payload.response.FacebookResponse;
+import org.vagabond.common.auth.payload.response.GoogleIdentityResponse;
 import org.vagabond.common.auth.payload.response.GoogleResponse;
 import org.vagabond.common.auth.service.AuthService;
 import org.vagabond.common.profile.ProfileEntity;
@@ -35,6 +36,7 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
 
     private static final String TOKEN = "token";
     private static final String URL_GOOGLE = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
+    private static final String URL_GOOGLE_IDENTITY = "https://oauth2.googleapis.com/tokeninfo?id_token=";
     private static final String URL_FACEBOOK = "https://graph.facebook.com/v9.0/me?&fields=name,email,picture&method=get&pretty=0&sdk=joey&suppress_http_code=1&access_token=";
     private static final String URL_CAPTCHA = "https://www.google.com/recaptcha/api/siteverify?secret=";
 
@@ -81,6 +83,21 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
     public Response googleConnect(GoogleRequest googleRequest) {
         var url = URL_GOOGLE + googleRequest.googleToken();
         var googleResponse = httpComponent.httpGet(url, GoogleResponse.class);
+        UserEntity user = authService.googleConnect(googleResponse);
+        return getJwtTokens(user);
+    }
+
+    @POST
+    @Path("/google-identity-connect")
+    @Transactional
+    public Response googleConnectIdentity(GoogleRequest googleRequest) {
+        var url = URL_GOOGLE_IDENTITY + googleRequest.googleToken();
+        var googleIdentityResponse = httpComponent.httpGet(url, GoogleIdentityResponse.class);
+        var googleResponse = new GoogleResponse();
+        googleResponse.id = googleIdentityResponse.sub;
+        googleResponse.givenName = googleIdentityResponse.givenName;
+        googleResponse.email = googleIdentityResponse.email;
+        googleResponse.picture = googleIdentityResponse.picture;
         UserEntity user = authService.googleConnect(googleResponse);
         return getJwtTokens(user);
     }

@@ -65,6 +65,8 @@ class UserResourceTest extends BaseDataTest {
         given().body(passwordRequest).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().put("/user/password").then()
                 .statusCode(200);
 
+        given().body(admin).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/user/avatar").then().statusCode(200);
+
         given().header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA).multiPart("file", FILE, "text/plain").when()
                 .post("/file/upload?directory=/user").then().statusCode(200);
 

@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.vagabond.quarkus</groupId>
         <artifactId>auth-api</artifactId>
-        <version>1.0.8-SNAPSHOT</version>
+        <version>1.0.9-SNAPSHOT</version>
     </parent>
 
     <artifactId>common-api</artifactId>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.vagabond.quarkus</groupId>
             <artifactId>common-core</artifactId>
-            <version>1.0.8-SNAPSHOT</version>
+            <version>1.0.9-SNAPSHOT</version>
         </dependency>
         <!-- test -->
         <dependency>

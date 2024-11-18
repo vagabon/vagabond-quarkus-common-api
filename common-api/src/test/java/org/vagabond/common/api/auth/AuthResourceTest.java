@@ -14,6 +14,7 @@ import org.vagabond.common.auth.payload.response.CaptchaResponse;
 import org.vagabond.common.auth.payload.response.FacebookResponse;
 import org.vagabond.common.auth.payload.response.FacebookResponsePicture;
 import org.vagabond.common.auth.payload.response.FacebookResponsePictureData;
+import org.vagabond.common.auth.payload.response.GoogleIdentityResponse;
 import org.vagabond.common.auth.payload.response.GoogleResponse;
 import org.vagabond.common.user.UserEntity;
 import org.vagabond.engine.auth.payload.request.AuthRequest;
@@ -131,6 +132,15 @@ class AuthResourceTest extends BaseDataTest {
 		Mockito.when(httpComponent.httpGet(Mockito.anyString(), Mockito.any())).thenReturn(googleResponse);
 		given().body(googleRequest).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/auth/google-connect").then()
 				.statusCode(200);
+
+		var googleIdentityResponse = new GoogleIdentityResponse();
+		googleIdentityResponse.email = "google@gmail.com";
+		googleIdentityResponse.givenName = "googleName";
+		googleIdentityResponse.sub = "googleId";
+		googleIdentityResponse.picture = "picture";
+		Mockito.when(httpComponent.httpGet(Mockito.anyString(), Mockito.any())).thenReturn(googleIdentityResponse);
+		given().body(googleRequest).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+				.post("/auth/google-identity-connect").then().statusCode(200);
 
 		var facebookRequest = new FacebookRequest("token");
 		var pictureData = new FacebookResponsePictureData("url", 100, 100, false);
