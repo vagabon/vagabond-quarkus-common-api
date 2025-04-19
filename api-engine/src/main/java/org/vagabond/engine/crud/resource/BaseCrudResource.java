@@ -15,11 +15,11 @@ import jakarta.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
-import org.vagabond.engine.crud.dto.PageResponse;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 import org.vagabond.engine.crud.entity.BaseEntity;
-import org.vagabond.engine.crud.utils.QueryUtils;
+import org.vagabond.engine.crud.response.PageResponse;
 import org.vagabond.engine.crud.utils.SecurityUtils;
+import org.vagabond.engine.crud.utils.query.QueryUtils;
 import org.vagabond.engine.mapper.MapperUtils;
 
 import io.quarkus.panache.common.Page;

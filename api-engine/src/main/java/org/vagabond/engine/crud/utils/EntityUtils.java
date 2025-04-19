@@ -14,15 +14,13 @@ public class EntityUtils {
     }
 
     public static void setEntity(BaseEntity entity1, BaseEntity entity2) {
-        setFields(entity1, entity2, entity1.getClass().getDeclaredFields());
-        if (entity1.getClass().getSuperclass() != null) {
-            setFields(entity1, entity2, entity1.getClass().getSuperclass().getDeclaredFields());
-            if (entity1.getClass().getSuperclass().getSuperclass() != null) {
-                setFields(entity1, entity2, entity1.getClass().getSuperclass().getSuperclass().getDeclaredFields());
-                if (entity1.getClass().getSuperclass().getSuperclass().getSuperclass() != null) {
-                    setFields(entity1, entity2, entity1.getClass().getSuperclass().getSuperclass().getSuperclass().getDeclaredFields());
-                }
-            }
+        setEntity(entity1, entity2, entity1.getClass());
+    }
+
+    public static void setEntity(BaseEntity entity1, BaseEntity entity2, Class<?> entityClass) {
+        setFields(entity1, entity2, entityClass.getDeclaredFields());
+        if (entityClass.getSuperclass() != null) {
+            setEntity(entity1, entity2, entityClass.getSuperclass());
         }
     }
 
@@ -31,8 +29,7 @@ public class EntityUtils {
             if (!field.getName().contains("_") && !field.getName().contains("$") && !"id".equals(field.getName())
                     && !"serialVersionUID".equals(field.getName()) && !"quarkusSyntheticLogger".equals(field.getName())) {
                 Object value = null;
-                var prefixe = "get";
-                var getterName = prefixe + StringUtils.capitalize(field.getName());
+                var getterName = String.format("%s%s", "get", StringUtils.capitalize(field.getName()));
                 try {
                     value = entity2.getClass().getMethod(getterName).invoke(entity2);
                 } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -44,7 +41,7 @@ public class EntityUtils {
     }
 
     private static void doSetValue(BaseEntity entity, Object value, Field field) {
-        var setterName = "set" + StringUtils.capitalize(field.getName());
+        var setterName = String.format("%s%s", "set", StringUtils.capitalize(field.getName()));
         try {
             var newValue = value;
             Log.debug("setValue: " + setterName + " " + newValue);

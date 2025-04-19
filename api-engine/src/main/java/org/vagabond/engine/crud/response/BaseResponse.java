@@ -1,4 +1,4 @@
-package org.vagabond.engine.crud.dto;
+package org.vagabond.engine.crud.response;
 
 import java.time.LocalDateTime;
 
@@ -10,5 +10,4 @@ import lombok.Setter;
 public abstract class BaseResponse {
     public Long id;
     public LocalDateTime creationDate;
-
 }

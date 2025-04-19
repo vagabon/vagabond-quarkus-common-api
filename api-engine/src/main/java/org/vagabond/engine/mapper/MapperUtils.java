@@ -3,14 +3,13 @@ package org.vagabond.engine.mapper;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
-import org.vagabond.engine.crud.dto.PageResponse;
+import org.vagabond.engine.crud.response.PageResponse;
 
 public class MapperUtils {
-    private MapperUtils() {
-        // DO NOTHING
-    }
-
     public static final ModelMapper mapper = new ModelMapper();
+
+    private MapperUtils() {
+    }
 
     public static <T, U> U toDto(T data, Class<U> dtoClass) {
         return data != null ? mapper.map(data, dtoClass) : null;

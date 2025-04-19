@@ -1,11 +1,11 @@
-package org.vagabond.engine.crud.utils;
+package org.vagabond.engine.crud.utils.query;
 
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class QueryUtils {
 
-    private static final String EMPTY = "%";
+    private static final String EMPTY = "";
     private static final String POURCENT = "%";
 
     public static String getLike(String value) {

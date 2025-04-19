@@ -1,7 +1,7 @@
 package org.vagabond.common.notification.token.payload;
 
 import org.vagabond.common.user.payload.UserSmallResponse;
-import org.vagabond.engine.crud.dto.BaseResponse;
+import org.vagabond.engine.crud.response.BaseResponse;
 
 import lombok.Getter;
 import lombok.Setter;

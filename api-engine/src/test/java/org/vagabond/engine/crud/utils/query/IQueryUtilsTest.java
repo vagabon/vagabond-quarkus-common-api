@@ -1,4 +1,4 @@
-package org.vagabond.engine.crud.service.query;
+package org.vagabond.engine.crud.utils.query;
 
 import java.util.List;
 

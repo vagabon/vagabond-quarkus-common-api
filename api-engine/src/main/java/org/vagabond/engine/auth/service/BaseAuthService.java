@@ -21,9 +21,9 @@ import io.smallrye.jwt.build.Jwt;
 
 public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends BaseProfileEntity> extends BaseService<T> {
 
-    private static final String USERNAME = "username";
     public static final String LOGIN_ERROR = "AUTH:ERROR.LOGIN_ERROR";
     public static final String ATTEMPT_TOO_SOON = "AUTH:ERROR.ATTEMPT_TOO_SOON";
+    private static final String USERNAME = "username";
 
     @ConfigProperty(name = "mp.jwt.verify.issuer", defaultValue = "JWT_ISUSSER")
     public String issuer;

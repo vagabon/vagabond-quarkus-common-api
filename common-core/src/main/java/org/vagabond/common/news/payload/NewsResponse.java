@@ -3,7 +3,7 @@ package org.vagabond.common.news.payload;
 import java.time.LocalDateTime;
 
 import org.vagabond.common.user.payload.UserResponse;
-import org.vagabond.engine.crud.dto.BaseResponse;
+import org.vagabond.engine.crud.response.BaseResponse;
 
 import lombok.Getter;
 import lombok.Setter;

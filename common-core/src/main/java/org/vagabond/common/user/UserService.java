@@ -14,7 +14,7 @@ import org.vagabond.common.user.payload.UserResponse;
 import org.vagabond.engine.auth.utils.AuthUtils;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
-import org.vagabond.engine.crud.utils.QueryUtils;
+import org.vagabond.engine.crud.utils.query.QueryUtils;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.mapper.MapperUtils;
 

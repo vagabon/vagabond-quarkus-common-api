@@ -1,4 +1,4 @@
-package org.vagabond.engine.crud.dto;
+package org.vagabond.engine.crud.response;
 
 import java.util.List;
 

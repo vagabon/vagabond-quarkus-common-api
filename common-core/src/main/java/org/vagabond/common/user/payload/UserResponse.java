@@ -3,7 +3,7 @@ package org.vagabond.common.user.payload;
 import java.util.List;
 
 import org.vagabond.common.profile.payload.ProfileResponse;
-import org.vagabond.engine.crud.dto.BaseResponse;
+import org.vagabond.engine.crud.response.BaseResponse;
 
 import lombok.Getter;
 import lombok.Setter;

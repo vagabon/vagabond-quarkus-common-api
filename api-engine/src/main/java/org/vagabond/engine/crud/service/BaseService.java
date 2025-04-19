@@ -6,11 +6,11 @@ import java.util.List;
 import jakarta.transaction.Transactional;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.vagabond.engine.crud.dto.PageResponse;
 import org.vagabond.engine.crud.entity.BaseEntity;
-import org.vagabond.engine.crud.service.query.IQueryUtils;
+import org.vagabond.engine.crud.response.PageResponse;
 import org.vagabond.engine.crud.utils.EntityUtils;
-import org.vagabond.engine.crud.utils.QueryUtils;
+import org.vagabond.engine.crud.utils.query.IQueryUtils;
+import org.vagabond.engine.crud.utils.query.QueryUtils;
 import org.vagabond.engine.exeption.MetierException;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;

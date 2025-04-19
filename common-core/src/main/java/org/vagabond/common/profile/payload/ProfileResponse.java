@@ -1,6 +1,6 @@
 package org.vagabond.common.profile.payload;
 
-import org.vagabond.engine.crud.dto.BaseResponse;
+import org.vagabond.engine.crud.response.BaseResponse;
 
 import lombok.Getter;
 import lombok.Setter;

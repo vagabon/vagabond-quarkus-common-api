@@ -16,8 +16,8 @@ import jakarta.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
-import org.vagabond.engine.crud.dto.BaseResponse;
 import org.vagabond.engine.crud.entity.BaseEntity;
+import org.vagabond.engine.crud.response.BaseResponse;
 import org.vagabond.engine.crud.service.ICrudService;
 import org.vagabond.engine.crud.utils.SecurityUtils;
 import org.vagabond.engine.exeption.MetierException;
@@ -66,6 +66,7 @@ public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseU
     @SuppressWarnings("unchecked")
     @Transactional
     protected U hasRole(SecurityContext contexte, String roles) {
+        // TODO : move this on utils with refultList into Repository
         U user = null;
         List<String> groups = new ArrayList<>();
         if (contexte != null && contexte.getUserPrincipal() != null) {

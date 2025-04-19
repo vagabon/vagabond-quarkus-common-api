@@ -11,6 +11,8 @@ import io.quarkus.elytron.security.common.BcryptUtil;
 public class AuthUtils {
 
     private static final int ENCRYPTE_COUNT = 10;
+    private static final int TOKEN_LENGTH = 6;
+    private static final int PASSWORD_LENGTH = 10;
 
     private static final Random random = new SecureRandom();
 
@@ -24,13 +26,13 @@ public class AuthUtils {
     }
 
     public static final String generateIdentityToken() {
-        return generatToken(6);
+        return generatToken(TOKEN_LENGTH);
     }
 
     public static final String generatToken(int nb) {
         var identityToken = new StringBuilder();
         for (var i = 0; i < nb; i++) {
-            identityToken.append(random.nextInt(10) + 0);
+            identityToken.append(random.nextInt(PASSWORD_LENGTH) + 0);
         }
         return identityToken.toString();
     }

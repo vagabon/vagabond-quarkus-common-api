@@ -7,7 +7,7 @@
     <groupId>org.vagabond.quarkus</groupId>
     <artifactId>auth-api</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.9-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <name>Vabagond Quarkus Common Api</name>
 
     <modules>
@@ -21,9 +21,9 @@
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus.platform.version>3.9.2</quarkus.platform.version>
-        <compiler-plugin.version>3.13.0</compiler-plugin.version>
-        <surefire-plugin.version>3.2.5</surefire-plugin.version>
+        <quarkus.platform.version>3.22.0.CR1</quarkus.platform.version>
+        <compiler-plugin.version>3.14.0</compiler-plugin.version>
+        <surefire-plugin.version>3.5.3</surefire-plugin.version>
         <sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S1104</sonar.issue.ignore.multicriteria.e1.ruleKey>
         <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
@@ -31,9 +31,9 @@
         <sonar.issue.ignore.multicriteria.e2.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
         <sonar.issue.ignore.multicriteria.e3.ruleKey>java:S3252</sonar.issue.ignore.multicriteria.e3.ruleKey>
         <sonar.issue.ignore.multicriteria.e3.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e3.resourceKey>
-        <sonar.exclusions>
+        <sonar.coverage.exclusions>
             **/*Configuration.java,**/*Component*.java,**/*Response*.java,**/*Request*.java,**/*Dto.java,**/*Entity.java
-        </sonar.exclusions>
+        </sonar.coverage.exclusions>
         <sonar.coverage.jacoco.xmlReportPaths>
             ${maven.multiModuleProjectDirectory}/target/coverage/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
