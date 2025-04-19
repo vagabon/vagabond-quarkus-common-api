@@ -56,12 +56,12 @@ public abstract class BaseDataTest {
             return userService.findByUsername(username);
 
         } catch (MetierException exception) {
-            var user = new UserEntity();
-            user.active = true;
-            user.username = username;
-            user.password = AuthUtils.encrypePassword("password");
-            user.profiles = profiles;
-            return userService.persist(user);
+            var newUser = new UserEntity();
+            newUser.active = true;
+            newUser.username = username;
+            newUser.password = AuthUtils.encrypePassword("password");
+            newUser.profiles = profiles;
+            return userService.persist(newUser);
         }
     }
 
