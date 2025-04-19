@@ -59,8 +59,8 @@ class AuthResourceTest extends BaseDataTest {
 				.then().statusCode(200).extract().body().as(AuthResponse.class);
 
 		// User Refresh Token
-		var RefreshTokenRequest = new RefreshTokenRequest(authReponse.jwtRefresh());
-		given().body(RefreshTokenRequest).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/auth/refresh-token")
+		var refreshTokenRequest = new RefreshTokenRequest(authReponse.jwtRefresh());
+		given().body(refreshTokenRequest).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/auth/refresh-token")
 				.then().statusCode(200);
 
 		// User createIdentityToken
@@ -111,7 +111,7 @@ class AuthResourceTest extends BaseDataTest {
 		authRequest = new AuthRequest("username2", "password2");
 		given().body(authRequest).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/auth/signin").then()
 				.statusCode(400).body("debugMessage", is("AUTH:ERROR.PASSWORD_ERROR"));
-		;
+
 		given().body(authRequest).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/auth/signin").then()
 				.statusCode(400).body("debugMessage", is("AUTH:ERROR.ATTEMPT_TOO_SOON"));
 	}

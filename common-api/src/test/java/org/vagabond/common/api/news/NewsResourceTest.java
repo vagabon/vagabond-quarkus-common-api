@@ -20,6 +20,8 @@ import io.quarkus.test.security.TestSecurity;
 @QuarkusTest
 class NewsResourceTest extends BaseDataTest {
 
+    private static final File FILE = new File("./src/test/resources/application.properties");
+
     @Inject
     NewsResource newsResource;
 
@@ -42,8 +44,6 @@ class NewsResourceTest extends BaseDataTest {
         newsRequest.id = news.id;
         given().body(news).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().put("/news").then().statusCode(200);
     }
-
-    private final File FILE = new File("./src/test/resources/application.properties");
 
     @Test
     @TestSecurity(user = "admin")

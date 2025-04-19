@@ -1,7 +1,5 @@
 package org.vagabond.common.notification.payload;
 
-import java.time.LocalDateTime;
-
 import org.vagabond.common.user.payload.UserSmallResponse;
 import org.vagabond.engine.crud.response.BaseResponse;
 
@@ -11,8 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class NotificationResponse extends BaseResponse {
-
-    public LocalDateTime creationDate;
 
     private String title;
     private String message;
