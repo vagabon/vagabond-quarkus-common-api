@@ -1,8 +1,5 @@
 package org.vagabond.engine.auth;
 
-import io.smallrye.common.annotation.RunOnVirtualThread;
-import io.smallrye.jwt.auth.principal.JWTParser;
-import io.smallrye.jwt.auth.principal.ParseException;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -14,6 +11,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
 import org.vagabond.engine.auth.payload.request.AuthRequest;
@@ -22,10 +20,16 @@ import org.vagabond.engine.auth.payload.response.AuthResponse;
 import org.vagabond.engine.auth.service.BaseAuthService;
 import org.vagabond.engine.crud.resource.BaseResource;
 
+import io.smallrye.common.annotation.RunOnVirtualThread;
+import io.smallrye.jwt.auth.principal.JWTParser;
+import io.smallrye.jwt.auth.principal.ParseException;
+
 @RunOnVirtualThread
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public abstract class BaseAuthResource<T extends BaseUserEntity<P>, P extends BaseProfileEntity> implements BaseResource {
+
+    private static final Long REFRESH_TTL = 1000000000000000000L;
 
     @Inject
     protected JWTParser parser;
@@ -51,7 +55,7 @@ public abstract class BaseAuthResource<T extends BaseUserEntity<P>, P extends Ba
 
     protected Response getJwtTokens(T user) {
         var token = getService().generateTokenJwt(user);
-        var refreshToken = getService().generateTokenJwt(user, 1000000000000000000L);
+        var refreshToken = getService().generateTokenJwt(user, REFRESH_TTL);
         return responseOk(new AuthResponse<Object>(toDto(user), token, refreshToken));
     }
 

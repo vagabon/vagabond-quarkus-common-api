@@ -3,6 +3,7 @@ package org.vagabond.engine.auth.service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
@@ -42,15 +43,20 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
     }
 
     public String generateTokenJwt(T user, Long customDuration) {
-        var profiles = user.getProfiles();
-        if (user.getProfiles() == null || user.getProfiles().isEmpty()) {
-            var userProfile = getProfileRepository().findByOneField("name", "USER");
-            profiles = new ArrayList<>();
-            profiles.add(userProfile);
-            user.setProfiles(profiles);
-        }
+        var profiles = loadProfileOrGetDefaultOne(user);
         return Jwt.issuer(issuer).upn(user.username).groups(profiles.stream().map(profile -> profile.name).collect(Collectors.toSet()))
                 .expiresIn(customDuration).sign();
+    }
+
+    private List<P> loadProfileOrGetDefaultOne(T user) {
+        if (user.getProfiles() == null || user.getProfiles().isEmpty()) {
+            var userProfile = getProfileRepository().findByOneField("name", "USER");
+            var profiles = new ArrayList<P>();
+            profiles.add(userProfile);
+            user.setProfiles(profiles);
+            return profiles;
+        }
+        return user.getProfiles();
     }
 
     public T findByUsername(String username) {
@@ -89,14 +95,14 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         user.lastFailedTrialDate = LocalDateTime.now();
         var connectionTrials = user.connectionTrials != null ? user.connectionTrials : 0;
         user.connectionTrials = connectionTrials + 1;
-        return getRepository().getEntityManager().merge(user);
+        return persist(user);
     }
 
     @Transactional
     public T resetConnectionTrials(T user) {
         user.connectionTrials = 0;
         user.lastConnexionDate = LocalDateTime.now();
-        return getRepository().getEntityManager().merge(user);
+        return persist(user);
     }
 
     public abstract void doBeforeSignin(T user);
@@ -134,15 +140,10 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         user.password = AuthUtils.encrypePassword(user.password);
 
         doBeforeSignUp(user);
-        user = persistUser(user);
+        user = persist(user);
         doAfterSignUp(user);
 
         return user;
-    }
-
-    @Transactional
-    public T persistUser(T user) {
-        return getRepository().getEntityManager().merge(user);
     }
 
     public abstract void doBeforeSignUp(T user);
