@@ -1,5 +1,6 @@
 package org.vagabond.common.news;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
@@ -16,8 +17,13 @@ public abstract class BaseNewsEntity extends BaseCrudEntity {
     public String title;
     public String avatar;
     public String image;
+
+    @Column(columnDefinition = "TEXT")
     public String resume;
+
+    @Column(columnDefinition = "TEXT")
     public String description;
+
     public String tags;
 
     @ManyToOne()
