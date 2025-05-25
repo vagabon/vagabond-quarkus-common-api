@@ -27,8 +27,6 @@ public class NotificationTokenResource extends BaseSecurityResource<Notification
 
     @PostConstruct
     public void postConstruct() {
-        roleModify = ADMIN;
-        roleRead = ADMIN;
         service = notificationService;
         responseClass = NotificationTokenResponse.class;
     }
@@ -36,7 +34,7 @@ public class NotificationTokenResource extends BaseSecurityResource<Notification
     @PUT
     @Path("/user")
     public Response user(@Context SecurityContext contexte, @RequestBody NotificationTokenRequest request) {
-        UserEntity userConnected = hasRole(contexte, "USER");
+        UserEntity userConnected = getUserConnected();
         verifyUserConnected(userConnected, request.userId());
         var mergeToken = notificationService.mergeToken(userConnected, request.token());
         return responseOk(doAfterFindById(userConnected, mergeToken));
