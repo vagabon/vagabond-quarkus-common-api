@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 
 @QuarkusTest
 class EmailResourceTest extends BaseDataTest {
@@ -27,6 +28,7 @@ class EmailResourceTest extends BaseDataTest {
     EmailResource emailResource;
 
     @Test
+    @TestSecurity(user = "user")
     void testProduce() {
 
         var contexteMock = Mockito.mock(SecurityContext.class);

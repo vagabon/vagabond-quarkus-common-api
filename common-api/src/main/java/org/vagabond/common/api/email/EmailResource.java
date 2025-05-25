@@ -13,7 +13,10 @@ import org.vagabond.common.notification.NotificationEntity;
 import org.vagabond.common.user.UserEntity;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Path("/email")
+@Slf4j
 public class EmailResource extends BaseSecurityResource<NotificationEntity, UserEntity> {
 
     @Inject
@@ -22,7 +25,8 @@ public class EmailResource extends BaseSecurityResource<NotificationEntity, User
     @POST
     @Path("/produce")
     public Response produce(@Context SecurityContext contexte) {
-        UserEntity userConnected = hasRole(contexte, "ADMIN");
+        UserEntity userConnected = getUserConnected();
+        log.info("{}", userConnected.username);
         EmailRequest mail = emailService.sendEmailOutgoing(new EmailRequest(userConnected.email, "test", "test", userConnected));
         return Response.ok(mail).build();
     }

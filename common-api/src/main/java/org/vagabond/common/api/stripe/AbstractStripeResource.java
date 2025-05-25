@@ -79,7 +79,7 @@ public abstract class AbstractStripeResource extends BaseSecurityResource<UserEn
         if (intent != null && stripePayload.secret().equals(intent.getClientSecret())) {
             Log.infof("%s %s ", stripePayload.secret(), intent.getClientSecret());
         }
-        UserEntity userConnected = hasRole(contexte, "USER");
+        var userConnected = getUserConnected();
         userPaymentService.createPayment(stripePayload.intent(), stripePayload.secret(), intent);
         doAfterCreatePayment(userConnected);
         return responseOk(userConnected);

@@ -52,7 +52,7 @@ public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
     @Transactional
     public Response handleFileUpload(@Context SecurityContext contexte, @QueryParam(value = "directory") String directory,
             MultipartFormDataInput fileForm) {
-        var userConnected = hasRole(contexte, "USER");
+        var userConnected = getUserConnected();
 
         var entry = fileForm.getValues().entrySet().stream().toList();
         var firstFile = entry.get(0).getValue().stream().findFirst().orElseThrow();

@@ -18,6 +18,8 @@ import org.vagabond.common.user.UserEntity;
 import org.vagabond.common.user.UserService;
 import org.vagabond.common.user.payload.PasswordRequest;
 import org.vagabond.common.user.payload.UserResponse;
+import org.vagabond.engine.auth.annotation.AuthRole;
+import org.vagabond.engine.auth.annotation.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
@@ -32,32 +34,35 @@ public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
     @PostConstruct
     public void postConstruct() {
         service = userService;
-        roleRead = ADMIN;
-        roleFindBy = ADMIN;
-        roleModify = ADMIN;
         responseClass = UserResponse.class;
     }
 
     @PUT
     @Path("/email")
+    @AuthSecure
+    @AuthRole("USER")
     public Response updateEmail(@Context SecurityContext contexte, @RequestBody UserEntity user) {
-        UserEntity userConnected = hasRole(contexte, "USER");
+        UserEntity userConnected = getUserConnected();
         verifyUserConnected(userConnected, user.id);
         return responseOk(userService.updateEmail(user.id, user.email));
     }
 
     @PUT
     @Path("/password")
+    @AuthSecure
+    @AuthRole("USER")
     public Response updatePassword(@Context SecurityContext contexte, @RequestBody PasswordRequest passwordRequest) {
-        UserEntity userConnected = hasRole(contexte, "USER");
+        UserEntity userConnected = getUserConnected();
         verifyUserConnected(userConnected, passwordRequest.id());
         return responseOk(userService.updatePassword(passwordRequest.id(), passwordRequest.password(), passwordRequest.newPassword()));
     }
 
     @POST
     @Path("/avatar")
+    @AuthSecure
+    @AuthRole("USER")
     public Response updateAvatar(@Context SecurityContext contexte, @RequestBody UserEntity user) {
-        UserEntity userConnected = hasRole(contexte, "USER");
+        UserEntity userConnected = getUserConnected();
         verifyUserConnected(userConnected, user.id);
         userConnected.avatar = user.avatar;
         userConnected = userService.persist(userConnected);

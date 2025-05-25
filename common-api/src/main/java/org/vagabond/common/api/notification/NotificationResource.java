@@ -50,8 +50,6 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @PostConstruct
     public void postConstruct() {
         service = notificationService;
-        roleRead = "USER";
-        roleModify = "USER";
         responseClass = NotificationResponse.class;
     }
 
@@ -70,7 +68,7 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @POST
     @Path("/send")
     public Response sendNotification(@Context SecurityContext contexte) {
-        UserEntity userConnected = hasRole(contexte, "ADMIN");
+        UserEntity userConnected = getUserConnected();
         var notification = new NotificationRequest("test", "test", "/notification");
         notificationService.sendNotification(userConnected, Arrays.asList(userConnected.id), notification, null, "test", "test", "test");
         return responseOkJson();

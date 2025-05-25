@@ -14,6 +14,8 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.vagabond.engine.auth.annotation.AuthRole;
+import org.vagabond.engine.auth.annotation.AuthSecure;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 import org.vagabond.engine.crud.entity.BaseEntity;
@@ -30,8 +32,10 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
 
     @POST
     @Path("/")
-    public Response create(@Context SecurityContext contexte, @RequestBody T entity) {
-        var userConnected = hasRole(contexte, roleModify);
+    @AuthSecure
+    @AuthRole("ADMIN")
+    public Response create(@RequestBody T entity) {
+        U userConnected = getUserConnected();
         doBeforeCreate(userConnected, entity);
         var entityCreate = service.create(entity);
         doAfterCreate(userConnected, entityCreate);
@@ -46,8 +50,10 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
 
     @PUT
     @Path("/")
-    public Response update(@Context SecurityContext contexte, @RequestBody T entity) {
-        var userConnected = hasRole(contexte, roleModify);
+    @AuthSecure
+    @AuthRole("ADMIN")
+    public Response update(@RequestBody T entity) {
+        U userConnected = getUserConnected();
         doBeforeUpdate(userConnected, entity);
         var update = service.update(entity);
         doAfterUpdate(userConnected, update);
@@ -62,8 +68,10 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
 
     @DELETE
     @Path("/")
+    @AuthSecure
+    @AuthRole("ADMIN")
     public Response delete(@Context SecurityContext contexte, @QueryParam("id") Long id) {
-        var userConnected = hasRole(contexte, roleModify);
+        U userConnected = getUserConnected();
         var entityBefore = service.findById(id);
         doBeforeDelete(userConnected, entityBefore);
         var entity = service.delete(id);
@@ -73,8 +81,10 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
 
     @DELETE
     @Path("/desactivate")
+    @AuthSecure
+    @AuthRole("ADMIN")
     public Response desactivate(@Context SecurityContext contexte, @QueryParam("id") Long id) {
-        var userConnected = hasRole(contexte, roleModify);
+        U userConnected = getUserConnected();
         var entityBefore = service.findById(id);
         doBeforeDelete(userConnected, entityBefore);
         if (entityBefore instanceof BaseCrudEntity crudEntity) {
@@ -94,18 +104,20 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
 
     @GET
     @Path("/")
-    public Response findAll(@Context SecurityContext contexte, @QueryParam("page") Integer page, @QueryParam("max") Integer max,
-            @QueryParam("sort") String sort) {
-        var userConnected = hasRole(contexte, roleRead);
+    @AuthSecure
+    @AuthRole("USER")
+    public Response findAll(@QueryParam("page") Integer page, @QueryParam("max") Integer max, @QueryParam("sort") String sort) {
         var response = service.findByPage(page, max, sort);
-        return responseOk(doAfterFindBy(userConnected, response));
+        return responseOk(doAfterFindBy(getUserConnected(), response));
     }
 
     @GET
     @Path("/findBy")
+    @AuthSecure
+    @AuthRole("USER")
     public Response findBy(@Context SecurityContext contexte, @QueryParam("fields") String fields, @QueryParam("values") String values,
             @QueryParam("first") Integer first, @QueryParam("max") Integer max) {
-        var userConnected = hasRole(contexte, roleFindBy);
+        var userConnected = getUserConnected();
         if (first == null) {
             first = 0;
         }

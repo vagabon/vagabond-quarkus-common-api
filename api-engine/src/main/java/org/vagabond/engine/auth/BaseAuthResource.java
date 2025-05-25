@@ -7,10 +7,8 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
@@ -19,6 +17,7 @@ import org.vagabond.engine.auth.payload.request.RefreshTokenRequest;
 import org.vagabond.engine.auth.payload.response.AuthResponse;
 import org.vagabond.engine.auth.service.BaseAuthService;
 import org.vagabond.engine.crud.resource.BaseResource;
+import org.vagabond.engine.exeption.MetierException;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import io.smallrye.jwt.auth.principal.JWTParser;
@@ -46,11 +45,15 @@ public abstract class BaseAuthResource<T extends BaseUserEntity<P>, P extends Ba
     @POST
     @Path("/refresh-token")
     @Transactional
-    public Response refreshToken(@Context SecurityContext ctx, RefreshTokenRequest refreshTokenRequest) throws ParseException {
-        var token = parser.parse(refreshTokenRequest.refreshToken());
-        T user = getService().findByUsername(token.getName());
-        getService().resetConnectionTrials(user);
-        return getJwtTokens(user);
+    public Response refreshToken(RefreshTokenRequest refreshTokenRequest) throws ParseException {
+        try {
+            var token = parser.parse(refreshTokenRequest.refreshToken());
+            T user = getService().findByUsername(token.getName());
+            getService().resetConnectionTrials(user);
+            return getJwtTokens(user);
+        } catch (ParseException e) {
+            throw new MetierException("NO REFRESH TOKEN");
+        }
     }
 
     protected Response getJwtTokens(T user) {
