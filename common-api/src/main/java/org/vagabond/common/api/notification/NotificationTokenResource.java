@@ -4,9 +4,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.vagabond.common.notification.token.NotificationTokenEntity;
@@ -33,7 +31,7 @@ public class NotificationTokenResource extends BaseSecurityResource<Notification
 
     @PUT
     @Path("/user")
-    public Response user(@Context SecurityContext contexte, @RequestBody NotificationTokenRequest request) {
+    public Response user(@RequestBody NotificationTokenRequest request) {
         UserEntity userConnected = getUserConnected();
         verifyUserConnected(userConnected, request.userId());
         var mergeToken = notificationService.mergeToken(userConnected, request.token());

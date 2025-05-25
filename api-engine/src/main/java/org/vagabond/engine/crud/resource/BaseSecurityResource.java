@@ -4,9 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
@@ -40,7 +38,7 @@ public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseU
 
     @GET()
     @Path("/{id}")
-    public Response findById(@Context SecurityContext contexte, Long id) {
+    public Response findById(Long id) {
         var userConnected = getUserConnected();
         var entity = service.findById(id);
         return responseOk(doAfterFindById(userConnected, entity));

@@ -9,9 +9,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.vagabond.engine.auth.annotation.AuthRole;
@@ -70,7 +68,7 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @Path("/")
     @AuthSecure
     @AuthRole("ADMIN")
-    public Response delete(@Context SecurityContext contexte, @QueryParam("id") Long id) {
+    public Response delete(@QueryParam("id") Long id) {
         U userConnected = getUserConnected();
         var entityBefore = service.findById(id);
         doBeforeDelete(userConnected, entityBefore);
@@ -83,7 +81,7 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @Path("/desactivate")
     @AuthSecure
     @AuthRole("ADMIN")
-    public Response desactivate(@Context SecurityContext contexte, @QueryParam("id") Long id) {
+    public Response desactivate(@QueryParam("id") Long id) {
         U userConnected = getUserConnected();
         var entityBefore = service.findById(id);
         doBeforeDelete(userConnected, entityBefore);
@@ -115,8 +113,8 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @Path("/findBy")
     @AuthSecure
     @AuthRole("USER")
-    public Response findBy(@Context SecurityContext contexte, @QueryParam("fields") String fields, @QueryParam("values") String values,
-            @QueryParam("first") Integer first, @QueryParam("max") Integer max) {
+    public Response findBy(@QueryParam("fields") String fields, @QueryParam("values") String values, @QueryParam("first") Integer first,
+            @QueryParam("max") Integer max) {
         var userConnected = getUserConnected();
         if (first == null) {
             first = 0;

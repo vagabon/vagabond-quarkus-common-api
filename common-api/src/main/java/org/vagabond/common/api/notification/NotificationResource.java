@@ -8,9 +8,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
 import org.vagabond.common.notification.NotificationEntity;
 import org.vagabond.common.notification.NotificationService;
@@ -67,7 +65,7 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
 
     @POST
     @Path("/send")
-    public Response sendNotification(@Context SecurityContext contexte) {
+    public Response sendNotification() {
         UserEntity userConnected = getUserConnected();
         var notification = new NotificationRequest("test", "test", "/notification");
         notificationService.sendNotification(userConnected, Arrays.asList(userConnected.id), notification, null, "test", "test", "test");

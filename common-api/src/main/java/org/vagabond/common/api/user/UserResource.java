@@ -9,9 +9,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.vagabond.common.user.UserEntity;
@@ -41,7 +39,7 @@ public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
     @Path("/email")
     @AuthSecure
     @AuthRole("USER")
-    public Response updateEmail(@Context SecurityContext contexte, @RequestBody UserEntity user) {
+    public Response updateEmail(@RequestBody UserEntity user) {
         UserEntity userConnected = getUserConnected();
         verifyUserConnected(userConnected, user.id);
         return responseOk(userService.updateEmail(user.id, user.email));
@@ -51,7 +49,7 @@ public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
     @Path("/password")
     @AuthSecure
     @AuthRole("USER")
-    public Response updatePassword(@Context SecurityContext contexte, @RequestBody PasswordRequest passwordRequest) {
+    public Response updatePassword(@RequestBody PasswordRequest passwordRequest) {
         UserEntity userConnected = getUserConnected();
         verifyUserConnected(userConnected, passwordRequest.id());
         return responseOk(userService.updatePassword(passwordRequest.id(), passwordRequest.password(), passwordRequest.newPassword()));
@@ -61,7 +59,7 @@ public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
     @Path("/avatar")
     @AuthSecure
     @AuthRole("USER")
-    public Response updateAvatar(@Context SecurityContext contexte, @RequestBody UserEntity user) {
+    public Response updateAvatar(@RequestBody UserEntity user) {
         UserEntity userConnected = getUserConnected();
         verifyUserConnected(userConnected, user.id);
         userConnected.avatar = user.avatar;
