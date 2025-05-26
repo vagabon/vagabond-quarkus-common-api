@@ -10,6 +10,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.vagabond.common.notification.NotificationEntity;
 import org.vagabond.common.notification.NotificationService;
 import org.vagabond.common.notification.payload.NotificationRequest;
@@ -21,6 +22,7 @@ import org.vagabond.engine.crud.resource.BaseCrudResource;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/notification")
+@SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class NotificationResource extends BaseCrudResource<NotificationEntity, UserEntity> {
 

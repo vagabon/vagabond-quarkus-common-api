@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.Response;
 import org.apache.commons.lang3.BooleanUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.vagabond.common.auth.payload.request.ActivationRequest;
 import org.vagabond.common.auth.payload.request.AuthEmailRequest;
 import org.vagabond.common.auth.payload.request.FacebookRequest;
@@ -30,8 +31,9 @@ import org.vagabond.engine.mapper.MapperUtils;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
-@RunOnVirtualThread
 @Path("/auth")
+@SecurityRequirement(name = "SecurityScheme")
+@RunOnVirtualThread
 public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
 
     private static final String TOKEN = "token";

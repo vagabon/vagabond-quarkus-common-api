@@ -12,6 +12,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.vagabond.common.user.UserEntity;
 import org.vagabond.common.user.UserService;
 import org.vagabond.common.user.payload.PasswordRequest;
@@ -23,6 +24,7 @@ import org.vagabond.engine.crud.resource.BaseCrudResource;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/user")
+@SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
 

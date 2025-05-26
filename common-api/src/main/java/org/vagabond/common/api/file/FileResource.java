@@ -12,6 +12,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.jboss.resteasy.reactive.server.multipart.MultipartFormDataInput;
 import org.vagabond.common.file.FileEntity;
 import org.vagabond.common.file.FileService;
@@ -22,6 +23,7 @@ import org.vagabond.engine.crud.resource.BaseCrudResource;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/file")
+@SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
 

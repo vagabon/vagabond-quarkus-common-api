@@ -7,6 +7,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.vagabond.common.notification.token.NotificationTokenEntity;
 import org.vagabond.common.notification.token.NotificationTokenService;
 import org.vagabond.common.notification.token.payload.NotificationTokenRequest;
@@ -17,6 +18,7 @@ import org.vagabond.engine.crud.resource.BaseSecurityResource;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/notification/token")
+@SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class NotificationTokenResource extends BaseSecurityResource<NotificationTokenEntity, UserEntity> {
 
