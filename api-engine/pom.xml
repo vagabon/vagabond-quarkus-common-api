@@ -7,10 +7,17 @@
     <parent>
         <groupId>org.vagabond.quarkus</groupId>
         <artifactId>auth-api</artifactId>
-        <version>1.1.1-SNAPSHOT</version>
+        <version>1.1.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>api-engine</artifactId>
+
+    <properties>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <commons-collections4.version>4.5.0-M3</commons-collections4.version>
+        <modelmapper.version>3.2.3</modelmapper.version>
+        <lombok.version>1.18.38</lombok.version>
+    </properties>
 
     <dependencies>
         <!-- ORM -->
@@ -53,12 +60,12 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.17.0</version>
+            <version>${commons-lang3.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.5.0-M3</version>
+            <version>${commons-collections4.version}</version>
         </dependency>
         <!-- kafka -->
         <dependency>
@@ -79,14 +86,14 @@
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>3.2.2</version>
+            <version>${modelmapper.version}</version>
         </dependency>
 
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.38</version>
+            <version>${lombok.version}</version>
             <scope>compile</scope>
         </dependency>
 

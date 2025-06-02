@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.vagabond.quarkus</groupId>
         <artifactId>auth-api</artifactId>
-        <version>1.1.1-SNAPSHOT</version>
+        <version>1.1.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>common-core</artifactId>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.vagabond.quarkus</groupId>
             <artifactId>api-engine</artifactId>
-            <version>1.1.1-SNAPSHOT</version>
+            <version>1.1.2-SNAPSHOT</version>
         </dependency>
         <!-- ORM -->
         <dependency>
@@ -27,7 +27,7 @@
         <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
-            <version>24.18.0</version>
+            <version>${stripe.version}</version>
         </dependency>
         <!-- test -->
         <dependency>

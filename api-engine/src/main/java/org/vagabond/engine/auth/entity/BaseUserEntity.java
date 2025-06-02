@@ -8,6 +8,11 @@ import jakarta.persistence.MappedSuperclass;
 
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @MappedSuperclass
 public abstract class BaseUserEntity<P extends BaseProfileEntity> extends BaseCrudEntity {
 

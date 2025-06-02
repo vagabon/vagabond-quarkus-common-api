@@ -7,7 +7,7 @@
     <groupId>org.vagabond.quarkus</groupId>
     <artifactId>auth-api</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.2-SNAPSHOT</version>
     <name>Vabagond Quarkus Common Api</name>
 
     <modules>
@@ -18,12 +18,16 @@
     </modules>
 
     <properties>
-        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.release>24</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus.platform.version>3.22.0.CR1</quarkus.platform.version>
-        <compiler-plugin.version>3.14.0</compiler-plugin.version>
-        <surefire-plugin.version>3.5.3</surefire-plugin.version>
+        <quarkus.platform.version>3.23.0</quarkus.platform.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+        <jandex-maven-plugin.version>3.1.6</jandex-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
+        <stripe.version>24.18.0</stripe.version>
+        <firebase-admin.version>9.1.1</firebase-admin.version>
         <sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S1104</sonar.issue.ignore.multicriteria.e1.ruleKey>
         <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
@@ -38,17 +42,6 @@
             ${maven.multiModuleProjectDirectory}/target/coverage/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>nexus.snapshot</id>
-            <url>http://192.168.1.10:8081/repository/nexus-snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>nexus.release</id>
-            <url>http:///192.168.1.10:8081/repository/nexus-releases/</url>
-        </repository>
-    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -67,7 +60,7 @@
             <plugin>
                 <groupId>io.smallrye</groupId>
                 <artifactId>jandex-maven-plugin</artifactId>
-                <version>3.1.6</version>
+                <version>${jandex-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>make-index</id>
@@ -95,17 +88,25 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler-plugin.version}</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.38</version>
+                        </path>
+                    </annotationProcessorPaths>
                     <compilerArgs>
-                        <arg>-parameters</arg>
+                        <arg>--add-opens</arg>
+                        <arg>java.base/java.lang=ALL-UNNAMED</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire-plugin.version}</version>
+                <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <systemPropertyVariables>
                         <quarkus.jacoco.data-file>
@@ -119,7 +120,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>${jacoco-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

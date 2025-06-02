@@ -34,7 +34,7 @@ import io.quarkus.test.security.TestSecurity;
 class AuthResourceTest extends BaseDataTest {
 
 	@Test
-	@TestSecurity(user = "admin", roles = { "ADMIN" })
+	@TestSecurity(user = "admin")
 	void auth() {
 
 		// User SignUp

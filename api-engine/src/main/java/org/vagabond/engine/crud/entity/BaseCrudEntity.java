@@ -10,7 +10,11 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 import io.quarkus.logging.Log;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @MappedSuperclass
 public abstract class BaseCrudEntity extends BaseEntity {
 

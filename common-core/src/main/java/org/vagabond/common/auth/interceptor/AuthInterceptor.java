@@ -21,12 +21,9 @@ import org.vagabond.engine.auth.annotation.AuthSecure;
 import org.vagabond.engine.crud.utils.SecurityUtils;
 import org.vagabond.engine.exeption.MetierException;
 
-import lombok.extern.slf4j.Slf4j;
-
 @AuthSecure
 @Interceptor
 @Priority(Interceptor.Priority.APPLICATION + 1)
-@Slf4j
 public class AuthInterceptor {
 
   private static final String USER_NOT_CONNECTED = "USER NOT CONNECTED";
