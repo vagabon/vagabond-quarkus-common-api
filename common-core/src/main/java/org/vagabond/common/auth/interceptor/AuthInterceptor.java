@@ -49,8 +49,10 @@ public class AuthInterceptor {
     }
     if (authRole != null) {
       String role = authRole.value();
-      var user = authService.findByUsername(jwt.getName());
-      hasRole(user, role);
+      if (StringUtils.isNotBlank(role)) {
+        var user = authService.findByUsername(jwt.getName());
+        hasRole(user, role);
+      }
     }
     return ctx.proceed();
   }
