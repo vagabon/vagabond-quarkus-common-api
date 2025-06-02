@@ -1,4 +1,4 @@
-package org.vagabond.resource;
+package org.vagabond.crud;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
