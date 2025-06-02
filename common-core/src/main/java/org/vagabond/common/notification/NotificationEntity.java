@@ -25,7 +25,8 @@ public class NotificationEntity extends BaseCrudEntity {
     public UserEntity user;
 
     public String title;
-    @Column(length = 500)
+
+    @Column(columnDefinition = "TEXT")
     public String message;
 
     @Column(name = "super_type")

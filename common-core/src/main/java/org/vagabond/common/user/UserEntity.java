@@ -41,8 +41,8 @@ public class UserEntity extends BaseUserEntity<ProfileEntity> {
     @Column(name = "email_activation")
     public Boolean emailActivation;
 
-    @Column(name = "google_id")
+    @Column(name = "google_id", columnDefinition = "TEXT")
     public String googleId;
-    @Column(name = "facebook_id")
+    @Column(name = "facebook_id", columnDefinition = "TEXT")
     public String facebookId;
 }

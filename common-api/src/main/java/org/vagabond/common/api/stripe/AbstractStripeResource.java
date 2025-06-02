@@ -9,9 +9,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
@@ -74,12 +72,12 @@ public abstract class AbstractStripeResource extends BaseSecurityResource<UserEn
 
     @POST
     @Path("/validate")
-    public Response validatePayment(@Context SecurityContext contexte, StripePayloadRequest stripePayload) throws StripeException {
+    public Response validatePayment(StripePayloadRequest stripePayload) throws StripeException {
         var intent = stripeConfiguration.retrieve(stripePayload.intent());
         if (intent != null && stripePayload.secret().equals(intent.getClientSecret())) {
             Log.infof("%s %s ", stripePayload.secret(), intent.getClientSecret());
         }
-        UserEntity userConnected = hasRole(contexte, "USER");
+        var userConnected = getUserConnected();
         userPaymentService.createPayment(stripePayload.intent(), stripePayload.secret(), intent);
         doAfterCreatePayment(userConnected);
         return responseOk(userConnected);

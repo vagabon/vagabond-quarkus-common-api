@@ -8,10 +8,9 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.vagabond.common.notification.NotificationEntity;
 import org.vagabond.common.notification.NotificationService;
 import org.vagabond.common.notification.payload.NotificationRequest;
@@ -23,6 +22,7 @@ import org.vagabond.engine.crud.resource.BaseCrudResource;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/notification")
+@SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class NotificationResource extends BaseCrudResource<NotificationEntity, UserEntity> {
 
@@ -50,8 +50,6 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @PostConstruct
     public void postConstruct() {
         service = notificationService;
-        roleRead = "USER";
-        roleModify = "USER";
         responseClass = NotificationResponse.class;
     }
 
@@ -69,8 +67,8 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
 
     @POST
     @Path("/send")
-    public Response sendNotification(@Context SecurityContext contexte) {
-        UserEntity userConnected = hasRole(contexte, "ADMIN");
+    public Response sendNotification() {
+        UserEntity userConnected = getUserConnected();
         var notification = new NotificationRequest("test", "test", "/notification");
         notificationService.sendNotification(userConnected, Arrays.asList(userConnected.id), notification, null, "test", "test", "test");
         return responseOkJson();

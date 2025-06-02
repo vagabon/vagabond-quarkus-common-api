@@ -9,11 +9,10 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.jboss.resteasy.reactive.server.multipart.MultipartFormDataInput;
 import org.vagabond.common.file.FileEntity;
 import org.vagabond.common.file.FileService;
@@ -24,6 +23,7 @@ import org.vagabond.engine.crud.resource.BaseCrudResource;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/file")
+@SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
 
@@ -50,9 +50,8 @@ public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
     @Path(value = "/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Transactional
-    public Response handleFileUpload(@Context SecurityContext contexte, @QueryParam(value = "directory") String directory,
-            MultipartFormDataInput fileForm) {
-        var userConnected = hasRole(contexte, "USER");
+    public Response handleFileUpload(@QueryParam(value = "directory") String directory, MultipartFormDataInput fileForm) {
+        var userConnected = getUserConnected();
 
         var entry = fileForm.getValues().entrySet().stream().toList();
         var firstFile = entry.get(0).getValue().stream().findFirst().orElseThrow();
