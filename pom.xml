@@ -18,7 +18,7 @@
     </modules>
 
     <properties>
-        <maven.compiler.release>24</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.version>3.23.0</quarkus.platform.version>
@@ -27,6 +27,10 @@
         <jandex-maven-plugin.version>3.1.6</jandex-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <stripe.version>24.18.0</stripe.version>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
+        <commons-collections4.version>4.5.0-M3</commons-collections4.version>
+        <modelmapper.version>3.2.3</modelmapper.version>
+        <lombok.version>1.18.38</lombok.version>
         <firebase-admin.version>9.1.1</firebase-admin.version>
         <sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S1104</sonar.issue.ignore.multicriteria.e1.ruleKey>
@@ -94,7 +98,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.38</version>
+                            <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>

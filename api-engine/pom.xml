@@ -12,13 +12,6 @@
 
     <artifactId>api-engine</artifactId>
 
-    <properties>
-        <commons-lang3.version>3.17.0</commons-lang3.version>
-        <commons-collections4.version>4.5.0-M3</commons-collections4.version>
-        <modelmapper.version>3.2.3</modelmapper.version>
-        <lombok.version>1.18.38</lombok.version>
-    </properties>
-
     <dependencies>
         <!-- ORM -->
         <dependency>
