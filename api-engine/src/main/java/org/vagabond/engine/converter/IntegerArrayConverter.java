@@ -8,10 +8,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.vagabond.engine.exeption.TechnicalException;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Converter
 public class IntegerArrayConverter implements AttributeConverter<Integer[], String> {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    @Getter
+    @Setter
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public String convertToDatabaseColumn(Integer[] attribute) {
