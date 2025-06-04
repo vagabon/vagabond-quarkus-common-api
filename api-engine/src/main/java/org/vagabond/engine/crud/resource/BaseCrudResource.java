@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -113,8 +114,8 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @Path("/findBy")
     @AuthSecure
     @AuthRole("USER")
-    public Response findBy(@QueryParam("fields") String fields, @QueryParam("values") String values, @QueryParam("first") Integer first,
-            @QueryParam("max") Integer max) {
+    public Response findBy(@DefaultValue("") @QueryParam("fields") String fields, @DefaultValue("") @QueryParam("values") String values,
+            @QueryParam("first") Integer first, @QueryParam("max") Integer max) {
         var userConnected = getUserConnected();
         if (first == null) {
             first = 0;

@@ -3,17 +3,20 @@ package org.vagabond.engine.auth.service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import jakarta.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
 import org.vagabond.engine.auth.utils.AuthUtils;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
+import org.vagabond.engine.crud.utils.SecurityUtils;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.exeption.TechnicalException;
 
@@ -22,6 +25,7 @@ import io.smallrye.jwt.build.Jwt;
 
 public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends BaseProfileEntity> extends BaseService<T> {
 
+    private static final String USER_NOT_CONNECTED = "USER NOT CONNECTED";
     public static final String LOGIN_ERROR = "AUTH:ERROR.LOGIN_ERROR";
     public static final String ATTEMPT_TOO_SOON = "AUTH:ERROR.ATTEMPT_TOO_SOON";
     private static final String USERNAME = "username";
@@ -149,6 +153,21 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
     public abstract void doBeforeSignUp(T user);
 
     public abstract void doAfterSignUp(T user);
+
+    @Transactional
+    public <U extends BaseUserEntity<?>> void hasRole(U user, String roles) {
+        List<String> groups = new ArrayList<>();
+        if (user != null) {
+            groups = user.getProfiles().stream().map(profile -> profile.roles.split(",")).flatMap(Arrays::stream).toList();
+        }
+        if (StringUtils.isNotBlank(roles)) {
+            if (groups.stream().filter(profil -> profil.equals("ADMIN")).count() == 0) {
+                SecurityUtils.hasRole(roles, groups);
+            }
+        } else if (groups.isEmpty()) {
+            throw new MetierException(USER_NOT_CONNECTED);
+        }
+    }
 
     public abstract BaseRepository<P> getProfileRepository();
 }
