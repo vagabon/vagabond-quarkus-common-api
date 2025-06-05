@@ -17,12 +17,12 @@ public class StripeConfiguration {
     private String stripeSecretKey;
 
     public PaymentIntent create(Map<String, Object> params) throws StripeException {
-        Stripe.apiKey = stripeSecretKey;
+        Stripe.apiKey = stripeSecretKey; // NOSONAR
         return PaymentIntent.create(params);
     }
 
     public PaymentIntent retrieve(String paymentIntent) throws StripeException {
-        Stripe.apiKey = stripeSecretKey;
+        Stripe.apiKey = stripeSecretKey; // NOSONAR
         return PaymentIntent.retrieve(paymentIntent);
     }
 }

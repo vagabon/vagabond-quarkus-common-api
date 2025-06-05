@@ -3,7 +3,6 @@ package org.vagabond.common.api.stripe;
 import java.util.HashMap;
 import java.util.Map;
 
-import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -58,7 +57,6 @@ public abstract class AbstractStripeResource extends BaseSecurityResource<UserEn
 
     @GET
     @Path("/payment-intent")
-    @PermitAll
     public Response validatePaypmentIntent(@QueryParam("payment_intent") String paymentIntent,
             @QueryParam("payment_intent_client_secret") String pamentIntentCLientSecret,
             @QueryParam("redirect_status") String redirectStatus) throws StripeException {

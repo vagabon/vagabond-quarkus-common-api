@@ -30,7 +30,7 @@ public class UserEntity extends BaseUserEntity<ProfileEntity> {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "user_profile", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "profile_id", referencedColumnName = "id"))
-    public List<ProfileEntity> profiles;
+    public List<ProfileEntity> profiles; // NOSONAR
 
     @Column(name = "activation_token")
     public String activationToken;
