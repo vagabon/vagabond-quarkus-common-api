@@ -1,16 +1,21 @@
 package org.vagabond.engine.crud.utils;
 
+import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.vagabond.engine.crud.entity.BaseEntity;
 
 import io.quarkus.test.junit.QuarkusTest;
+import lombok.Getter;
+import lombok.Setter;
 
 @QuarkusTest
 class EntityUtilsTest {
 
     @Test
     void test() {
+        var now = LocalDateTime.now();
 
         Entity entity1 = new Entity();
         entity1.name = "name";
@@ -18,11 +23,18 @@ class EntityUtilsTest {
 
         Entity entity2 = new Entity();
         entity2.name = "name2";
+        entity2.username = "username";
+        entity2.myDate = now;
 
         EntityUtils.setEntity(entity1, entity2);
 
         Assertions.assertEquals("name2", entity1.name);
         Assertions.assertEquals("username", entity1.username);
+        Assertions.assertEquals(now, entity1.myDate);
+
+        entity2.myDate = null;
+        EntityUtils.setEntity(entity1, entity2);
+        Assertions.assertEquals(null, entity1.myDate);
     }
 
     @Test
@@ -33,24 +45,11 @@ class EntityUtilsTest {
         Assertions.assertEquals(true, EntityUtils.isObjectDiff("test", "test2"));
     }
 
+    @Getter
+    @Setter
     class Entity extends BaseEntity {
         public String name;
         public String username;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
+        public LocalDateTime myDate;
     }
 }

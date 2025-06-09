@@ -45,12 +45,13 @@ public class EntityUtils {
         try {
             var newValue = value;
             Log.debug("setValue: " + setterName + " " + newValue);
-            if (newValue != null) {
-                if (value instanceof BaseEntity baseEntity && baseEntity.id.equals(-1L)) {
-                    newValue = null;
-                }
-                entity.getClass().getMethod(setterName, (field.getType())).invoke(entity, newValue);
+            // FIXME: remove the null temporary
+            // if (newValue != null) {
+            if (value instanceof BaseEntity baseEntity && baseEntity.id.equals(-1L)) {
+                newValue = null;
             }
+            entity.getClass().getMethod(setterName, (field.getType())).invoke(entity, newValue);
+            // }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             Log.error("expcetion EntityUtils.doSetValue : " + setterName);
         }
