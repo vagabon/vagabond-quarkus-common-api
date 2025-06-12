@@ -45,10 +45,10 @@ public abstract class BaseAuthResource<T extends BaseUserEntity<P>, P extends Ba
     @POST
     @Path("/refresh-token")
     @Transactional
-    public Response refreshToken(RefreshTokenRequest refreshTokenRequest) throws ParseException {
+    public Response refreshToken(RefreshTokenRequest refreshToken) throws ParseException {
         try {
-            var token = parser.parse(refreshTokenRequest.refreshToken());
-            T user = getService().findByUsername(token.getName());
+            var token = parser.parse(refreshToken.refreshToken());
+            var user = getService().findByUsername(token.getName());
             getService().resetConnectionTrials(user);
             return getJwtTokens(user);
         } catch (ParseException e) {
