@@ -13,18 +13,18 @@ public class EntityUtils {
     private EntityUtils() {
     }
 
-    public static void setEntity(BaseEntity entity1, BaseEntity entity2) {
-        setEntity(entity1, entity2, entity1.getClass());
+    public static void setEntity(BaseEntity entity1, BaseEntity entity2, boolean forceNull) {
+        setEntity(entity1, entity2, entity1.getClass(), forceNull);
     }
 
-    public static void setEntity(BaseEntity entity1, BaseEntity entity2, Class<?> entityClass) {
-        setFields(entity1, entity2, entityClass.getDeclaredFields());
+    public static void setEntity(BaseEntity entity1, BaseEntity entity2, Class<?> entityClass, boolean forceNull) {
+        setFields(entity1, entity2, entityClass.getDeclaredFields(), forceNull);
         if (entityClass.getSuperclass() != null) {
-            setEntity(entity1, entity2, entityClass.getSuperclass());
+            setEntity(entity1, entity2, entityClass.getSuperclass(), forceNull);
         }
     }
 
-    private static void setFields(BaseEntity entity1, BaseEntity entity2, Field[] fields) {
+    private static void setFields(BaseEntity entity1, BaseEntity entity2, Field[] fields, boolean forceNull) {
         for (var field : fields) {
             if (!field.getName().contains("_") && !field.getName().contains("$") && !"id".equals(field.getName())
                     && !"serialVersionUID".equals(field.getName()) && !"quarkusSyntheticLogger".equals(field.getName())) {
@@ -35,23 +35,22 @@ public class EntityUtils {
                 } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     Log.error("expcetion EntityUtils.setFields : " + getterName, e);
                 }
-                doSetValue(entity1, value, field);
+                doSetValue(entity1, value, field, forceNull);
             }
         }
     }
 
-    private static void doSetValue(BaseEntity entity, Object value, Field field) {
+    private static void doSetValue(BaseEntity entity, Object value, Field field, boolean forceNull) {
         var setterName = String.format("%s%s", "set", StringUtils.capitalize(field.getName()));
         try {
             var newValue = value;
             Log.debug("setValue: " + setterName + " " + newValue);
-            // FIXME: remove the null temporary
-            // if (newValue != null) {
-            if (value instanceof BaseEntity baseEntity && baseEntity.id.equals(-1L)) {
-                newValue = null;
+            if (newValue != null || forceNull) {
+                if (value instanceof BaseEntity baseEntity && baseEntity.id.equals(-1L)) {
+                    newValue = null;
+                }
+                entity.getClass().getMethod(setterName, (field.getType())).invoke(entity, newValue);
             }
-            entity.getClass().getMethod(setterName, (field.getType())).invoke(entity, newValue);
-            // }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             Log.error("expcetion EntityUtils.doSetValue : " + setterName);
         }

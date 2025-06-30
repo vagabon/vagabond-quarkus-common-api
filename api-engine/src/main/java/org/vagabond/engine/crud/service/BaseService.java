@@ -69,7 +69,7 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
         }
         var entityNew = getRepository().findById(entity.id);
         doBeforeMerge(entity, entityNew);
-        EntityUtils.setEntity(entityNew, entity);
+        EntityUtils.setEntity(entityNew, entity, true);
         doAfterMerge(entityNew);
         return getRepository().getEntityManager().merge(entityNew);
     }
