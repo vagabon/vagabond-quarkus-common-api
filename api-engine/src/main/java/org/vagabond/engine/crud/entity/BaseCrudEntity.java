@@ -6,8 +6,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 import io.quarkus.logging.Log;
 import lombok.Getter;
@@ -19,15 +17,12 @@ import lombok.Setter;
 public abstract class BaseCrudEntity extends BaseEntity {
 
     @Column(name = "creation_date")
-    @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime creationDate;
 
     @Column(name = "updated_date")
-    @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime updatedDate;
 
     @Column(name = "deleted_date")
-    @Temporal(TemporalType.TIMESTAMP)
     public LocalDateTime deletedDate;
 
     public Boolean active;

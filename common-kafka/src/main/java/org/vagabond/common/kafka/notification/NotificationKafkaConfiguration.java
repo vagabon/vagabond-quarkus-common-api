@@ -63,7 +63,7 @@ public class NotificationKafkaConfiguration {
                     .putData("url", notification.url).build();
 
             try {
-                messaging.sendMulticast(message);
+                messaging.sendEachForMulticast(message);
             } catch (FirebaseMessagingException exception) {
                 Log.error(exception);
             }
