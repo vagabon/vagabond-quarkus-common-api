@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jakarta.transaction.Transactional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.vagabond.engine.auth.entity.BaseProfileEntity;
@@ -21,6 +19,7 @@ import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.exeption.TechnicalException;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.jwt.build.Jwt;
 
 public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends BaseProfileEntity> extends BaseService<T> {
@@ -54,7 +53,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
 
     private List<P> loadProfileOrGetDefaultOne(T user) {
         if (user.getProfiles() == null || user.getProfiles().isEmpty()) {
-            var userProfile = getProfileRepository().findByOneField("name", "USER");
+            var userProfile = getProfileRepository().findByOneField("name", "USER").await().indefinitely();
             var profiles = new ArrayList<P>();
             profiles.add(userProfile);
             user.setProfiles(profiles);
@@ -64,12 +63,12 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
     }
 
     public T findByUsername(String username) {
-        return getRepository().findByOneField(USERNAME, username);
+        return getRepository().findByOneField(USERNAME, username).await().indefinitely();
     }
 
     public T signIn(String username, String password) {
 
-        var user = getRepository().findByOneField(USERNAME, username);
+        var user = getRepository().findByOneField(USERNAME, username).await().indefinitely();
 
         if (user == null) {
             throw new MetierException(LOGIN_ERROR);
@@ -94,7 +93,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         return resetConnectionTrials(user);
     }
 
-    @Transactional
+    @WithTransaction
     public T doConnectionTrials(T user) {
         user.lastFailedTrialDate = LocalDateTime.now();
         var connectionTrials = user.connectionTrials != null ? user.connectionTrials : 0;
@@ -102,7 +101,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         return persist(user);
     }
 
-    @Transactional
+    @WithTransaction
     public T resetConnectionTrials(T user) {
         user.connectionTrials = 0;
         user.lastConnexionDate = LocalDateTime.now();
@@ -133,11 +132,11 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
     }
 
     public T signup(T user) {
-        if (getRepository().existBy(USERNAME, user.username)) {
+        if (getRepository().existBy(USERNAME, user.username).await().indefinitely()) {
             throw new MetierException("ERRORS:USERNAME_ALREADY_EXIST");
         }
 
-        if (getRepository().existBy("email", user.email) && !user.email.equals("gonzague.clement@gmail.com")) {
+        if (getRepository().existBy("email", user.email).await().indefinitely() && !user.email.equals("gonzague.clement@gmail.com")) {
             throw new MetierException("ERRORS:EMAIL_ALREADY_EXIST");
         }
 
@@ -154,7 +153,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
 
     public abstract void doAfterSignUp(T user);
 
-    @Transactional
+    @WithTransaction
     public <U extends BaseUserEntity<?>> void hasRole(U user, String roles) {
         List<String> groups = new ArrayList<>();
         if (user != null) {

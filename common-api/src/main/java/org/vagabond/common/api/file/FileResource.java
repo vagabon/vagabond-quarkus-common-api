@@ -2,7 +2,6 @@ package org.vagabond.common.api.file;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -20,6 +19,7 @@ import org.vagabond.common.file.payload.FileResponse;
 import org.vagabond.common.user.UserEntity;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/file")
@@ -49,7 +49,7 @@ public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
     @POST()
     @Path(value = "/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Transactional
+    @WithTransaction
     public Response handleFileUpload(@QueryParam(value = "directory") String directory, MultipartFormDataInput fileForm) {
         var userConnected = getUserConnected();
 

@@ -5,7 +5,6 @@ import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -15,6 +14,8 @@ import org.vagabond.common.notification.token.NotificationTokenRepository;
 import org.vagabond.common.user.UserEntity;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
+
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 
 @ApplicationScoped
 public class NotificationService extends BaseService<NotificationEntity> {
@@ -36,13 +37,15 @@ public class NotificationService extends BaseService<NotificationEntity> {
     }
 
     public Long countByMemberOrCreator(Long userId) {
-        return notificationRepository.count("where active = true and (read is null or read = false) and user.id = ?1", userId);
+        return notificationRepository.count("where active = true and (read is null or read = false) and user.id = ?1", userId).await()
+                .indefinitely();
     }
 
-    @Transactional
+    @WithTransaction
     public int readAll(Long userId) {
-        return notificationRepository.update("read = ?1 where active = true and (read is null or read = false) and user.id = ?2", true,
-                userId);
+        return notificationRepository
+                .update("read = ?1 where active = true and (read is null or read = false) and user.id = ?2", true, userId).await()
+                .indefinitely();
     }
 
     public void sendNotification(UserEntity userConnected, List<Long> userIds, NotificationRequest notification, Long entityId,
@@ -71,17 +74,18 @@ public class NotificationService extends BaseService<NotificationEntity> {
         }
     }
 
-    @Transactional
+    @WithTransaction
     public List<String> getTokens(List<Long> userIds) {
-        var entityTokens = notificationTokenRepository.find("WHERE user.id in ?1", userIds).list();
+        var entityTokens = notificationTokenRepository.find("WHERE user.id in ?1", userIds).list().await().indefinitely();
         return entityTokens.stream().map(entity -> entity.token).distinct().toList();
     }
 
-    @Transactional
+    @WithTransaction
     public Long getCountLastSend(String category, String type, Long userId) {
         var date = LocalDateTime.now().plusMinutes(-5);
-        return notificationRepository.count("where creationDate > ?1 and category = ?2 and type = ?3 and user.id = ?4", date, category,
-                type, userId);
+        return notificationRepository
+                .count("where creationDate > ?1 and category = ?2 and type = ?3 and user.id = ?4", date, category, type, userId).await()
+                .indefinitely();
     }
 
 }

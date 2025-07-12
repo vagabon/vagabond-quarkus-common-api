@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.vagabond.common.auth.service.AuthEmailService;
@@ -19,6 +18,7 @@ import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.mapper.MapperUtils;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.quarkus.panache.common.Page;
 
 @ApplicationScoped
@@ -41,7 +41,7 @@ public class UserService extends BaseService<UserEntity> {
     }
 
     public UserEntity findByUsername(String name) {
-        return userRepository.findByOrThrow(USERNAME, name);
+        return userRepository.findByOrThrow(USERNAME, name).await().indefinitely();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class UserService extends BaseService<UserEntity> {
     }
 
     public UserEntity updateEmail(Long userId, String email) {
-        var user = userRepository.findById(userId);
+        var user = userRepository.findById(userId).await().indefinitely();
         user.email = email;
         user.emailActivation = false;
         user.activationToken = UUID.randomUUID().toString();
@@ -74,20 +74,20 @@ public class UserService extends BaseService<UserEntity> {
         return user;
     }
 
-    @Transactional
+    @WithTransaction
     public UserEntity updatePassword(Long userId, String password, String newPassword) {
-        var user = userRepository.findById(userId);
+        var user = userRepository.findById(userId).await().indefinitely();
         if (!BcryptUtil.matches(password, user.password)) {
             throw new MetierException("AUTH:ERROR.PASSWORD_ERROR");
         }
         user.password = AuthUtils.encrypePassword(newPassword);
-        userRepository.getEntityManager().merge(user);
+        userRepository.entityManager.merge(user);
         return user;
     }
 
-    @Transactional
+    @WithTransaction
     public UserEntity addProfileToUser(UserEntity user, String profileName) {
-        var profileCreator = profileRepository.findByOneField("name", profileName);
+        var profileCreator = profileRepository.findByOneField("name", profileName).await().indefinitely();
         var profiles = user.getProfiles();
         var profileCreatorFind = profiles.stream().filter(profile -> profileName.equals(profile.name)).count();
         if (profileCreatorFind == 0) {
@@ -98,7 +98,7 @@ public class UserService extends BaseService<UserEntity> {
 
     public List<UserResponse> findTop50(String username) {
         var query = userRepository.find("where UPPER(username) like ?1 order by username", QueryUtils.getLike(username));
-        var users = query.page(Page.of(0, 50)).list();
+        var users = query.page(Page.of(0, 50)).list().await().indefinitely();
         return MapperUtils.toList(users, UserResponse.class);
     }
 }

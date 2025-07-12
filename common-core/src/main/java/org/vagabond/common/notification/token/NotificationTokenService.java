@@ -4,11 +4,12 @@ import java.time.LocalDateTime;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import org.vagabond.common.user.UserEntity;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
+
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 
 @ApplicationScoped
 public class NotificationTokenService extends BaseService<NotificationTokenEntity> {
@@ -21,10 +22,11 @@ public class NotificationTokenService extends BaseService<NotificationTokenEntit
         return notificationTokenRepository;
     }
 
-    @Transactional
+    @WithTransaction
     public NotificationTokenEntity mergeToken(UserEntity user, String token) {
-        var entity = notificationTokenRepository.find("WHERE user.id = ?1 and token = ?2", user.id, token).firstResultOptional();
-        if (!entity.isPresent()) {
+        var entity = notificationTokenRepository.find("WHERE user.id = ?1 and token = ?2", user.id, token).firstResult().await()
+                .indefinitely();
+        if (entity != null) {
             var newEntity = new NotificationTokenEntity();
             newEntity.user = user;
             newEntity.token = token;
@@ -33,7 +35,7 @@ public class NotificationTokenService extends BaseService<NotificationTokenEntit
             newEntity.active = true;
             return persist(newEntity);
         }
-        return entity.get();
+        return entity;
     }
 
 }

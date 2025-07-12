@@ -2,7 +2,6 @@ package org.vagabond.common.email;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -11,6 +10,7 @@ import org.vagabond.common.email.payload.EmailRequest;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
 
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.quarkus.logging.Log;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
@@ -44,7 +44,7 @@ public class EmailService extends BaseService<EmailEntity> {
         return emailRequest;
     }
 
-    @Transactional
+    @WithTransaction
     public EmailEntity createEmail(EmailRequest emailRequest) {
         var email = new EmailEntity();
         email.to = emailRequest.to();
@@ -55,13 +55,13 @@ public class EmailService extends BaseService<EmailEntity> {
         return persist(email);
     }
 
-    @Transactional
+    @WithTransaction
     public void finishEmail(EmailEntity email) {
         var hqlLink = "update EmailEntity set send = true, error = false where id = :emailId";
-        getRepository().getEntityManager().createQuery(hqlLink).setParameter("emailId", email.id).executeUpdate();
+        getRepository().entityManager.createQuery(hqlLink).setParameter("emailId", email.id).executeUpdate();
     }
 
-    @Transactional
+    @WithTransaction
     public EmailEntity finishEmailWithError(EmailEntity email) {
         email.send = false;
         email.error = true;

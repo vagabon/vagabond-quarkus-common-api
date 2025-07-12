@@ -2,7 +2,6 @@ package org.vagabond.engine.auth;
 
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -19,6 +18,7 @@ import org.vagabond.engine.auth.service.BaseAuthService;
 import org.vagabond.engine.crud.resource.BaseResource;
 import org.vagabond.engine.exeption.MetierException;
 
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import io.smallrye.jwt.auth.principal.JWTParser;
 import io.smallrye.jwt.auth.principal.ParseException;
@@ -44,7 +44,7 @@ public abstract class BaseAuthResource<T extends BaseUserEntity<P>, P extends Ba
     @PermitAll
     @POST
     @Path("/refresh-token")
-    @Transactional
+    @WithTransaction
     public Response refreshToken(RefreshTokenRequest refreshToken) throws ParseException {
         try {
             var token = parser.parse(refreshToken.refreshToken());

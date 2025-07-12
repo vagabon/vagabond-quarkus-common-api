@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.smallrye.mutiny.Uni;
 
 @QuarkusTest
 class AuthResourceMockTest {
@@ -44,13 +45,13 @@ class AuthResourceMockTest {
         user.connectionTrials = 0;
         user.emailActivation = true;
         Mockito.when(entityManager.merge(user)).thenReturn(user);
-        Mockito.when(userRepository.getEntityManager()).thenReturn(entityManager);
-        Mockito.when(userRepository.findByOneField("username", "test")).thenReturn(user);
+        Mockito.when(userRepository.entityManager).thenReturn(entityManager);
+        Mockito.when(userRepository.findByOneField("username", "test")).thenReturn(Uni.createFrom().item(user));
         var profile = new ProfileEntity();
         profile.id = 1L;
         profile.name = "USER";
-        Mockito.when(profileRepository.getEntityManager()).thenReturn(entityManager);
-        Mockito.when(profileRepository.findByOneField("name", "USER")).thenReturn(profile);
+        Mockito.when(profileRepository.entityManager).thenReturn(entityManager);
+        Mockito.when(profileRepository.findByOneField("name", "USER")).thenReturn(Uni.createFrom().item(profile);
         MockedStatic<BcryptUtil> mockedStatic = Mockito.mockStatic(BcryptUtil.class);
         mockedStatic.when(() -> BcryptUtil.matches(Mockito.any(), Mockito.any())).thenReturn(true);
 

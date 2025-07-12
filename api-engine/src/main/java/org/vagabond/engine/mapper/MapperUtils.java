@@ -5,6 +5,8 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.vagabond.engine.crud.response.PageResponse;
 
+import io.smallrye.mutiny.Uni;
+
 public class MapperUtils {
     public static final ModelMapper mapper = new ModelMapper();
 
@@ -19,8 +21,8 @@ public class MapperUtils {
         return datas != null ? datas.stream().map(data -> mapper.map(data, dtoClass)).toList() : null;
     }
 
-    public static <U> PageResponse toPage(PageResponse response, Class<U> dtoClass) {
-        return new PageResponse(response.page(), response.totalPages(), response.totalElements(), response.max(),
-                MapperUtils.toList(response.content(), dtoClass));
+    public static <T, U> PageResponse<U> toPage(PageResponse<T> response, Class<U> dtoClass) {
+        return new PageResponse<U>(response.page(), response.totalPages(), response.totalElements(), response.max(),
+                Uni.createFrom().item(MapperUtils.toList(response.content().await().indefinitely(), dtoClass)));
     }
 }

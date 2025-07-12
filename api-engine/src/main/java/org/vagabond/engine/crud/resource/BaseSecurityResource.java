@@ -40,7 +40,7 @@ public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseU
     @Path("/{id}")
     public Response findById(Long id) {
         var userConnected = getUserConnected();
-        var entity = service.findById(id);
+        var entity = service.findById(id).await().indefinitely();
         return responseOk(doAfterFindById(userConnected, entity));
     }
 

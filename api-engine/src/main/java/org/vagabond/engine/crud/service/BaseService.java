@@ -3,8 +3,6 @@ package org.vagabond.engine.crud.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.transaction.Transactional;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.response.PageResponse;
@@ -13,31 +11,33 @@ import org.vagabond.engine.crud.utils.query.IQueryUtils;
 import org.vagabond.engine.crud.utils.query.QueryUtils;
 import org.vagabond.engine.exeption.MetierException;
 
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.hibernate.reactive.panache.PanacheQuery;
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.quarkus.panache.common.Page;
+import io.smallrye.mutiny.Uni;
 
 public abstract class BaseService<T extends BaseEntity> implements ICrudService<T>, IQueryUtils {
 
-    @Transactional
+    @WithTransaction
     public T persist(T entity) {
-        return getRepository().getEntityManager().merge(entity);
+        return getRepository().entityManager.merge(entity);
     }
 
-    @Transactional
-    public T findById(Long id) {
+    @WithTransaction
+    public Uni<T> findById(Long id) {
         return getRepository().findById(id);
     }
 
-    @Transactional
-    public PageResponse findByPage(Integer page, Integer max, String sort) {
+    @WithTransaction
+    public PageResponse<T> findByPage(Integer page, Integer max, String sort) {
         return queryPage("where active = ?1", page, max, sort, true);
     }
 
-    public PageResponse queryPage(String sql, Integer page, Integer max, String sort, Object... values) {
+    public PageResponse<T> queryPage(String sql, Integer page, Integer max, String sort, Object... values) {
         if (sort != null && !sort.isEmpty()) {
             sql += " order by " + sort;
         }
-        PanacheQuery<T> activeQuery = getRepository().find(sql, values);
+        var activeQuery = getRepository().find(sql, values);
         if (page == null) {
             page = 0;
         }
@@ -47,31 +47,31 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
         activeQuery.page(Page.ofSize(max));
         var numberOfPages = activeQuery.pageCount();
         var count = activeQuery.count();
-        return new PageResponse(page, numberOfPages, count, max, activeQuery.page(Page.of(page, max)).list());
+        return new PageResponse<T>(page, numberOfPages, count, max, activeQuery.page(Page.of(page, max)).list());
     }
 
-    @Transactional
+    @WithTransaction
     public T create(T entity) {
         if (entity.id != null) {
             throw new MetierException("Id is not null");
         }
         doBeforeCreate(entity);
-        return getRepository().getEntityManager().merge(entity);
+        return getRepository().entityManager.merge(entity);
     }
 
     public void doBeforeCreate(T entity) {
     }
 
-    @Transactional
+    @WithTransaction
     public T update(T entity) {
         if (entity.id == null) {
             throw new MetierException("Id is null");
         }
-        var entityNew = getRepository().findById(entity.id);
+        var entityNew = getRepository().findById(entity.id).await().indefinitely();
         doBeforeMerge(entity, entityNew);
         EntityUtils.setEntity(entityNew, entity, true);
         doAfterMerge(entityNew);
-        return getRepository().getEntityManager().merge(entityNew);
+        return getRepository().entityManager.merge(entityNew);
     }
 
     public void doBeforeMerge(T entity, T entityNew) {
@@ -80,18 +80,17 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
     public void doAfterMerge(T entity) {
     }
 
-    @Transactional
-    public T delete(Long id) {
-        var entity = getRepository().findById(id);
-        getRepository().delete(entity);
-        return entity;
+    @WithTransaction
+    public Uni<Void> delete(Long id) {
+        var entity = getRepository().findById(id).await().indefinitely();
+        return getRepository().delete(entity);
     }
 
-    @Transactional
-    public PageResponse constructQuery(Integer first, Integer max, String champs, Object... tabValues) {
+    @WithTransaction
+    public PageResponse<T> constructQuery(Integer first, Integer max, String champs, Object... tabValues) {
         var query = getQuery(champs, tabValues);
         query.page(Page.ofSize(max));
-        return new PageResponse(first, query.pageCount(), query.count(), max, query.page(Page.of(first, max)).list());
+        return new PageResponse<T>(first, query.pageCount(), query.count(), max, query.page(Page.of(first, max)).list());
     }
 
     private PanacheQuery<T> getQuery(String champs, Object... tabValues) {
@@ -113,13 +112,13 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
         return getRepository().find(sqlQuery, values.toArray());
     }
 
-    @Transactional
-    public Long countBy(String sql, Object... values) {
+    @WithTransaction
+    public Uni<Long> countBy(String sql, Object... values) {
         return getRepository().countBy(sql, values);
     }
 
-    @Transactional
-    public List<T> findBy(String sql, Object... values) {
+    @WithTransaction
+    public Uni<List<T>> findBy(String sql, Object... values) {
         return getRepository().findBy(sql, values);
     }
 }

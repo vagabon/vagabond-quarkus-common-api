@@ -71,10 +71,10 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @AuthRole("ADMIN")
     public Response delete(@QueryParam("id") Long id) {
         U userConnected = getUserConnected();
-        var entityBefore = service.findById(id);
+        var entityBefore = service.findById(id).await().indefinitely();
         doBeforeDelete(userConnected, entityBefore);
-        var entity = service.delete(id);
-        doAfterDelete(userConnected, entity);
+        service.delete(id);
+        doAfterDelete(userConnected, entityBefore);
         return responseOk(Map.of("id", id));
     }
 
@@ -84,7 +84,7 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @AuthRole("ADMIN")
     public Response desactivate(@QueryParam("id") Long id) {
         U userConnected = getUserConnected();
-        var entityBefore = service.findById(id);
+        var entityBefore = service.findById(id).await().indefinitely();
         doBeforeDelete(userConnected, entityBefore);
         if (entityBefore instanceof BaseCrudEntity crudEntity) {
             crudEntity.active = false;
@@ -127,14 +127,14 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
         return responseOk(doAfterFindBy(userConnected, response));
     }
 
-    protected PageResponse doAfterFindBy(U userConnected, PageResponse response) {
+    protected PageResponse<?> doAfterFindBy(U userConnected, PageResponse<T> response) {
         if (SecurityUtils.hasRole(userConnected, ADMIN)) {
             return response;
         }
         return toPage(response);
     }
 
-    public PageResponse toPage(PageResponse response) {
+    public PageResponse<?> toPage(PageResponse<?> response) {
         return responseClass != null ? MapperUtils.toPage(response, responseClass) : response;
     }
 
@@ -146,7 +146,8 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
 
         var query = service.getRepository().find(hqlQuery.toString(), QueryUtils.getLike(values));
         query.page(Page.ofSize(max));
-        PageResponse response = new PageResponse(first, query.pageCount(), query.count(), max, query.page(Page.of(first, max)).list());
+        var result = query.page(Page.of(first, max)).list();
+        var response = new PageResponse<T>(first, query.pageCount(), query.count(), max, result);
         return responseOk(doAfterFindBy(userEntity, response));
 
     }

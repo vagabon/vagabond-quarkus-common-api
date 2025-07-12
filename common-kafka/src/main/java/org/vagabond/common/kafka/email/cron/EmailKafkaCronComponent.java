@@ -32,7 +32,7 @@ public class EmailKafkaCronComponent implements ICronComponent {
         var date = LocalDateTime.now().minus(SECONDES_ADD_TO_CHECK, ChronoUnit.SECONDS);
         String hql = "where send = false and error is null and active = true and creationDate <= ?1";
 
-        var emails = emailService.getRepository().find(hql, date).page(0, MAX_EMAIL).list();
+        var emails = emailService.getRepository().find(hql, date).page(0, MAX_EMAIL).list().await().indefinitely();
 
         var nbSend = 0;
         for (var emailEntity : emails) {

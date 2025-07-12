@@ -21,7 +21,7 @@ public class UserPaymentService extends BaseService<UserPaymentEntity> {
     }
 
     public UserPaymentEntity createPayment(String intentId, String intentSecret, PaymentIntent intent) {
-        var nbPayment = countBy("where paymentId = ?1", intent.getId());
+        var nbPayment = countBy("where paymentId = ?1", intent.getId()).await().indefinitely();
         if (nbPayment > 0) {
             throw new MetierException("ERRORS:PAYMENT_FOUND");
         }

@@ -11,6 +11,6 @@ public class ProfileRepository extends BaseRepository<ProfileEntity> {
     private static final String USER_PROFILE = "USER";
 
     public ProfileEntity getProfileUser() {
-        return findByOneField(NAME, USER_PROFILE);
+        return findByOneField(NAME, USER_PROFILE).await().indefinitely();
     }
 }

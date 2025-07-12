@@ -66,7 +66,7 @@ public class FileService extends BaseService<FileEntity> {
     }
 
     public FileEntity findByFilename(String filename, Long userId) {
-        var files = findBy("where name = ?1 and user.id = ?2", filename, userId);
+        var files = findBy("where name = ?1 and user.id = ?2", filename, userId).await().indefinitely();
         return files.isEmpty() ? null : files.get(0);
     }
 

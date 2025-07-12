@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.vagabond.common.auth.payload.response.FacebookResponse;
@@ -21,6 +20,8 @@ import org.vagabond.engine.auth.service.BaseAuthService;
 import org.vagabond.engine.auth.utils.AuthUtils;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.exeption.MetierException;
+
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 
 @ApplicationScoped
 public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
@@ -72,9 +73,9 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         return userRepository;
     }
 
-    @Transactional
+    @WithTransaction
     public UserEntity activationUser(String token) {
-        var user = userRepository.findByOneField("activationToken", token);
+        var user = userRepository.findByOneField("activationToken", token).await().indefinitely();
         user.emailActivation = true;
         user.activationToken = "";
         return persist(user);
@@ -86,16 +87,16 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         return user;
     }
 
-    @Transactional
+    @WithTransaction
     protected UserEntity addIdentityToken(String email) {
-        var user = userRepository.findByOneField("email", email);
+        var user = userRepository.findByOneField("email", email).await().indefinitely();
         user.identityToken = AuthUtils.generateIdentityToken();
         var now = LocalDateTime.now();
         user.identityTokenDateEnd = now.plus(10, ChronoUnit.MINUTES);
         return persist(user);
     }
 
-    @Transactional
+    @WithTransaction
     public String checkIdentityToken(String token) {
         var user = userRepository.getUserFromIdentityToken(token);
         return user.identityToken;
@@ -110,15 +111,15 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         return user;
     }
 
-    @Transactional
+    @WithTransaction
     public UserEntity resetIdentityToken(UserEntity user) {
         user.identityToken = "";
         return persist(user);
     }
 
-    @Transactional
+    @WithTransaction
     public UserEntity googleConnect(GoogleResponse googleResponse) {
-        UserEntity user = userRepository.findByOneField("googleId", googleResponse.id);
+        UserEntity user = userRepository.findByOneField("googleId", googleResponse.id).await().indefinitely();
         if (user == null) {
             var name = AuthUtils.getUsername(googleResponse.givenName);
             return saveNewUser(googleResponse.id, null, name, googleResponse.email, googleResponse.picture);
@@ -129,9 +130,9 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         return user;
     }
 
-    @Transactional
+    @WithTransaction
     public UserEntity facebookConnect(FacebookResponse facebookResponse) {
-        UserEntity user = userRepository.findByOneField("facebookId", facebookResponse.id());
+        UserEntity user = userRepository.findByOneField("facebookId", facebookResponse.id()).await().indefinitely();
         var name = AuthUtils.getUsername(facebookResponse.name());
         if (user == null) {
             return saveNewUser(null, facebookResponse.id(), name, facebookResponse.email(), facebookResponse.picture().data().url());

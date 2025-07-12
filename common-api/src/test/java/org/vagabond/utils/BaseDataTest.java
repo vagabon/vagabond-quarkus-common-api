@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.vagabond.common.profile.ProfileEntity;
@@ -13,6 +12,8 @@ import org.vagabond.common.user.UserEntity;
 import org.vagabond.common.user.UserService;
 import org.vagabond.engine.auth.utils.AuthUtils;
 import org.vagabond.engine.exeption.MetierException;
+
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 
 public abstract class BaseDataTest {
 
@@ -28,7 +29,7 @@ public abstract class BaseDataTest {
     protected UserEntity admin;
     protected UserEntity user;
 
-    @Transactional
+    @WithTransaction
     @BeforeEach
     public void prepareTest() {
         profileAdmin = getProfile("ADMIN", "ADMIN, USER");
@@ -40,7 +41,7 @@ public abstract class BaseDataTest {
     }
 
     private ProfileEntity getProfile(String name, String roles) {
-        var profiles = profileService.findBy("WHERE name = ?1 ", name);
+        var profiles = profileService.findBy("WHERE name = ?1 ", name).await().indefinitely();
         if (profiles.isEmpty()) {
             var profile = new ProfileEntity();
             profile.active = true;

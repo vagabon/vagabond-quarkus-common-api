@@ -2,19 +2,12 @@ package org.vagabond.engine.crud.entity;
 
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
-@MappedSuperclass
-public abstract class BaseEntity implements IEntity {
+import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = true)
-    public Long id;
+@MappedSuperclass
+public abstract class BaseEntity extends PanacheEntity implements IEntity {
 
     @Override
     public int hashCode() {

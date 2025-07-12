@@ -2,17 +2,19 @@ package org.vagabond.engine.crud.repository;
 
 import java.util.List;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import org.vagabond.engine.crud.entity.BaseEntity;
+
+import io.quarkus.hibernate.reactive.panache.PanacheRepository;
+import io.smallrye.mutiny.Uni;
 
 public interface IRepository<T extends BaseEntity> extends PanacheRepository<T> {
 
-    T findByOneField(String field, String value);
+    Uni<T> findByOneField(String field, String value);
 
-    List<T> findBy(String sql, Object... values);
+    Uni<List<T>> findBy(String sql, Object... values);
 
-    boolean existBy(String field, String value);
+    Uni<Boolean> existBy(String field, String value);
 
-    long deleteBy(String sql, Object... values);
+    Uni<Long> deleteBy(String sql, Object... values);
 
 }

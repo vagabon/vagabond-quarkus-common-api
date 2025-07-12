@@ -3,7 +3,6 @@ package org.vagabond.common.api.auth;
 import java.util.Map;
 
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
@@ -29,6 +28,7 @@ import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.http.HttpComponent;
 import org.vagabond.engine.mapper.MapperUtils;
 
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/auth")
@@ -81,7 +81,7 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
 
     @POST
     @Path("/google-connect")
-    @Transactional
+    @WithTransaction
     public Response googleConnect(GoogleRequest googleRequest) {
         var url = URL_GOOGLE + googleRequest.googleToken();
         var googleResponse = httpComponent.httpGet(url, GoogleResponse.class);
@@ -91,7 +91,7 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
 
     @POST
     @Path("/google-identity-connect")
-    @Transactional
+    @WithTransaction
     public Response googleConnectIdentity(GoogleRequest googleRequest) {
         var url = URL_GOOGLE_IDENTITY + googleRequest.googleToken();
         var googleIdentityResponse = httpComponent.httpGet(url, GoogleIdentityResponse.class);
@@ -106,7 +106,7 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
 
     @POST
     @Path("/facebook-connect")
-    @Transactional
+    @WithTransaction
     public Response facebookConnect(@RequestBody FacebookRequest facebookRequest) {
         String url = URL_FACEBOOK + facebookRequest.accessToken();
         var facebookResponse = httpComponent.httpGet(url, FacebookResponse.class);
@@ -116,7 +116,7 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
 
     @POST
     @Path("/captcha")
-    @Transactional
+    @WithTransaction
     public Response validateCaptcha(@RequestBody ActivationRequest activationRequest) {
         String url = URL_CAPTCHA + captchaPrivateKey + "&response=" + activationRequest.token();
         var httpReponse = httpComponent.httpPost(url, "{}", CaptchaResponse.class);
