@@ -85,7 +85,7 @@ public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
     public Response googleConnect(GoogleRequest googleRequest) {
         var url = URL_GOOGLE + googleRequest.googleToken();
         var googleResponse = httpComponent.httpGet(url, GoogleResponse.class);
-        UserEntity user = authService.googleConnect(googleResponse);
+        var user = authService.googleConnect(googleResponse);
         return getJwtTokens(user);
     }
 
