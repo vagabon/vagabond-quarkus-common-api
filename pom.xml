@@ -21,16 +21,16 @@
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <quarkus.platform.version>3.32.2</quarkus.platform.version>
+        <quarkus.platform.version>3.34.1</quarkus.platform.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
-        <jandex-maven-plugin.version>3.1.6</jandex-maven-plugin.version>
+        <jandex-maven-plugin.version>3.5.3</jandex-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
-        <stripe.version>31.4.0</stripe.version>
+        <stripe.version>32.0.0</stripe.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-collections4.version>4.5.0</commons-collections4.version>
         <modelmapper.version>3.2.6</modelmapper.version>
-        <lombok.version>1.18.42</lombok.version>
+        <lombok.version>1.18.44</lombok.version>
         <firebase-admin.version>9.8.0</firebase-admin.version>
         <sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S1104</sonar.issue.ignore.multicriteria.e1.ruleKey>
@@ -125,6 +125,25 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <destFile>${maven.multiModuleProjectDirectory}/target/coverage/jacoco.exec</destFile>
+                    <dataFile>${maven.multiModuleProjectDirectory}/target/coverage/jacoco.exec</dataFile>
+                    <outputDirectory>${maven.multiModuleProjectDirectory}/target/coverage</outputDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </build>
