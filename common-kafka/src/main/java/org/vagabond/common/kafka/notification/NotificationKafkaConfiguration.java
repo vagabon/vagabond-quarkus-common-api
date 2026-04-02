@@ -19,9 +19,10 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.vagabond.common.notification.payload.NotificationRequest;
 
-import io.quarkus.logging.Log;
+import lombok.extern.slf4j.Slf4j;
 
 @ApplicationScoped
+@Slf4j
 public class NotificationKafkaConfiguration {
 
     @ConfigProperty(name = "firebase.name")
@@ -40,14 +41,13 @@ public class NotificationKafkaConfiguration {
         try {
             options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
 
-        } catch (IOException e) {
-            Log.error(e);
+        } catch (IOException _) {
             return;
         }
         FirebaseApp app = null;
         try {
             app = FirebaseApp.initializeApp(options, firebaseName);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException _) {
             app = FirebaseApp.getInstance(firebaseName);
         }
         messaging = FirebaseMessaging.getInstance(app);
@@ -55,7 +55,7 @@ public class NotificationKafkaConfiguration {
 
     @Incoming("notification")
     public void consume(NotificationRequest notification) {
-        Log.infof("kafka receive notification %s %s", notification.title, notification.tokens);
+        log.info("kafka receive notification %s %s", notification.title, notification.tokens);
 
         if (!notification.tokens.isEmpty()) {
             var notificationToSend = Notification.builder().setTitle(notification.title).setBody(notification.body).build();
@@ -65,7 +65,7 @@ public class NotificationKafkaConfiguration {
             try {
                 messaging.sendEachForMulticast(message);
             } catch (FirebaseMessagingException exception) {
-                Log.error(exception);
+                log.error("FirebaseMessagingException", exception);
             }
         }
 

@@ -51,7 +51,7 @@ public abstract class BaseAuthResource<T extends BaseUserEntity<P>, P extends Ba
             var user = getService().findByUsername(token.getName());
             getService().resetConnectionTrials(user);
             return getJwtTokens(user);
-        } catch (ParseException e) {
+        } catch (ParseException _) {
             throw new MetierException("NO REFRESH TOKEN");
         }
     }

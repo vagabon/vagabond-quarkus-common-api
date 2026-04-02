@@ -81,7 +81,7 @@ public interface IQueryUtils {
         } else if (NumberUtils.isCreatable(newValue.toString())) {
             try {
                 newValue = Long.parseLong(newValue.toString());
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException _) {
                 newValue = Float.parseFloat(newValue.toString());
             }
         } else if (TRUE.equals(newValue) || (FALSE).equals(newValue)) {

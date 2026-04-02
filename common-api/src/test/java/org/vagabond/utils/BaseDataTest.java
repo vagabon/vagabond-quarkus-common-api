@@ -55,7 +55,7 @@ public abstract class BaseDataTest {
         try {
             return userService.findByUsername(username);
 
-        } catch (MetierException exception) {
+        } catch (MetierException _) {
             var newUser = new UserEntity();
             newUser.active = true;
             newUser.username = username;

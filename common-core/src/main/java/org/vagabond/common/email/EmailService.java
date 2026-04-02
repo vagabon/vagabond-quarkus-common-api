@@ -76,7 +76,7 @@ public class EmailService extends BaseService<EmailEntity> {
             mailer.send(mailWithHtml);
             finishEmail(email);
             return true;
-        } catch (Exception exception) {
+        } catch (Exception _) {
             finishEmailWithError(email);
         }
         return false;

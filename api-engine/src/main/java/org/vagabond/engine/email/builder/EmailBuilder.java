@@ -30,7 +30,7 @@ public class EmailBuilder {
         } else {
             try {
                 template = ResourceUtils.readResource(templatePath);
-            } catch (TechnicalException | IOException e) {
+            } catch (TechnicalException | IOException _) {
                 errors.add(String.format(ERROR_TEMPLATE_EMPTY_FOR_PATH, templatePath));
             }
         }

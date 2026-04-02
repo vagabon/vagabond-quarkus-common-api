@@ -22,8 +22,8 @@ public class StringArrayConverter implements AttributeConverter<String[], String
     public String convertToDatabaseColumn(String[] attribute) {
         try {
             return objectMapper.writeValueAsString(attribute);
-        } catch (JsonProcessingException e) {
-            throw new TechnicalException("Error converting String[] to JSON", e);
+        } catch (JsonProcessingException exception) {
+            throw new TechnicalException("Error converting String[] to JSON", exception);
         }
     }
 
@@ -31,8 +31,8 @@ public class StringArrayConverter implements AttributeConverter<String[], String
     public String[] convertToEntityAttribute(String dbData) {
         try {
             return objectMapper.readValue(dbData, String[].class);
-        } catch (JsonProcessingException e) {
-            throw new TechnicalException("Error converting JSON to String[]", e);
+        } catch (JsonProcessingException exception) {
+            throw new TechnicalException("Error converting JSON to String[]", exception);
         }
     }
 }

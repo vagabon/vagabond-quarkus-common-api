@@ -22,8 +22,8 @@ public class IntegerArrayConverter implements AttributeConverter<Integer[], Stri
     public String convertToDatabaseColumn(Integer[] attribute) {
         try {
             return objectMapper.writeValueAsString(attribute);
-        } catch (JsonProcessingException e) {
-            throw new TechnicalException("Error converting Integer[] to JSON", e);
+        } catch (JsonProcessingException exception) {
+            throw new TechnicalException("Error converting Integer[] to JSON", exception);
         }
     }
 
@@ -31,8 +31,8 @@ public class IntegerArrayConverter implements AttributeConverter<Integer[], Stri
     public Integer[] convertToEntityAttribute(String dbData) {
         try {
             return objectMapper.readValue(dbData, Integer[].class);
-        } catch (JsonProcessingException e) {
-            throw new TechnicalException("Error converting JSON to Integer[]", e);
+        } catch (JsonProcessingException exception) {
+            throw new TechnicalException("Error converting JSON to Integer[]", exception);
         }
     }
 }

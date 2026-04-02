@@ -32,8 +32,8 @@ public class EntityUtils {
                 var getterName = String.format("%s%s", "get", StringUtils.capitalize(field.getName()));
                 try {
                     value = entity2.getClass().getMethod(getterName).invoke(entity2);
-                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    Log.error("expcetion EntityUtils.setFields : " + getterName, e);
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException exception) {
+                    Log.error("expcetion EntityUtils.setFields : " + getterName, exception);
                 }
                 doSetValue(entity1, value, field, forceNull);
             }
@@ -51,7 +51,7 @@ public class EntityUtils {
                 }
                 entity.getClass().getMethod(setterName, (field.getType())).invoke(entity, newValue);
             }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException _) {
             Log.error("expcetion EntityUtils.doSetValue : " + setterName);
         }
     }
