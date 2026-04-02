@@ -81,10 +81,16 @@ class IQueryUtilsTest {
 
     @Test
     void given_QueryUtils_when_initQueryDtoWitAllDate_then_ReturnSqlRequest2() {
-        String sqlQuery = getSqlResult(false, "(name%And|Function%And|User.username%)AndActiveAnd(IsPrivate~And|IsPrivate!~)", "1", "test",
-                "2015", "plouf", "null", "true", "null", "true");
+        String sqlQuery = getSqlResult(false, "(name%And|Function%And|User.username%)AndActiveAnd((IsPrivate~And|IsPrivate!~))", "1",
+                "test", "2015", "plouf", "null", "true", "null", "true");
         assertEquals(
-                " WHERE ( UPPER(name) like UPPER(?1) OR UPPER(function) like UPPER(?2) OR UPPER(user.username) like UPPER(?3) ) AND UPPER(active) = UPPER(?4) AND ( isPrivate is null OR isPrivate is not true )",
+                " WHERE ( UPPER(name) like UPPER(?1) OR UPPER(function) like UPPER(?2) OR UPPER(user.username) like UPPER(?3) ) AND UPPER(active) = UPPER(?4) AND (( isPrivate is null OR isPrivate is not true ))",
                 sqlQuery);
+    }
+
+    @Test
+    void given_QueryUtils_whenWtrongNumber_Then_ThrowException() {
+        var result = tested.initQueryDto(new StringBuilder(), "number", "3.3");
+        assertEquals(3.3f, result.get(0).value);
     }
 }

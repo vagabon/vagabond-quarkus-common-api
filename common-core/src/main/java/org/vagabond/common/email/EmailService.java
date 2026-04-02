@@ -17,6 +17,7 @@ import io.quarkus.mailer.Mailer;
 import io.quarkus.mailer.reactive.ReactiveMailer;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.reactive.messaging.annotations.Broadcast;
+import lombok.Setter;
 
 @ApplicationScoped
 public class EmailService extends BaseService<EmailEntity> {
@@ -36,6 +37,7 @@ public class EmailService extends BaseService<EmailEntity> {
     private ReactiveMailer reactiveMailer;
 
     @Inject
+    @Setter
     private Mailer mailer;
 
     public EmailRequest sendEmailOutgoing(EmailRequest emailRequest) {

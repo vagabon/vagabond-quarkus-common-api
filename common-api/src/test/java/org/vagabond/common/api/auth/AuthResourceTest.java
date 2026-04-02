@@ -63,6 +63,11 @@ class AuthResourceTest extends BaseDataTest {
 		given().body(refreshTokenRequest).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/auth/refresh-token")
 				.then().statusCode(200);
 
+		// User Refresh Token wrong
+		var refreshTokenRequestWrong = new RefreshTokenRequest("false");
+		given().body(refreshTokenRequestWrong).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+				.post("/auth/refresh-token").then().statusCode(400);
+
 		// User createIdentityToken
 		var emailRequest = new AuthEmailRequest(user.email);
 		given().body(emailRequest).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/auth/createIdentityToken");

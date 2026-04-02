@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.vagabond.engine.crud.entity.BaseEntity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.quarkus.test.junit.QuarkusTest;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,5 +53,23 @@ class EntityUtilsTest {
         public String name;
         public String username;
         public LocalDateTime myDate;
+    }
+
+    @Getter
+    @Setter
+    class Entity2 extends BaseEntity {
+        public String name;
+    }
+
+    @Test
+    void testSetFields_NoSuchMethodException() {
+        var entity1 = new Entity();
+        entity1.id = -1L;
+        entity1.username = "username";
+        var entity2 = new Entity2();
+
+        EntityUtils.setEntity(entity1, entity2, true);
+
+        assertEquals(entity1.name, entity2.name);
     }
 }
