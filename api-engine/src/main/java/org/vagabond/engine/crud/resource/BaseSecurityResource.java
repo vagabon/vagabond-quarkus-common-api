@@ -21,8 +21,6 @@ import io.smallrye.common.annotation.RunOnVirtualThread;
 @RunOnVirtualThread
 public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseUserEntity<?>> implements BaseResource {
 
-    public static final String ADMIN = "ADMIN";
-
     @Inject
     protected BaseAuthService<U, ?> authService;
 
