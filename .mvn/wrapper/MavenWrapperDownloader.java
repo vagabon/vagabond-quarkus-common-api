@@ -47,7 +47,7 @@ public final class MavenWrapperDownloader
         {
             log( " - Downloader started" );
             final URL wrapperUrl = new URL( args[0] );
-            final String jarPath = args[1].replace( "..", "" ); // Sanitize path
+            final String jarPath = args[1].replace( "..", "" );
             final Path wrapperJarPath = Paths.get( jarPath ).toAbsolutePath().normalize();
             downloadFileFromURL( wrapperUrl, wrapperJarPath );
             log( "Done" );

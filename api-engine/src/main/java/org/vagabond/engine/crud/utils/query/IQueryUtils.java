@@ -39,20 +39,17 @@ public interface IQueryUtils {
     default List<QueryUtilsDto> initQueryDto(StringBuilder endQuery, String fields, Object... values) {
         var queryDtos = new LinkedList<QueryUtilsDto>();
         var fieldsDecompose = fields;
-        // group by
         var split = fieldsDecompose.split("<<");
         if (split.length > 1) {
             fieldsDecompose = split[0];
             endQuery.append(" group by ").append("" + split[1]);
         }
-        // order by
         split = fieldsDecompose.split(">>");
         if (split.length > 1) {
             fieldsDecompose = split[0];
             var order = split[1].endsWith("Desc") ? split[1].replace("Desc", " desc") : split[1];
             endQuery.append(" order by ").append("" + order);
         }
-        // create QueryDtos
         var tokens = Arrays.asList(fieldsDecompose.split(AND_PATERN));
         int[] index = { 0 };
         tokens.forEach(token -> {
