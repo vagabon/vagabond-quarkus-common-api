@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "email-queue", schema = "public")
+@Table(name = "email_queue", schema = "public")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)

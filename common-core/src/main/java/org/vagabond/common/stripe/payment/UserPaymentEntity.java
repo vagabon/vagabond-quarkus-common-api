@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user-payment")
+@Table(name = "user_payment")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
