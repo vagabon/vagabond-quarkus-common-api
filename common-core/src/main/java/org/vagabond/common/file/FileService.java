@@ -32,7 +32,14 @@ public class FileService extends BaseService<FileEntity> {
     }
 
     public String uploadFile(FormValue file, String directory) {
-        String fileName = file.getFileName();
+        try {
+            return uploadFile(file.getFileName(), file.getFileItem().getInputStream(), directory);
+        } catch (IOException exception) {
+            throw new MetierException("Could not extract file: " + file.getFileName(), exception);
+        }
+    }
+
+    public String uploadFile(String fileName, InputStream fileInputStream, String directory) {
         String updloadDirectory = String.format("%s/%s", uploadDirectory, directory);
         Path uploadPath = Paths.get(updloadDirectory);
         if (!Files.exists(uploadPath)) {
@@ -43,7 +50,7 @@ public class FileService extends BaseService<FileEntity> {
             }
         }
         Path filePath = uploadPath.resolve(fileName);
-        try (InputStream inputStream = file.getFileItem().getInputStream()) {
+        try (InputStream inputStream = fileInputStream) {
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException exception) {
             throw new MetierException("Could not save file: " + fileName, exception);

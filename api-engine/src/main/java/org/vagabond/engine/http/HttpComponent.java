@@ -31,15 +31,14 @@ public class HttpComponent {
         return send(request, payloadCLass);
     }
 
-    public HttpResponse<String> send(HttpRequest request) {
+    public <T> HttpResponse<T> send(HttpRequest request, HttpResponse.BodyHandler<T> bodyHandler) {
         var client = HttpClient.newHttpClient();
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<T> response = client.send(request, bodyHandler);
             if (response.statusCode() != 200) {
-                Log.errorf("%s %s", request.uri(), response.body());
+                Log.errorf("%s %s", request.uri(), response.statusCode());
                 throw new MetierException("ERRORS:HTTP_CALL_ERROR");
             }
-            client.close();
             return response;
         } catch (UnsupportedOperationException | IOException exception) {
             throw new TechnicalException(exception.getMessage(), exception);
@@ -52,7 +51,7 @@ public class HttpComponent {
     }
 
     public <T> T send(HttpRequest request, Class<T> payloadCLass) {
-        var response = send(request);
+        var response = send(request, HttpResponse.BodyHandlers.ofString());
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.readValue(response.body(), objectMapper.getTypeFactory().constructType(payloadCLass));
