@@ -39,7 +39,7 @@ class EmailResourceTest extends BaseDataTest {
     }
 
     @Test
-    @TestSecurity(user = "user")
+    @TestSecurity(user = "admin")
     void testProduce() {
         Response response = emailResource.produce();
 
