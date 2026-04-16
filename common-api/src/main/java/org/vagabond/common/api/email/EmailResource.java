@@ -10,6 +10,8 @@ import org.vagabond.common.email.EmailService;
 import org.vagabond.common.email.payload.EmailRequest;
 import org.vagabond.common.notification.NotificationEntity;
 import org.vagabond.common.user.UserEntity;
+import org.vagabond.engine.auth.annotation.AuthRole;
+import org.vagabond.engine.auth.annotation.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
@@ -26,6 +28,8 @@ public class EmailResource extends BaseSecurityResource<NotificationEntity, User
 
     @POST
     @Path("/produce")
+    @AuthSecure
+    @AuthRole("ADMIN")
     public Response produce() {
         UserEntity userConnected = getUserConnected();
         log.info("{}", userConnected.username);
