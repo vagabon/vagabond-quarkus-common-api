@@ -12,7 +12,7 @@ import org.vagabond.common.notification.token.NotificationTokenEntity;
 import org.vagabond.common.notification.token.NotificationTokenService;
 import org.vagabond.common.notification.token.payload.NotificationTokenRequest;
 import org.vagabond.common.notification.token.payload.NotificationTokenResponse;
-import org.vagabond.common.user.UserEntity;
+import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
@@ -20,7 +20,8 @@ import io.smallrye.common.annotation.RunOnVirtualThread;
 @Path("/notification/token")
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
-public class NotificationTokenResource extends BaseSecurityResource<NotificationTokenEntity, UserEntity> {
+public class NotificationTokenResource
+        extends BaseSecurityResource<NotificationTokenEntity, UserEntity> {
 
     @Inject
     NotificationTokenService notificationService;

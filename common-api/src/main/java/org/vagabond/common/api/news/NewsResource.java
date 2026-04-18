@@ -7,10 +7,10 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
-import org.vagabond.common.news.NewsEntity;
-import org.vagabond.common.news.NewsService;
+import org.vagabond.common.news.entity.NewsEntity;
 import org.vagabond.common.news.payload.NewsResponse;
-import org.vagabond.common.user.UserEntity;
+import org.vagabond.common.news.service.NewsService;
+import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.auth.annotation.AuthRole;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 
@@ -33,8 +33,7 @@ public class NewsResource extends BaseCrudResource<NewsEntity, UserEntity> {
     @Override
     @AuthRole()
     public Response findBy(@QueryParam("fields") String fields, @QueryParam("values") String values,
-            @QueryParam("first") Integer first,
-            @QueryParam("max") Integer max) {
+            @QueryParam("first") Integer first, @QueryParam("max") Integer max) {
         return super.findBy(fields, values, first, max);
     }
 }

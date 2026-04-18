@@ -7,9 +7,9 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 
 import org.junit.jupiter.api.Test;
-import org.vagabond.common.user.UserEntity;
-import org.vagabond.common.user.UserService;
+import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.common.user.payload.UserResponse;
+import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.crud.resource.BaseCrudUserResource;
 import org.vagabond.utils.BaseDataTest;
 
@@ -42,11 +42,13 @@ class BaseCrudUserResourceTest extends BaseDataTest {
         var user = new UserEntity();
         user.username = "blablablu";
         user.password = "password";
-        var userPersist = given().body(user).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post(url).then()
-                .statusCode(200).extract().body().as(UserEntity.class);
+        var userPersist = given().body(user)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post(url)
+                .then().statusCode(200).extract().body().as(UserEntity.class);
 
         userPersist.password = "password2";
-        given().body(userPersist).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().put(url).then().statusCode(200);
+        given().body(userPersist).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .when().put(url).then().statusCode(200);
 
         given().when().delete(url + "/desactivate?id=" + userPersist.id).then().statusCode(200);
     }

@@ -7,8 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.vagabond.common.email.EmailEntity;
-import org.vagabond.common.email.EmailService;
+import org.vagabond.common.email.entity.EmailEntity;
+import org.vagabond.common.email.service.EmailService;
 import org.vagabond.utils.BaseDataTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -13,10 +13,10 @@ import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.BooleanUtils;
 import org.vagabond.common.auth.payload.response.FacebookResponse;
 import org.vagabond.common.auth.payload.response.GoogleResponse;
-import org.vagabond.common.profile.ProfileEntity;
-import org.vagabond.common.profile.ProfileRepository;
-import org.vagabond.common.user.UserEntity;
-import org.vagabond.common.user.UserRepository;
+import org.vagabond.common.profile.entity.ProfileEntity;
+import org.vagabond.common.profile.repository.ProfileRepository;
+import org.vagabond.common.user.entity.UserEntity;
+import org.vagabond.common.user.repository.UserRepository;
 import org.vagabond.engine.auth.service.BaseAuthService;
 import org.vagabond.engine.auth.utils.AuthUtils;
 import org.vagabond.engine.crud.repository.BaseRepository;
@@ -121,7 +121,8 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         UserEntity user = userRepository.findByOneField("googleId", googleResponse.id);
         if (user == null) {
             var name = AuthUtils.getUsername(googleResponse.givenName);
-            return saveNewUser(googleResponse.id, null, name, googleResponse.email, googleResponse.picture);
+            return saveNewUser(googleResponse.id, null, name, googleResponse.email,
+                    googleResponse.picture);
         }
         user.avatar = googleResponse.picture;
         user.lastConnexionDate = LocalDateTime.now();
@@ -134,12 +135,14 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         UserEntity user = userRepository.findByOneField("facebookId", facebookResponse.id());
         var name = AuthUtils.getUsername(facebookResponse.name());
         if (user == null) {
-            return saveNewUser(null, facebookResponse.id(), name, facebookResponse.email(), facebookResponse.picture().data().url());
+            return saveNewUser(null, facebookResponse.id(), name, facebookResponse.email(),
+                    facebookResponse.picture().data().url());
         }
         return user;
     }
 
-    private UserEntity saveNewUser(String googleId, String facebookId, String name, String email, String avatar) {
+    private UserEntity saveNewUser(String googleId, String facebookId, String name, String email,
+            String avatar) {
         UserEntity user = new UserEntity();
         user.googleId = googleId;
         user.facebookId = facebookId;

@@ -11,12 +11,12 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
-import org.vagabond.common.notification.NotificationEntity;
-import org.vagabond.common.notification.NotificationService;
+import org.vagabond.common.notification.entity.NotificationEntity;
 import org.vagabond.common.notification.payload.NotificationRequest;
 import org.vagabond.common.notification.payload.NotificationResponse;
-import org.vagabond.common.user.UserEntity;
-import org.vagabond.common.user.UserService;
+import org.vagabond.common.notification.service.NotificationService;
+import org.vagabond.common.user.entity.UserEntity;
+import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
@@ -70,7 +70,8 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     public Response sendNotification() {
         UserEntity userConnected = getUserConnected();
         var notification = new NotificationRequest("test", "test", "/notification");
-        notificationService.sendNotification(userConnected, Arrays.asList(userConnected.id), notification, null, "test", "test", "test");
+        notificationService.sendNotification(userConnected, Arrays.asList(userConnected.id),
+                notification, null, "test", "test", "test");
         return responseOkJson();
     }
 }

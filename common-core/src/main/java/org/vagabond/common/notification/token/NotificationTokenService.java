@@ -6,7 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import org.vagabond.common.user.UserEntity;
+import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
 
@@ -23,7 +23,8 @@ public class NotificationTokenService extends BaseService<NotificationTokenEntit
 
     @Transactional
     public NotificationTokenEntity mergeToken(UserEntity user, String token) {
-        var entity = notificationTokenRepository.find("WHERE user.id = ?1 and token = ?2", user.id, token).firstResultOptional();
+        var entity = notificationTokenRepository
+                .find("WHERE user.id = ?1 and token = ?2", user.id, token).firstResultOptional();
         if (!entity.isPresent()) {
             var newEntity = new NotificationTokenEntity();
             newEntity.user = user;

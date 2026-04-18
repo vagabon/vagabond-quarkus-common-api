@@ -4,7 +4,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 
 import org.junit.jupiter.api.Test;
-import org.vagabond.common.notification.NotificationEntity;
+import org.vagabond.common.notification.entity.NotificationEntity;
 import org.vagabond.utils.BaseDataTest;
 
 import static io.restassured.RestAssured.given;
@@ -18,8 +18,8 @@ class NotificationResourceTest extends BaseDataTest {
     @Test
     @TestSecurity(user = "admin")
     void sendNotification() {
-        given().body(user.id).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/notification/send").then()
-                .statusCode(200);
+        given().body(user.id).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+                .post("/notification/send").then().statusCode(200);
     }
 
     @Test
@@ -28,11 +28,14 @@ class NotificationResourceTest extends BaseDataTest {
 
         var notification = new NotificationEntity();
         notification.user = user;
-        var notificationPersist = given().body(notification).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-                .post("/notification").then().statusCode(200).extract().body().as(NotificationEntity.class);
+        var notificationPersist = given().body(notification)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+                .post("/notification").then().statusCode(200).extract().body()
+                .as(NotificationEntity.class);
 
-        given().body(notificationPersist).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().put("/notification").then()
-                .statusCode(200);
+        given().body(notificationPersist)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+                .put("/notification").then().statusCode(200);
 
         given().when().get("/notification/" + notificationPersist.id).then().statusCode(200);
         given().when().get("/notification/").then().statusCode(200);
@@ -40,6 +43,7 @@ class NotificationResourceTest extends BaseDataTest {
 
         given().when().put("/notification/readAll/" + user.id).then().statusCode(200);
 
-        given().when().delete("/notification/desactivate?id=" + notificationPersist.id).then().statusCode(200);
+        given().when().delete("/notification/desactivate?id=" + notificationPersist.id).then()
+                .statusCode(200);
     }
 }

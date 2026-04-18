@@ -21,35 +21,45 @@ import org.vagabond.common.auth.payload.response.FacebookResponse;
 import org.vagabond.common.auth.payload.response.GoogleIdentityResponse;
 import org.vagabond.common.auth.payload.response.GoogleResponse;
 import org.vagabond.common.auth.service.AuthService;
-import org.vagabond.common.profile.ProfileEntity;
-import org.vagabond.common.user.UserEntity;
+import org.vagabond.common.profile.entity.ProfileEntity;
+import org.vagabond.common.user.entity.UserEntity;
+import org.vagabond.common.user.entity.UserTokenEntity;
 import org.vagabond.common.user.payload.UserResponse;
+import org.vagabond.common.user.service.UserTokenService;
 import org.vagabond.engine.auth.BaseAuthResource;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.http.HttpComponent;
 import org.vagabond.engine.mapper.MapperUtils;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
+import lombok.Getter;
 
 @Path("/auth")
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
-public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity> {
+public class AuthResource extends BaseAuthResource<UserEntity, ProfileEntity, UserTokenEntity> {
 
     private static final String TOKEN = "token";
+    // TODO: mettre ça dans un client
     private static final String URL_GOOGLE = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
     private static final String URL_GOOGLE_IDENTITY = "https://oauth2.googleapis.com/tokeninfo?id_token=";
+    // TODO: mettre ça dans un client
     private static final String URL_FACEBOOK = "https://graph.facebook.com/v9.0/me?&fields=name,email,picture&method=get&pretty=0&sdk=joey&suppress_http_code=1&access_token=";
+    // TODO: mettre ça dans un client
     private static final String URL_CAPTCHA = "https://www.google.com/recaptcha/api/siteverify?secret=";
 
     @ConfigProperty(name = "api.captcha.token", defaultValue = "NO_TOKEN")
-    public String captchaPrivateKey;
+    private String captchaPrivateKey;
 
     @Inject
-    AuthService authService;
+    private AuthService authService;
 
     @Inject
-    HttpComponent httpComponent;
+    @Getter
+    private UserTokenService authTokenService;
+
+    @Inject
+    private HttpComponent httpComponent;
 
     @POST
     @Path("/activation")

@@ -1,5 +1,6 @@
 package org.vagabond.engine.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -16,11 +17,12 @@ public class MapperUtils {
     }
 
     public static <T, U> List<U> toList(List<T> datas, Class<U> dtoClass) {
-        return datas != null ? datas.stream().map(data -> mapper.map(data, dtoClass)).toList() : null;
+        return datas != null ? datas.stream().map(data -> mapper.map(data, dtoClass)).toList()
+                : new ArrayList<>();
     }
 
     public static <U> PageResponse toPage(PageResponse response, Class<U> dtoClass) {
-        return new PageResponse(response.page(), response.totalPages(), response.totalElements(), response.max(),
-                MapperUtils.toList(response.content(), dtoClass));
+        return new PageResponse(response.page(), response.totalPages(), response.totalElements(),
+                response.max(), MapperUtils.toList(response.content(), dtoClass));
     }
 }

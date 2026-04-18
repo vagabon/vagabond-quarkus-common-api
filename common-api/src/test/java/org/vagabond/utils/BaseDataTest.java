@@ -7,10 +7,10 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.vagabond.common.profile.ProfileEntity;
-import org.vagabond.common.profile.ProfileService;
-import org.vagabond.common.user.UserEntity;
-import org.vagabond.common.user.UserService;
+import org.vagabond.common.profile.entity.ProfileEntity;
+import org.vagabond.common.profile.service.ProfileService;
+import org.vagabond.common.user.entity.UserEntity;
+import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.auth.utils.AuthUtils;
 import org.vagabond.engine.exeption.MetierException;
 

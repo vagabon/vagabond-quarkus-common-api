@@ -17,7 +17,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.vagabond.common.stripe.configuration.StripeConfiguration;
 import org.vagabond.common.stripe.payload.StripePayloadRequest;
 import org.vagabond.common.stripe.payment.UserPaymentService;
-import org.vagabond.common.user.UserEntity;
+import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
 import io.quarkus.logging.Log;
@@ -63,7 +63,8 @@ public abstract class AbstractStripeResource extends BaseSecurityResource<UserEn
         PaymentIntent intent = stripeConfiguration.retrieve(paymentIntent);
         String htmlPageUrl = websiteUrl + websiteUrlPaymentKo;
         if (intent != null && pamentIntentCLientSecret.equals(intent.getClientSecret())) {
-            htmlPageUrl = websiteUrl + websiteUrlPaymentOk + plan + "/" + paymentIntent + "/" + pamentIntentCLientSecret;
+            htmlPageUrl = websiteUrl + websiteUrlPaymentOk + plan + "/" + paymentIntent + "/"
+                    + pamentIntentCLientSecret;
         }
         return Response.status(Response.Status.FOUND).header("Location", htmlPageUrl).build();
     }

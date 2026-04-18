@@ -23,7 +23,8 @@ import org.vagabond.engine.exeption.TechnicalException;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.smallrye.jwt.build.Jwt;
 
-public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends BaseProfileEntity> extends BaseService<T> {
+public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends BaseProfileEntity>
+        extends BaseService<T> {
 
     private static final String USER_NOT_CONNECTED = "USER NOT CONNECTED";
     public static final String LOGIN_ERROR = "AUTH:ERROR.LOGIN_ERROR";
@@ -48,7 +49,8 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
 
     public String generateTokenJwt(T user, Long customDuration) {
         var profiles = loadProfileOrGetDefaultOne(user);
-        return Jwt.issuer(issuer).upn(user.username).groups(profiles.stream().map(profile -> profile.name).collect(Collectors.toSet()))
+        return Jwt.issuer(issuer).upn(user.username)
+                .groups(profiles.stream().map(profile -> profile.name).collect(Collectors.toSet()))
                 .expiresIn(customDuration).sign();
     }
 
@@ -137,7 +139,8 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
             throw new MetierException("ERRORS:USERNAME_ALREADY_EXIST");
         }
 
-        if (getRepository().existBy("email", user.email) && !user.email.equals("gonzague.clement@gmail.com")) {
+        if (getRepository().existBy("email", user.email)
+                && !user.email.equals("gonzague.clement@gmail.com")) {
             throw new MetierException("ERRORS:EMAIL_ALREADY_EXIST");
         }
 
@@ -158,7 +161,8 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
     public <U extends BaseUserEntity<?>> void hasRole(U user, String roles) {
         List<String> groups = new ArrayList<>();
         if (user != null) {
-            groups = user.getProfiles().stream().map(profile -> profile.roles.split(",")).flatMap(Arrays::stream).toList();
+            groups = user.getProfiles().stream().map(profile -> profile.roles.split(","))
+                    .flatMap(Arrays::stream).toList();
         }
         if (StringUtils.isNotBlank(roles)) {
             if (groups.stream().filter(profil -> profil.equals("ADMIN")).count() == 0) {

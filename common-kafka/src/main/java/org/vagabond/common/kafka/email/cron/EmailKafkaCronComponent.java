@@ -8,7 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.vagabond.common.email.EmailService;
+import org.vagabond.common.email.service.EmailService;
 import org.vagabond.common.kafka.engine.ICronComponent;
 
 import io.quarkus.logging.Log;

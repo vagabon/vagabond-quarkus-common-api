@@ -19,7 +19,8 @@ import org.vagabond.engine.mapper.MapperUtils;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
-public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseUserEntity<?>> implements BaseResource {
+public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseUserEntity<?>>
+        implements BaseResource {
 
     @Inject
     protected BaseAuthService<U, ?> authService;
@@ -58,7 +59,8 @@ public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseU
     }
 
     protected void verifyUserConnected(U user, Long id) {
-        if (!user.id.equals(id) && user.getProfiles().stream().filter(profile -> profile.roles.contains((ADMIN))).toList().isEmpty()) {
+        if (!user.id.equals(id) && user.getProfiles().stream()
+                .filter(profile -> profile.roles.contains((ADMIN))).toList().isEmpty()) {
             throw new MetierException("ERRORS.NOT_ALLOWED");
         }
     }

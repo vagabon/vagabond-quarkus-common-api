@@ -15,7 +15,7 @@ import org.jboss.resteasy.reactive.server.multipart.FileItem;
 import org.jboss.resteasy.reactive.server.multipart.FormValue;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.vagabond.common.file.FileService;
+import org.vagabond.common.file.service.FileService;
 import org.vagabond.engine.exeption.MetierException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,7 +44,8 @@ class FileServiceTest {
 
     @Test
     void uploadFile_retourne_le_chemin() {
-        var path = fileService.uploadFile("image.jpg", new ByteArrayInputStream(new byte[] { 1, 2, 3 }), "test");
+        var path = fileService.uploadFile("image.jpg",
+                new ByteArrayInputStream(new byte[] { 1, 2, 3 }), "test");
         assertEquals("/test/image.jpg", path);
     }
 
@@ -74,7 +75,8 @@ class FileServiceTest {
                 throw new IOException("disk full");
             }
         };
-        assertThrows(MetierException.class, () -> fileService.uploadFile("image.jpg", broken, "test"));
+        assertThrows(MetierException.class,
+                () -> fileService.uploadFile("image.jpg", broken, "test"));
     }
 
     @Test

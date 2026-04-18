@@ -5,7 +5,7 @@ import java.util.List;
 import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.exeption.MetierException;
 
-public abstract class BaseRepository<T extends BaseEntity> implements IRepository<T> {
+public abstract class BaseRepository<T extends BaseEntity> implements IBaseRepository<T> {
 
     public static final String ACTIVE = "active";
     public static final String WHERE = "where ";

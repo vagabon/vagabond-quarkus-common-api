@@ -6,10 +6,10 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
-import org.vagabond.common.email.EmailService;
 import org.vagabond.common.email.payload.EmailRequest;
-import org.vagabond.common.notification.NotificationEntity;
-import org.vagabond.common.user.UserEntity;
+import org.vagabond.common.email.service.EmailService;
+import org.vagabond.common.notification.entity.NotificationEntity;
+import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.auth.annotation.AuthRole;
 import org.vagabond.engine.auth.annotation.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
@@ -33,7 +33,8 @@ public class EmailResource extends BaseSecurityResource<NotificationEntity, User
     public Response produce() {
         UserEntity userConnected = getUserConnected();
         log.info("{}", userConnected.username);
-        EmailRequest mail = emailService.sendEmailOutgoing(new EmailRequest(userConnected.email, "test", "test", userConnected));
+        EmailRequest mail = emailService.sendEmailOutgoing(
+                new EmailRequest(userConnected.email, "test", "test", userConnected));
         return Response.ok(mail).build();
     }
 

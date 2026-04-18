@@ -6,8 +6,8 @@ import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.OnOverflow;
-import org.vagabond.common.email.EmailEntity;
-import org.vagabond.common.email.EmailService;
+import org.vagabond.common.email.entity.EmailEntity;
+import org.vagabond.common.email.service.EmailService;
 import org.vagabond.common.kafka.engine.IKafkaUniService;
 
 import io.quarkus.logging.Log;

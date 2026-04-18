@@ -17,22 +17,27 @@ public class EntityUtils {
         setEntity(entity1, entity2, entity1.getClass(), forceNull);
     }
 
-    public static void setEntity(BaseEntity entity1, BaseEntity entity2, Class<?> entityClass, boolean forceNull) {
+    public static void setEntity(BaseEntity entity1, BaseEntity entity2, Class<?> entityClass,
+            boolean forceNull) {
         setFields(entity1, entity2, entityClass.getDeclaredFields(), forceNull);
         if (entityClass.getSuperclass() != null) {
             setEntity(entity1, entity2, entityClass.getSuperclass(), forceNull);
         }
     }
 
-    private static void setFields(BaseEntity entity1, BaseEntity entity2, Field[] fields, boolean forceNull) {
+    private static void setFields(BaseEntity entity1, BaseEntity entity2, Field[] fields,
+            boolean forceNull) {
         for (var field : fields) {
-            if (!field.getName().contains("_") && !field.getName().contains("$") && !"id".equals(field.getName())
-                    && !"serialVersionUID".equals(field.getName()) && !"quarkusSyntheticLogger".equals(field.getName())) {
+            if (!field.getName().contains("_") && !field.getName().contains("$")
+                    && !"id".equals(field.getName()) && !"serialVersionUID".equals(field.getName())
+                    && !"quarkusSyntheticLogger".equals(field.getName())) {
                 Object value = null;
-                var getterName = String.format("%s%s", "get", StringUtils.capitalize(field.getName()));
+                var getterName = String.format("%s%s", "get",
+                        StringUtils.capitalize(field.getName()));
                 try {
                     value = entity2.getClass().getMethod(getterName).invoke(entity2);
-                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException exception) {
+                } catch (IllegalAccessException | InvocationTargetException
+                        | NoSuchMethodException exception) {
                     Log.error("expcetion EntityUtils.setFields : " + getterName, exception);
                 }
                 doSetValue(entity1, value, field, forceNull);
@@ -40,7 +45,8 @@ public class EntityUtils {
         }
     }
 
-    private static void doSetValue(BaseEntity entity, Object value, Field field, boolean forceNull) {
+    private static void doSetValue(BaseEntity entity, Object value, Field field,
+            boolean forceNull) {
         var setterName = String.format("%s%s", "set", StringUtils.capitalize(field.getName()));
         try {
             var newValue = value;

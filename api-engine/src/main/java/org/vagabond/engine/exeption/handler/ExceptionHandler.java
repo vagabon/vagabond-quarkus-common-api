@@ -10,6 +10,7 @@ import jakarta.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.exception.ConstraintViolationException;
+import org.vagabond.engine.auth.BaseAuthResource;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.exeption.dto.ExceptionResponse;
 
@@ -24,7 +25,8 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
         if (exception instanceof MetierException || exception instanceof NotFoundException) {
             StackTraceElement[] stackTraces = exception.getStackTrace();
             StackTraceElement[] stackTraceElements = Arrays.stream(stackTraces)
-                    .filter(trace -> trace.getClassName().contains("org.vagabond")).toArray(StackTraceElement[]::new);
+                    .filter(trace -> trace.getClassName().contains("org.vagabond"))
+                    .toArray(StackTraceElement[]::new);
             var stack = new StackTraceElement[] {};
             if (stackTraceElements.length > 0) {
                 stack = new StackTraceElement[] { stackTraceElements[0] };
@@ -34,8 +36,12 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
         if (exception instanceof ConstraintViolationException) {
             message = "ERRORS.CONTRAINTS_VIOLATION";
         }
-        Log.error(ExceptionUtils.getStackTrace(exception));
+        if (BaseAuthResource.REFRESH_TOKEN_ERROR.equals(message)) {
+            Log.error(ExceptionUtils.getStackTrace(exception));
+        }
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new ExceptionResponse(LocalDateTime.now(), message, ExceptionUtils.getStackTrace(exception))).build();
+                .entity(new ExceptionResponse(LocalDateTime.now(), message,
+                        ExceptionUtils.getStackTrace(exception)))
+                .build();
     }
 }

@@ -7,10 +7,10 @@ import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.vagabond.common.profile.ProfileEntity;
-import org.vagabond.common.profile.ProfileRepository;
-import org.vagabond.common.user.UserEntity;
-import org.vagabond.common.user.UserRepository;
+import org.vagabond.common.profile.entity.ProfileEntity;
+import org.vagabond.common.profile.repository.ProfileRepository;
+import org.vagabond.common.user.entity.UserEntity;
+import org.vagabond.common.user.repository.UserRepository;
 import org.vagabond.engine.auth.payload.request.AuthRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -13,10 +13,10 @@ import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
-import org.vagabond.common.user.UserEntity;
-import org.vagabond.common.user.UserService;
+import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.common.user.payload.PasswordRequest;
 import org.vagabond.common.user.payload.UserResponse;
+import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.auth.annotation.AuthRole;
 import org.vagabond.engine.auth.annotation.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
@@ -54,7 +54,8 @@ public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
     public Response updatePassword(@RequestBody PasswordRequest passwordRequest) {
         UserEntity userConnected = getUserConnected();
         verifyUserConnected(userConnected, passwordRequest.id());
-        return responseOk(userService.updatePassword(passwordRequest.id(), passwordRequest.password(), passwordRequest.newPassword()));
+        return responseOk(userService.updatePassword(passwordRequest.id(),
+                passwordRequest.password(), passwordRequest.newPassword()));
     }
 
     @POST

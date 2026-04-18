@@ -7,7 +7,8 @@ import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.vagabond.common.user.UserEntity;
+
+import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 
 @Entity

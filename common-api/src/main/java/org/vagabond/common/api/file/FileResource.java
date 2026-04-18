@@ -14,10 +14,10 @@ import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.jboss.resteasy.reactive.server.multipart.MultipartFormDataInput;
-import org.vagabond.common.file.FileEntity;
-import org.vagabond.common.file.FileService;
+import org.vagabond.common.file.entity.FileEntity;
 import org.vagabond.common.file.payload.FileResponse;
-import org.vagabond.common.user.UserEntity;
+import org.vagabond.common.file.service.FileService;
+import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
@@ -50,7 +50,8 @@ public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
     @Path(value = "/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Transactional
-    public Response handleFileUpload(@QueryParam(value = "directory") String directory, MultipartFormDataInput fileForm) {
+    public Response handleFileUpload(@QueryParam(value = "directory") String directory,
+            MultipartFormDataInput fileForm) {
         var userConnected = getUserConnected();
 
         var entry = fileForm.getValues().entrySet().stream().toList();
