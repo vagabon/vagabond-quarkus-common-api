@@ -36,7 +36,7 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
         if (exception instanceof ConstraintViolationException) {
             message = "ERRORS.CONTRAINTS_VIOLATION";
         }
-        if (BaseAuthResource.REFRESH_TOKEN_ERROR.equals(message)) {
+        if (!BaseAuthResource.REFRESH_TOKEN_ERROR.equals(message)) {
             Log.error(ExceptionUtils.getStackTrace(exception));
         }
         return Response.status(Response.Status.BAD_REQUEST)
