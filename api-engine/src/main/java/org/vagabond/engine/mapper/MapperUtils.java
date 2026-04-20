@@ -21,8 +21,9 @@ public class MapperUtils {
                 : new ArrayList<>();
     }
 
-    public static <U> PageResponse toPage(PageResponse response, Class<U> dtoClass) {
-        return new PageResponse(response.page(), response.totalPages(), response.totalElements(),
-                response.max(), MapperUtils.toList(response.content(), dtoClass));
+    public static <T> PageResponse<T> toPage(PageResponse<?> response, Class<?> dtoClass) {
+        var mapped = response.content().stream().map(item -> mapper.map(item, dtoClass)).toList();
+        return (PageResponse<T>) new PageResponse<>(response.page(), response.totalPages(),
+                response.totalElements(), response.max(), mapped);
     }
 }

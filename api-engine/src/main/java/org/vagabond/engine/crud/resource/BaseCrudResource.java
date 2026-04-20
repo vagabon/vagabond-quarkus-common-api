@@ -27,7 +27,8 @@ import io.quarkus.panache.common.Page;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
-public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserEntity<?>> extends BaseSecurityResource<T, U> {
+public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserEntity<?>>
+        extends BaseSecurityResource<T, U> {
 
     @POST
     @Path("/")
@@ -105,7 +106,8 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @Path("/")
     @AuthSecure
     @AuthRole("USER")
-    public Response findAll(@QueryParam("page") Integer page, @QueryParam("max") Integer max, @QueryParam("sort") String sort) {
+    public Response findAll(@QueryParam("page") Integer page, @QueryParam("max") Integer max,
+            @QueryParam("sort") String sort) {
         var response = service.findByPage(page, max, sort);
         return responseOk(doAfterFindBy(getUserConnected(), response));
     }
@@ -114,7 +116,8 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @Path("/findBy")
     @AuthSecure
     @AuthRole("USER")
-    public Response findBy(@DefaultValue("") @QueryParam("fields") String fields, @DefaultValue("") @QueryParam("values") String values,
+    public Response findBy(@DefaultValue("") @QueryParam("fields") String fields,
+            @DefaultValue("") @QueryParam("values") String values,
             @QueryParam("first") Integer first, @QueryParam("max") Integer max) {
         var userConnected = getUserConnected();
         if (first == null) {
@@ -127,18 +130,22 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
         return responseOk(doAfterFindBy(userConnected, response));
     }
 
-    protected PageResponse doAfterFindBy(U userConnected, PageResponse response) {
+    protected PageResponse<T> doAfterFindBy(U userConnected, PageResponse<T> response) {
         if (SecurityUtils.hasRole(userConnected, ADMIN)) {
             return response;
         }
         return toPage(response);
     }
 
-    public PageResponse toPage(PageResponse response) {
-        return responseClass != null ? MapperUtils.toPage(response, responseClass) : response;
+    public PageResponse<T> toPage(PageResponse<T> response) {
+        if (responseClass == null) {
+            return response;
+        }
+        return MapperUtils.toPage(response, responseClass);
     }
 
-    public Response doSearch(U userEntity, StringBuilder hqlQuery, String fields, String values, Integer first, Integer max) {
+    public Response doSearch(U userEntity, StringBuilder hqlQuery, String fields, String values,
+            Integer first, Integer max) {
         var valuesSplits = fields.split(">>");
 
         hqlQuery.append("AND e.active = true ");
@@ -146,7 +153,8 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
 
         var query = service.getRepository().find(hqlQuery.toString(), QueryUtils.getLike(values));
         query.page(Page.ofSize(max));
-        PageResponse response = new PageResponse(first, query.pageCount(), query.count(), max, query.page(Page.of(first, max)).list());
+        var response = new PageResponse<>(first, query.pageCount(), query.count(), max,
+                query.page(Page.of(first, max)).list());
         return responseOk(doAfterFindBy(userEntity, response));
 
     }

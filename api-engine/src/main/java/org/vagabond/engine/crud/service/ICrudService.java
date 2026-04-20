@@ -10,7 +10,7 @@ public interface ICrudService<T extends BaseEntity> extends IService {
 
     T findById(Long id);
 
-    PageResponse findByPage(Integer page, Integer max, String sort);
+    PageResponse<T> findByPage(Integer page, Integer max, String sort);
 
     T create(T entity);
 
@@ -18,7 +18,7 @@ public interface ICrudService<T extends BaseEntity> extends IService {
 
     T delete(Long id);
 
-    PageResponse constructQuery(Integer first, Integer max, String champs, Object... tabValues);
+    PageResponse<T> constructQuery(Integer first, Integer max, String champs, Object... tabValues);
 
     BaseRepository<T> getRepository();
 }

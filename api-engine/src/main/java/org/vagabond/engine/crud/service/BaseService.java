@@ -29,11 +29,11 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
     }
 
     @Transactional
-    public PageResponse findByPage(Integer page, Integer max, String sort) {
+    public PageResponse<T> findByPage(Integer page, Integer max, String sort) {
         return queryPage("where active = ?1", page, max, sort, true);
     }
 
-    public PageResponse queryPage(String sql, Integer page, Integer max, String sort,
+    public PageResponse<T> queryPage(String sql, Integer page, Integer max, String sort,
             Object... values) {
         if (sort != null && !sort.isEmpty()) {
             sql += " order by " + sort;
@@ -48,7 +48,7 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
         activeQuery.page(Page.ofSize(max));
         var numberOfPages = activeQuery.pageCount();
         var count = activeQuery.count();
-        return new PageResponse(page, numberOfPages, count, max,
+        return new PageResponse<>(page, numberOfPages, count, max,
                 activeQuery.page(Page.of(page, max)).list());
     }
 
@@ -90,11 +90,11 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
     }
 
     @Transactional
-    public PageResponse constructQuery(Integer first, Integer max, String champs,
+    public PageResponse<T> constructQuery(Integer first, Integer max, String champs,
             Object... tabValues) {
         var query = getQuery(champs, tabValues);
         query.page(Page.ofSize(max));
-        return new PageResponse(first, query.pageCount(), query.count(), max,
+        return new PageResponse<>(first, query.pageCount(), query.count(), max,
                 query.page(Page.of(first, max)).list());
     }
 
