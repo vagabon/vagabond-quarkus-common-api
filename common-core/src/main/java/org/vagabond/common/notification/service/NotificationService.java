@@ -19,6 +19,7 @@ import org.vagabond.engine.crud.service.BaseService;
 
 @ApplicationScoped
 public class NotificationService extends BaseService<NotificationEntity> {
+
     @ConfigProperty(name = "website.url")
     private String websiteUrl;
 

@@ -26,7 +26,7 @@ public class UserTokenService extends BaseAuthTokenService<UserTokenEntity, User
 
     private static final String ENCRYPT_ALGORITHM = "SHA-256";
 
-    @ConfigProperty(name = "refresh-token-ttl", defaultValue = "604800")
+    @ConfigProperty(name = "refresh.token.ttl")
     @Getter
     private int refreshTokenTtl;
 
