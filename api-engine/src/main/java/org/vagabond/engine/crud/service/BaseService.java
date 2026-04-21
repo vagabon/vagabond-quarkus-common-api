@@ -69,11 +69,11 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
         if (entity.id == null) {
             throw new MetierException("Id is null");
         }
-        var entityNew = getRepository().findById(entity.id);
-        doBeforeMerge(entity, entityNew);
-        EntityUtils.setEntity(entityNew, entity, true);
-        doAfterMerge(entityNew);
-        return getRepository().getEntityManager().merge(entityNew);
+        var entityFromBdd = getRepository().findById(entity.id);
+        doBeforeMerge(entity, entityFromBdd);
+        EntityUtils.setEntity(entityFromBdd, entity, true);
+        doAfterMerge(entityFromBdd);
+        return getRepository().getEntityManager().merge(entityFromBdd);
     }
 
     public void doBeforeMerge(T entity, T entityNew) {
