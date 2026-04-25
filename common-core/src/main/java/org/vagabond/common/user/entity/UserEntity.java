@@ -18,12 +18,14 @@ import org.vagabond.engine.auth.entity.BaseUserEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "user", schema = "public")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class UserEntity extends BaseUserEntity<ProfileEntity> {
 
     public String avatar;

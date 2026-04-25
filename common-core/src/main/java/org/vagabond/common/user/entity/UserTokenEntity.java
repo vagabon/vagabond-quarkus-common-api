@@ -13,12 +13,14 @@ import org.vagabond.engine.auth.entity.BaseUserTokenEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "user_token")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class UserTokenEntity extends BaseUserTokenEntity {
 
     @Column(unique = true)

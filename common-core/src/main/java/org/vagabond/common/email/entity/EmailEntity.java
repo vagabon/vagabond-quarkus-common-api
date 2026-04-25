@@ -9,12 +9,14 @@ import org.vagabond.engine.crud.entity.BaseCrudEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "email_queue", schema = "public")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class EmailEntity extends BaseCrudEntity {
 
     @Column(name = "email")

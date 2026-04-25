@@ -11,12 +11,14 @@ import org.vagabond.engine.crud.entity.BaseCrudEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "user_payment")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
+@ToString
 public class UserPaymentEntity extends BaseCrudEntity {
 
     public String intent;
