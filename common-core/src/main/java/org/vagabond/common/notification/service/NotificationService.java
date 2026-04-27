@@ -14,17 +14,23 @@ import org.vagabond.common.notification.payload.NotificationRequest;
 import org.vagabond.common.notification.repository.NotificationRepository;
 import org.vagabond.common.notification.token.NotificationTokenRepository;
 import org.vagabond.common.user.entity.UserEntity;
-import org.vagabond.engine.crud.repository.BaseRepository;
+import org.vagabond.engine.crud.response.PageResponse;
 import org.vagabond.engine.crud.service.BaseService;
+
+import io.quarkus.panache.common.Page;
+import lombok.Getter;
 
 @ApplicationScoped
 public class NotificationService extends BaseService<NotificationEntity> {
+
+    public static final int MAX_NOTIFICATIONS = 50;
 
     @ConfigProperty(name = "website.url")
     private String websiteUrl;
 
     @Inject
-    private NotificationRepository notificationRepository;
+    @Getter
+    private NotificationRepository repository;
 
     @Inject
     private NotificationTokenRepository notificationTokenRepository;
@@ -32,32 +38,38 @@ public class NotificationService extends BaseService<NotificationEntity> {
     @Inject
     private NotificationKafkaService notificationKafkaService;
 
-    @Override
-    public BaseRepository<NotificationEntity> getRepository() {
-        return notificationRepository;
+    public PageResponse<NotificationEntity> search(Long userId, String category, String type, Long entityId,
+            String search, int page) {
+        var query = getRepository().search(userId, category, type, entityId, search);
+
+        query.page(Page.ofSize(MAX_NOTIFICATIONS));
+        var content = query.page(Page.of(page, MAX_NOTIFICATIONS)).list();
+        return new PageResponse<>(page, query.pageCount(), query.count(), MAX_NOTIFICATIONS, content);
     }
 
-    public Long countByMemberOrCreator(Long userId) {
-        return notificationRepository.count(
-                "where active = true and (read is null or read = false) and user.id = ?1", userId);
+    public Long countNotReadByUser(Long userId) {
+        return repository.countNotReadByUser(userId);
+    }
+
+    @Transactional
+    public NotificationEntity read(Long notificationId) {
+        var notification = findById(notificationId);
+        notification.read = notification.read == null ? Boolean.TRUE : !notification.read;
+        return persist(notification);
     }
 
     @Transactional
     public int readAll(Long userId) {
-        return notificationRepository.update(
-                "read = ?1 where active = true and (read is null or read = false) and user.id = ?2",
-                true, userId);
+        return repository.readAllByUser(userId);
     }
 
     public void sendNotification(UserEntity userConnected, List<Long> userIds,
-            NotificationRequest notification, Long entityId, String superType, String category,
-            String type) {
+            NotificationRequest notification, Long entityId, String superType, String category, String type) {
 
         var newEntity = new NotificationEntity();
         newEntity.title = notification.title;
         newEntity.message = notification.body;
-        newEntity.url = websiteUrl
-                + (StringUtils.isEmpty(notification.url) ? "/profile" : notification.url);
+        newEntity.url = websiteUrl + (StringUtils.isEmpty(notification.url) ? "/profile" : notification.url);
         newEntity.superType = superType;
         newEntity.category = category;
         newEntity.type = type;
@@ -72,8 +84,8 @@ public class NotificationService extends BaseService<NotificationEntity> {
         newEntity.active = true;
         persist(newEntity);
 
-        if (getCountLastSend(category, type, userConnected.id) < 2L || userConnected.profiles
-                .stream().filter(profile -> "ADMIN".equals(profile.name)).count() == 1) {
+        if (getCountLastSend(category, type, userConnected.id) < 2L || userConnected.profiles.stream()
+                .filter(profile -> "ADMIN".equals(profile.name)).count() == 1) {
             notification.tokens = getTokens(userIds);
             notificationKafkaService.registerNotification(notification);
         }
@@ -88,9 +100,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
     @Transactional
     public Long getCountLastSend(String category, String type, Long userId) {
         var date = LocalDateTime.now().plusMinutes(-5);
-        return notificationRepository.count(
-                "where creationDate > ?1 and category = ?2 and type = ?3 and user.id = ?4", date,
-                category, type, userId);
+        return repository.countCountLastSend(date, category, type, userId);
     }
 
 }
