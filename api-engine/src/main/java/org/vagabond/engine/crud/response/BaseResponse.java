@@ -1,6 +1,6 @@
 package org.vagabond.engine.crud.response;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,5 +9,5 @@ import lombok.Setter;
 @Setter
 public abstract class BaseResponse {
     public Long id;
-    public LocalDateTime creationDate;
+    public Instant creationDate;
 }

@@ -1,6 +1,6 @@
 package org.vagabond.engine.crud.utils;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ class EntityUtilsTest {
 
     @Test
     void test() {
-        var now = LocalDateTime.now();
+        var now = Instant.now();
 
         Entity entity1 = new Entity();
         entity1.name = "name";
@@ -52,7 +52,7 @@ class EntityUtilsTest {
     class Entity extends BaseEntity {
         public String name;
         public String username;
-        public LocalDateTime myDate;
+        public Instant myDate;
     }
 
     @Getter

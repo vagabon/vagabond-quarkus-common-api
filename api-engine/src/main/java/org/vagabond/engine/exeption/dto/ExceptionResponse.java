@@ -1,7 +1,6 @@
 package org.vagabond.engine.exeption.dto;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-public record ExceptionResponse(LocalDateTime timestamp, String debugMessage,
-                String message) {
+public record ExceptionResponse(Instant timestamp, String debugMessage, String message) {
 }

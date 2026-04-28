@@ -1,6 +1,7 @@
 package org.vagabond.common.notification.service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -79,8 +80,8 @@ public class NotificationService extends BaseService<NotificationEntity> {
                 ? String.join(",", userIds.stream().map(Object::toString).toArray(String[]::new))
                 : null;
         newEntity.users = joinUserIds;
-        newEntity.creationDate = LocalDateTime.now();
-        newEntity.updatedDate = LocalDateTime.now();
+        newEntity.creationDate = Instant.now();
+        newEntity.updatedDate = Instant.now();
         newEntity.active = true;
         persist(newEntity);
 
@@ -99,7 +100,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
 
     @Transactional
     public Long getCountLastSend(String category, String type, Long userId) {
-        var date = LocalDateTime.now().plusMinutes(-5);
+        var date = Instant.now().minus(5, ChronoUnit.MINUTES);
         return repository.countCountLastSend(date, category, type, userId);
     }
 

@@ -3,7 +3,7 @@ package org.vagabond.common.user.service;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.UUID;
 
@@ -46,7 +46,7 @@ public class UserTokenService extends BaseAuthTokenService<UserTokenEntity, User
             userToken.token = Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
             userToken.ipAddress = "";
             userToken.revoked = false;
-            userToken.expiredDate = LocalDateTime.now().plusSeconds(refreshTokenTtl);
+            userToken.expiredDate = Instant.now().plusSeconds(refreshTokenTtl);
             repository.persist(userToken);
             return userToken.token;
         } catch (NoSuchAlgorithmException _) {

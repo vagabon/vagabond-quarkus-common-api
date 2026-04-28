@@ -1,6 +1,6 @@
 package org.vagabond.common.user.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -39,7 +39,7 @@ public class UserEntity extends BaseUserEntity<ProfileEntity> {
     @Column(name = "identity_token")
     public String identityToken;
     @Column(name = "identity_token_date_end")
-    public LocalDateTime identityTokenDateEnd;
+    public Instant identityTokenDateEnd;
     @Column(name = "email_activation")
     public Boolean emailActivation;
 

@@ -1,6 +1,6 @@
 package org.vagabond.common.auth.service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,7 +90,7 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
     protected UserEntity addIdentityToken(String email) {
         var user = userRepository.findByOneField("email", email);
         user.identityToken = AuthUtils.generateIdentityToken();
-        var now = LocalDateTime.now();
+        var now = Instant.now();
         user.identityTokenDateEnd = now.plus(10, ChronoUnit.MINUTES);
         return persist(user);
     }
@@ -121,11 +121,10 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         UserEntity user = userRepository.findByOneField("googleId", googleResponse.id);
         if (user == null) {
             var name = AuthUtils.getUsername(googleResponse.givenName);
-            return saveNewUser(googleResponse.id, null, name, googleResponse.email,
-                    googleResponse.picture);
+            return saveNewUser(googleResponse.id, null, name, googleResponse.email, googleResponse.picture);
         }
         user.avatar = googleResponse.picture;
-        user.lastConnexionDate = LocalDateTime.now();
+        user.lastConnexionDate = Instant.now();
         user = persist(user);
         return user;
     }
@@ -150,7 +149,7 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         user.email = email;
         user.emailActivation = true;
         user.avatar = avatar;
-        user.lastConnexionDate = LocalDateTime.now();
+        user.lastConnexionDate = Instant.now();
         ProfileEntity userProfile = profileRepository.getProfileUser();
         if (userProfile != null) {
             user.profiles = new ArrayList<>(Arrays.asList(userProfile));

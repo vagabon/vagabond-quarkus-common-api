@@ -1,6 +1,6 @@
 package org.vagabond.common.notification.repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -41,7 +41,7 @@ public class NotificationRepository extends BaseRepository<NotificationEntity> {
         return count("where active = true and (read is null or read = false) and user.id = ?1", userId);
     }
 
-    public long countCountLastSend(LocalDateTime date, String category, String type, Long userId) {
+    public long countCountLastSend(Instant date, String category, String type, Long userId) {
         return count("where creationDate > ?1 and category = ?2 and type = ?3 and user.id = ?4", date,
                 category, type, userId);
     }

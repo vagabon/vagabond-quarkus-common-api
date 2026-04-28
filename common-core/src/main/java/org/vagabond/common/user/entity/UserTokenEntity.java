@@ -1,6 +1,6 @@
 package org.vagabond.common.user.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +30,7 @@ public class UserTokenEntity extends BaseUserTokenEntity {
 
     public Boolean revoked;
 
-    public LocalDateTime expiredDate;
+    public Instant expiredDate;
 
     @ManyToOne()
     @JoinColumn(name = "user_id")

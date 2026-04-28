@@ -11,7 +11,8 @@ import org.vagabond.engine.crud.entity.BaseEntity;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
-public abstract class BaseCrudUserResource<T extends BaseEntity, U extends BaseUserEntity<?>> extends BaseCrudResource<T, U> {
+public abstract class BaseCrudUserResource<T extends BaseEntity, U extends BaseUserEntity<?>>
+        extends BaseCrudResource<T, U> {
 
     @Override
     @AuthRole("USER")

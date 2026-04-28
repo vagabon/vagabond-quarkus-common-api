@@ -1,6 +1,6 @@
 package org.vagabond.common.kafka.email.cron;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
@@ -29,7 +29,7 @@ public class EmailKafkaCronComponent implements ICronComponent {
 
     @Scheduled(cron = "{cron.email:0/30 * * * * ?}")
     public void runCron() {
-        var date = LocalDateTime.now().minus(SECONDES_ADD_TO_CHECK, ChronoUnit.SECONDS);
+        var date = Instant.now().minus(SECONDES_ADD_TO_CHECK, ChronoUnit.SECONDS);
         String hql = "where send = false and error is null and active = true and creationDate <= ?1";
 
         var emails = emailService.getRepository().find(hql, date).page(0, MAX_EMAIL).list();

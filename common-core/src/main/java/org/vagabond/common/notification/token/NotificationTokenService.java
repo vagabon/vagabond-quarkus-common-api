@@ -1,6 +1,6 @@
 package org.vagabond.common.notification.token;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -23,14 +23,14 @@ public class NotificationTokenService extends BaseService<NotificationTokenEntit
 
     @Transactional
     public NotificationTokenEntity mergeToken(UserEntity user, String token) {
-        var entity = notificationTokenRepository
-                .find("WHERE user.id = ?1 and token = ?2", user.id, token).firstResultOptional();
+        var entity = notificationTokenRepository.find("WHERE user.id = ?1 and token = ?2", user.id, token)
+                .firstResultOptional();
         if (!entity.isPresent()) {
             var newEntity = new NotificationTokenEntity();
             newEntity.user = user;
             newEntity.token = token;
-            newEntity.creationDate = LocalDateTime.now();
-            newEntity.updatedDate = LocalDateTime.now();
+            newEntity.creationDate = Instant.now();
+            newEntity.updatedDate = Instant.now();
             newEntity.active = true;
             return persist(newEntity);
         }

@@ -1,6 +1,6 @@
 package org.vagabond.common.user.repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -11,8 +11,8 @@ import org.vagabond.engine.crud.repository.BaseRepository;
 public class UserTokenRepository extends BaseRepository<UserTokenEntity> {
 
     public UserTokenEntity findByToken(String token) {
-        return find("token = ?1 and revoked = false and expiredDate > ?2", token,
-                LocalDateTime.now()).firstResultOptional().orElse(null);
+        return find("token = ?1 and revoked = false and expiredDate > ?2", token, Instant.now())
+                .firstResultOptional().orElse(null);
     }
 
     public long deleteRefreshToken(String token) {
@@ -20,6 +20,6 @@ public class UserTokenRepository extends BaseRepository<UserTokenEntity> {
     }
 
     public long deleteExpiredTokens() {
-        return deleteBy("expiredDate < ?1", LocalDateTime.now());
+        return deleteBy("expiredDate < ?1", Instant.now());
     }
 }

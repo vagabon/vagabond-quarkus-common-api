@@ -1,6 +1,6 @@
 package org.vagabond.engine.auth.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -23,13 +23,13 @@ public abstract class BaseUserEntity<P extends BaseProfileEntity> extends BaseCr
     public String email;
 
     @Column(name = "date_derniere_connexion")
-    public LocalDateTime lastConnexionDate;
+    public Instant lastConnexionDate;
 
     @Column(name = "connection_trials")
     public Integer connectionTrials;
 
     @Column(name = "date_derniere_tentative")
-    public LocalDateTime lastFailedTrialDate;
+    public Instant lastFailedTrialDate;
 
     public abstract List<P> getProfiles();
 

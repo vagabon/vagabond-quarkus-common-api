@@ -1,6 +1,6 @@
 package org.vagabond.engine.auth.service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,7 +98,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
 
     @Transactional
     public T doConnectionTrials(T user) {
-        user.lastFailedTrialDate = LocalDateTime.now();
+        user.lastFailedTrialDate = Instant.now();
         var connectionTrials = user.connectionTrials != null ? user.connectionTrials : 0;
         user.connectionTrials = connectionTrials + 1;
         return persist(user);
@@ -107,7 +107,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
     @Transactional
     public T resetConnectionTrials(T user) {
         user.connectionTrials = 0;
-        user.lastConnexionDate = LocalDateTime.now();
+        user.lastConnexionDate = Instant.now();
         return persist(user);
     }
 
@@ -122,7 +122,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         if (null == trials) {
             trials = 0;
         }
-        var waitingDelayTime = LocalDateTime.now().minus(trialWaitingTime, ChronoUnit.MINUTES);
+        var waitingDelayTime = Instant.now().minus(trialWaitingTime, ChronoUnit.MINUTES);
 
         var tooManyAttempts = trials >= attemptMax;
         var isAttemptTooSoon = waitingDelayTime.isBefore(user.lastFailedTrialDate);

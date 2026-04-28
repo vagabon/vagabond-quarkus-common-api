@@ -1,6 +1,6 @@
 package org.vagabond.common.user.repository;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -14,8 +14,7 @@ public class UserRepository extends BaseRepository<UserEntity> {
 
     @Transactional
     public UserEntity getUserFromIdentityToken(String token) {
-        var entity = findBy("where identityToken = ?1 and identityTokenDateEnd >= ?2", token,
-                LocalDateTime.now());
+        var entity = findBy("where identityToken = ?1 and identityTokenDateEnd >= ?2", token, Instant.now());
         if (entity == null || entity.isEmpty()) {
             throw new MetierException(ENTITY_NOT_FOUND_EXCEPTION);
         }

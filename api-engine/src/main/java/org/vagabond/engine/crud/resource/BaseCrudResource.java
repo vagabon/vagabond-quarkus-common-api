@@ -1,6 +1,6 @@
 package org.vagabond.engine.crud.resource;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Map;
 
 import jakarta.ws.rs.DELETE;
@@ -89,7 +89,7 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
         doBeforeDelete(userConnected, entityBefore);
         if (entityBefore instanceof BaseCrudEntity crudEntity) {
             crudEntity.active = false;
-            crudEntity.deletedDate = LocalDateTime.now();
+            crudEntity.deletedDate = Instant.now();
         }
         var entity = service.persist(entityBefore);
         doAfterDelete(userConnected, entity);
@@ -117,8 +117,8 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @AuthSecure
     @AuthRole("USER")
     public Response findBy(@DefaultValue("") @QueryParam("fields") String fields,
-            @DefaultValue("") @QueryParam("values") String values,
-            @QueryParam("first") Integer first, @QueryParam("max") Integer max) {
+            @DefaultValue("") @QueryParam("values") String values, @QueryParam("first") Integer first,
+            @QueryParam("max") Integer max) {
         var userConnected = getUserConnected();
         if (first == null) {
             first = 0;

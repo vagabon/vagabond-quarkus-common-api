@@ -1,6 +1,6 @@
 package org.vagabond.engine.crud.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -17,13 +17,13 @@ import lombok.Setter;
 public abstract class BaseCrudEntity extends BaseEntity {
 
     @Column(name = "creation_date")
-    public LocalDateTime creationDate;
+    public Instant creationDate;
 
     @Column(name = "updated_date")
-    public LocalDateTime updatedDate;
+    public Instant updatedDate;
 
     @Column(name = "deleted_date")
-    public LocalDateTime deletedDate;
+    public Instant deletedDate;
 
     public Boolean active;
 
@@ -32,9 +32,9 @@ public abstract class BaseCrudEntity extends BaseEntity {
     public void prePersist() {
         Log.debugf("persist %s", this.toString());
         if (this.creationDate == null) {
-            this.creationDate = LocalDateTime.now();
+            this.creationDate = Instant.now();
         }
-        this.updatedDate = LocalDateTime.now();
+        this.updatedDate = Instant.now();
         if (this.active == null) {
             this.active = true;
         }

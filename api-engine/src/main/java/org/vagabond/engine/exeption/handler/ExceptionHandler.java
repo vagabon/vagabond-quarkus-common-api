@@ -1,6 +1,6 @@
 package org.vagabond.engine.exeption.handler;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Arrays;
 
 import jakarta.ws.rs.NotFoundException;
@@ -39,9 +39,8 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
         if (!BaseAuthResource.REFRESH_TOKEN_ERROR.equals(message)) {
             Log.error(ExceptionUtils.getStackTrace(exception));
         }
-        return Response.status(Response.Status.BAD_REQUEST)
-                .entity(new ExceptionResponse(LocalDateTime.now(), message,
-                        ExceptionUtils.getStackTrace(exception)))
+        return Response.status(Response.Status.BAD_REQUEST).entity(
+                new ExceptionResponse(Instant.now(), message, ExceptionUtils.getStackTrace(exception)))
                 .build();
     }
 }
