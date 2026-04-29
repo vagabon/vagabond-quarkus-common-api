@@ -31,7 +31,9 @@ public abstract class BaseAuthResource<U extends BaseUserEntity<P>, P extends Ba
         implements BaseResource {
 
     public static final String REFRESH_TOKEN_ERROR = "NO_REFRESH_TOKEN";
-    private static final String REFRESH_TOKEN_URL = "/auth/refresh-token";
+
+    @ConfigProperty(name = "app.refresh-token.path", defaultValue = "/auth/refresh-token")
+    String refreshTokenPath;
 
     @ConfigProperty(name = "api.cookie.name", defaultValue = "refresh-token")
     private String cookieName;
@@ -77,15 +79,14 @@ public abstract class BaseAuthResource<U extends BaseUserEntity<P>, P extends Ba
     protected Response getJwtTokens(U user) {
         var token = getService().generateTokenJwt(user);
         var refreshToken = getAuthTokenService().generateRefreshToken(user);
-        var refreshCookie = createCookieRefresh(refreshToken,
-                getAuthTokenService().getRefreshTokenTtl());
+        var refreshCookie = createCookieRefresh(refreshToken, getAuthTokenService().getRefreshTokenTtl());
 
         return Response.ok(new AuthResponse<>(toDto(user), token)).cookie(refreshCookie).build();
     }
 
     private NewCookie createCookieRefresh(String refreshToken, int tll) {
         return new NewCookie.Builder(cookieName).value(refreshToken).httpOnly(true)
-                .sameSite(NewCookie.SameSite.LAX).path(REFRESH_TOKEN_URL).maxAge(tll).build();
+                .sameSite(NewCookie.SameSite.LAX).path(refreshTokenPath).maxAge(tll).build();
 
     }
 
