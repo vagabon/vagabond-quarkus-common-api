@@ -61,7 +61,7 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @GET
     @Path("/search")
     @AuthSecure
-    @AuthRole("user")
+    @AuthRole("USER")
     public PageResponse<NotificationEntity> findBy(@DefaultValue("") @QueryParam("search") String search,
             @DefaultValue("") @QueryParam("category") String category,
             @DefaultValue("") @QueryParam("type") String type, @QueryParam("entityId") Long entityId,
@@ -73,7 +73,7 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @GET
     @Path("/count")
     @AuthSecure
-    @AuthRole("user")
+    @AuthRole("USER")
     public Response countByUserConnected() {
         var userConnected = getUserConnected();
         return responseOk(notificationService.countNotReadByUser(userConnected.id));
@@ -88,7 +88,7 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @PUT
     @Path("/read-all")
     @AuthSecure
-    @AuthRole("user")
+    @AuthRole("USER")
     public Response readByUserConnected() {
         var userConnected = getUserConnected();
         return responseOk(notificationService.readAll(userConnected.id));
@@ -97,7 +97,7 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @PUT
     @Path("/read/{notificationId}")
     @AuthSecure
-    @AuthRole("user")
+    @AuthRole("USER")
     public Response readAllByUserConnected(Long notificationId) {
         return responseOk(notificationService.read(notificationId));
     }
@@ -111,7 +111,7 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @POST
     @Path("/send")
     @AuthSecure
-    @AuthRole("user")
+    @AuthRole("USER")
     public Response sendNotification() {
         UserEntity userConnected = getUserConnected();
         var notification = new NotificationRequest("test", "test", "/notification");
