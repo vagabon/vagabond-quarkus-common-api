@@ -4,7 +4,9 @@ import java.time.Instant;
 import java.util.Arrays;
 
 import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
@@ -18,6 +20,9 @@ import io.quarkus.logging.Log;
 
 @Provider
 public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
+
+    @Context
+    private UriInfo uriInfo;
 
     @Override
     public Response toResponse(RuntimeException exception) {
@@ -36,7 +41,11 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
         if (exception instanceof ConstraintViolationException) {
             message = "ERRORS.CONTRAINTS_VIOLATION";
         }
-        if (!BaseAuthResource.REFRESH_TOKEN_ERROR.equals(message)) {
+
+        if (exception instanceof NotFoundException) {
+            String endpoint = uriInfo != null ? uriInfo.getRequestUri().toString() : "unknown";
+            Log.errorf("No matching resource for endpoint: %s", endpoint);
+        } else if (!BaseAuthResource.REFRESH_TOKEN_ERROR.equals(message)) {
             Log.error(ExceptionUtils.getStackTrace(exception));
         }
         return Response.status(Response.Status.BAD_REQUEST).entity(
