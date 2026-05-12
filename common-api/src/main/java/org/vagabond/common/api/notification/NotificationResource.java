@@ -62,7 +62,7 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @Path("/search")
     @AuthSecure
     @AuthRole("USER")
-    public PageResponse<NotificationEntity> findBy(@DefaultValue("") @QueryParam("search") String search,
+    public PageResponse<NotificationResponse> findBy(@DefaultValue("") @QueryParam("search") String search,
             @DefaultValue("") @QueryParam("category") String category,
             @DefaultValue("") @QueryParam("type") String type, @QueryParam("entityId") Long entityId,
             @DefaultValue("1") @QueryParam("page") Integer page) {

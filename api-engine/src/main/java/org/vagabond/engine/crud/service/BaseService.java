@@ -33,8 +33,7 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
         return queryPage("where active = ?1", page, max, sort, true);
     }
 
-    public PageResponse<T> queryPage(String sql, Integer page, Integer max, String sort,
-            Object... values) {
+    public PageResponse<T> queryPage(String sql, Integer page, Integer max, String sort, Object... values) {
         if (sort != null && !sort.isEmpty()) {
             sql += " order by " + sort;
         }
@@ -90,8 +89,7 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
     }
 
     @Transactional
-    public PageResponse<T> constructQuery(Integer first, Integer max, String champs,
-            Object... tabValues) {
+    public PageResponse<T> constructQuery(Integer first, Integer max, String champs, Object... tabValues) {
         var query = getQuery(champs, tabValues);
         query.page(Page.ofSize(max));
         return new PageResponse<>(first, query.pageCount(), query.count(), max,

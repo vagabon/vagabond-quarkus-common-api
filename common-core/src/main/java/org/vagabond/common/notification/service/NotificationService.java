@@ -12,11 +12,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.vagabond.common.notification.entity.NotificationEntity;
 import org.vagabond.common.notification.payload.NotificationRequest;
+import org.vagabond.common.notification.payload.NotificationResponse;
 import org.vagabond.common.notification.repository.NotificationRepository;
 import org.vagabond.common.notification.token.NotificationTokenRepository;
 import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.response.PageResponse;
 import org.vagabond.engine.crud.service.BaseService;
+import org.vagabond.engine.mapper.MapperUtils;
 
 import io.quarkus.panache.common.Page;
 import lombok.Getter;
@@ -39,13 +41,14 @@ public class NotificationService extends BaseService<NotificationEntity> {
     @Inject
     private NotificationKafkaService notificationKafkaService;
 
-    public PageResponse<NotificationEntity> search(Long userId, String category, String type, Long entityId,
+    public PageResponse<NotificationResponse> search(Long userId, String category, String type, Long entityId,
             String search, int page) {
         var query = getRepository().search(userId, category, type, entityId, search);
 
         query.page(Page.ofSize(MAX_NOTIFICATIONS));
         var content = query.page(Page.of(page, MAX_NOTIFICATIONS)).list();
-        return new PageResponse<>(page, query.pageCount(), query.count(), MAX_NOTIFICATIONS, content);
+        return new PageResponse<>(page, query.pageCount(), query.count(), MAX_NOTIFICATIONS,
+                MapperUtils.toList(content, NotificationResponse.class));
     }
 
     public Long countNotReadByUser(Long userId) {
