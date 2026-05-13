@@ -1,6 +1,6 @@
 package org.vagabond.common.news.payload;
 
-import org.vagabond.common.user.payload.UserResponse;
+import org.vagabond.common.user.payload.UserLightResponse;
 import org.vagabond.engine.crud.response.BaseResponse;
 
 import lombok.Getter;
@@ -16,6 +16,8 @@ public class NewsResponse extends BaseResponse {
     public String resume;
     private String description;
     public String tags;
-    private UserResponse user;
+    public Boolean active;
+
+    private UserLightResponse user;
 
 }

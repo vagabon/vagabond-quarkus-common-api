@@ -46,7 +46,7 @@ public class RateLimitFilterConfiguration implements ContainerRequestFilter {
         }
 
         long now = System.currentTimeMillis();
-        Log.infof("Received request from %s — %s %s", ip, ctx.getMethod(), ctx.getUriInfo().getRequestUri());
+        Log.debugf("Received request from %s — %s %s", ip, ctx.getMethod(), ctx.getUriInfo().getRequestUri());
 
         List<Long> timestamps = requests.get(ip, k -> new CopyOnWriteArrayList<>());
         timestamps.removeIf(t -> now - t > WINDOW_MS);
