@@ -12,6 +12,7 @@ import jakarta.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.exception.ConstraintViolationException;
+import org.jboss.resteasy.reactive.ClientWebApplicationException;
 import org.vagabond.engine.auth.BaseAuthResource;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.exeption.dto.ExceptionResponse;
@@ -27,9 +28,20 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
     @Override
     public Response toResponse(RuntimeException exception) {
         var message = exception.getMessage();
+
+        if (exception instanceof ClientWebApplicationException clientEx) {
+            var endpoint = uriInfo != null ? uriInfo.getRequestUri().toString() : "unknown";
+            var status = clientEx.getResponse().getStatus();
+            if (status == 404) {
+                Log.infof("TMDB resource not found for endpoint : %s - message : %s", endpoint,
+                        clientEx.getMessage());
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+        }
+
         if (exception instanceof MetierException || exception instanceof NotFoundException) {
-            StackTraceElement[] stackTraces = exception.getStackTrace();
-            StackTraceElement[] stackTraceElements = Arrays.stream(stackTraces)
+            var stackTraces = exception.getStackTrace();
+            var stackTraceElements = Arrays.stream(stackTraces)
                     .filter(trace -> trace.getClassName().contains("org.vagabond"))
                     .toArray(StackTraceElement[]::new);
             var stack = new StackTraceElement[] {};
@@ -43,8 +55,9 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
         }
 
         if (exception instanceof NotFoundException) {
-            String endpoint = uriInfo != null ? uriInfo.getRequestUri().toString() : "unknown";
+            var endpoint = uriInfo != null ? uriInfo.getRequestUri().toString() : "unknown";
             Log.errorf("No matching resource for endpoint: %s", endpoint);
+            return Response.status(Response.Status.NOT_FOUND).build();
         } else if (!BaseAuthResource.REFRESH_TOKEN_ERROR.equals(message)) {
             Log.error(ExceptionUtils.getStackTrace(exception));
         }
