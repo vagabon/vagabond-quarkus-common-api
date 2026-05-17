@@ -29,8 +29,10 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
     public Response toResponse(RuntimeException exception) {
         var message = exception.getMessage();
 
+        var uri = uriInfo != null ? uriInfo.getRequestUri() : null;
+        var endpoint = uri != null ? uri.getPath() : "unknown";
+
         if (exception instanceof ClientWebApplicationException clientEx) {
-            var endpoint = uriInfo != null ? uriInfo.getRequestUri().toString() : "unknown";
             var status = clientEx.getResponse().getStatus();
             if (status == 404) {
                 Log.infof("Resource not found for endpoint : %s - message : %s", endpoint,
@@ -55,7 +57,6 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
         }
 
         if (exception instanceof NotFoundException) {
-            var endpoint = uriInfo != null ? uriInfo.getRequestUri().toString() : "unknown";
             Log.errorf("No matching resource for endpoint: %s", endpoint);
             return Response.status(Response.Status.NOT_FOUND).build();
         } else if (!BaseAuthResource.REFRESH_TOKEN_ERROR.equals(message)) {
