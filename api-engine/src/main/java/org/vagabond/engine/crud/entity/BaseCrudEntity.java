@@ -7,7 +7,6 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 
-import io.quarkus.logging.Log;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,7 +29,6 @@ public abstract class BaseCrudEntity extends BaseEntity {
     @PrePersist
     @PreUpdate
     public void prePersist() {
-        Log.debugf("persist %s", this.toString());
         if (this.creationDate == null) {
             this.creationDate = Instant.now();
         }

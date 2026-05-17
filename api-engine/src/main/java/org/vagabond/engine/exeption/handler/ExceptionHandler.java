@@ -33,7 +33,7 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
             var endpoint = uriInfo != null ? uriInfo.getRequestUri().toString() : "unknown";
             var status = clientEx.getResponse().getStatus();
             if (status == 404) {
-                Log.infof("TMDB resource not found for endpoint : %s - message : %s", endpoint,
+                Log.infof("Resource not found for endpoint : %s - message : %s", endpoint,
                         clientEx.getMessage());
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
