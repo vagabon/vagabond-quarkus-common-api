@@ -35,7 +35,7 @@ public class ExceptionHandler implements ExceptionMapper<RuntimeException> {
         if (exception instanceof ClientWebApplicationException clientEx) {
             var status = clientEx.getResponse().getStatus();
             if (status == 404) {
-                Log.infof("Resource not found for endpoint : %s - message : %s", endpoint,
+                Log.errorf("Resource not found for endpoint : %s - message : %s", endpoint,
                         clientEx.getMessage());
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
