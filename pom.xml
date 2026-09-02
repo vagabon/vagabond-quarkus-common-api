@@ -30,6 +30,7 @@
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <modelmapper.version>3.2.6</modelmapper.version>
         <lombok.version>1.18.46</lombok.version>
+        <sonar-maven-plugin.version>5.7.0.6970</sonar-maven-plugin.version>
         <firebase-admin.version>9.10.0</firebase-admin.version>
         <sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S1104</sonar.issue.ignore.multicriteria.e1.ruleKey>
@@ -114,6 +115,11 @@
                 <configuration>
                     <outputDirectory>${maven.multiModuleProjectDirectory}/target/coverage</outputDirectory>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
