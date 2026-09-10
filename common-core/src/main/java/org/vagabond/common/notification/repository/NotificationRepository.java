@@ -14,7 +14,8 @@ public class NotificationRepository extends BaseRepository<NotificationEntity> {
 
     public static final String LIKE_FORMAT = "%%%s%%";
 
-    public PanacheQuery<NotificationEntity> search(Long userId, String category, String type, Long entityId, String search) {
+    public PanacheQuery<NotificationEntity> search(Long userId, String category, String type, Long entityId,
+            String search) {
         var userIdLike = String.format(LIKE_FORMAT, userId + ",");
         var categoryLike = String.format(LIKE_FORMAT, category.toLowerCase());
         var typeLike = String.format(LIKE_FORMAT, type.toLowerCase());
@@ -40,12 +41,13 @@ public class NotificationRepository extends BaseRepository<NotificationEntity> {
         return count("where active = true and (read is null or read = false) and user.id = ?1", userId);
     }
 
-    public long countCountLastSend(Instant date, String category, String type, Long userId) {
-        return count("where creationDate > ?1 and category = ?2 and type = ?3 and users like ?4", date, category, type,
+    public long countCountLastSend(Instant date, String category, Long userId) {
+        return count("where creationDate > ?1 and category = ?2 and users like ?3", date, category,
                 "%" + userId + ",%");
     }
 
     public int readAllByUser(Long userId) {
-        return update("read = ?1 where active = true and (read is null or read = false) and user.id = ?2", true, userId);
+        return update("read = ?1 where active = true and (read is null or read = false) and user.id = ?2", true,
+                userId);
     }
 }

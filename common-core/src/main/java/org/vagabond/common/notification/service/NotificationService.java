@@ -85,7 +85,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
         newEntity.active = true;
         persist(newEntity);
 
-        if (getCountLastSend(category, type, userConnected.id) < 2L
+        if (getCountLastSend(category, userConnected.id) < 2L
                 || userConnected.profiles.stream().filter(profile -> "ADMIN".equals(profile.name)).count() == 1) {
             notification.tokens = getTokens(userIds);
             notificationKafkaService.registerNotification(notification);
@@ -99,9 +99,9 @@ public class NotificationService extends BaseService<NotificationEntity> {
     }
 
     @Transactional
-    public Long getCountLastSend(String category, String type, Long userId) {
+    public Long getCountLastSend(String category, Long userId) {
         var date = Instant.now().minus(5, ChronoUnit.MINUTES);
-        return repository.countCountLastSend(date, category, type, userId);
+        return repository.countCountLastSend(date, category, userId);
     }
 
 }
