@@ -41,7 +41,8 @@ public class NotificationRepository extends BaseRepository<NotificationEntity> {
     }
 
     public long countCountLastSend(Instant date, String category, String type, Long userId) {
-        return count("where creationDate > ?1 and category = ?2 and type = ?3 and user.id = ?4", date, category, type, userId);
+        return count("where creationDate > ?1 and category = ?2 and type = ?3 and users like ?4", date, category, type,
+                "%" + userId + ",%");
     }
 
     public int readAllByUser(Long userId) {
