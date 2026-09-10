@@ -41,8 +41,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
     @Inject
     private NotificationKafkaService notificationKafkaService;
 
-    public PageResponse<NotificationResponse> search(Long userId, String category, String type, Long entityId,
-            String search, int page) {
+    public PageResponse<NotificationResponse> search(Long userId, String category, String type, Long entityId, String search, int page) {
         var query = getRepository().search(userId, category, type, entityId, search);
 
         query.page(Page.ofSize(MAX_NOTIFICATIONS));
@@ -67,8 +66,8 @@ public class NotificationService extends BaseService<NotificationEntity> {
         return repository.readAllByUser(userId);
     }
 
-    public void sendNotification(UserEntity userConnected, List<Long> userIds,
-            NotificationRequest notification, Long entityId, String superType, String category, String type) {
+    public void sendNotification(UserEntity userConnected, List<Long> userIds, NotificationRequest notification, Long entityId,
+            String superType, String category, String type) {
 
         var newEntity = new NotificationEntity();
         newEntity.title = notification.title;
@@ -79,17 +78,15 @@ public class NotificationService extends BaseService<NotificationEntity> {
         newEntity.type = type;
         newEntity.entityId = entityId;
         newEntity.user = userConnected;
-        String joinUserIds = userIds != null
-                ? String.join(",", userIds.stream().map(Object::toString).toArray(String[]::new))
-                : null;
+        var joinUserIds = userIds != null ? (String.join(",", userIds.stream().map(Object::toString).toArray(String[]::new)) + ",") : null;
         newEntity.users = joinUserIds;
         newEntity.creationDate = Instant.now();
         newEntity.updatedDate = Instant.now();
         newEntity.active = true;
         persist(newEntity);
 
-        if (getCountLastSend(category, type, userConnected.id) < 2L || userConnected.profiles.stream()
-                .filter(profile -> "ADMIN".equals(profile.name)).count() == 1) {
+        if (getCountLastSend(category, type, userConnected.id) < 2L
+                || userConnected.profiles.stream().filter(profile -> "ADMIN".equals(profile.name)).count() == 1) {
             notification.tokens = getTokens(userIds);
             notificationKafkaService.registerNotification(notification);
         }
