@@ -121,7 +121,8 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
         UserEntity user = userRepository.findByOneField("googleId", googleResponse.id);
         if (user == null) {
             var name = AuthUtils.getUsername(googleResponse.givenName);
-            return saveNewUser(googleResponse.id, null, name, googleResponse.email, googleResponse.picture);
+            return saveNewUser(googleResponse.id, null, name, googleResponse.email,
+                googleResponse.picture);
         }
         user.avatar = googleResponse.picture;
         user.lastConnexionDate = Instant.now();
@@ -131,17 +132,23 @@ public class AuthService extends BaseAuthService<UserEntity, ProfileEntity> {
 
     @Transactional
     public UserEntity facebookConnect(FacebookResponse facebookResponse) {
-        UserEntity user = userRepository.findByOneField("facebookId", facebookResponse.id());
+        UserEntity user = userRepository.findByOneField("facebookId",
+            facebookResponse.id());
         var name = AuthUtils.getUsername(facebookResponse.name());
         if (user == null) {
-            return saveNewUser(null, facebookResponse.id(), name, facebookResponse.email(),
-                    facebookResponse.picture().data().url());
+            return saveNewUser(null, facebookResponse.id(), name,
+                facebookResponse.email(),
+                facebookResponse.picture().data().url());
         }
         return user;
     }
 
-    private UserEntity saveNewUser(String googleId, String facebookId, String name, String email,
-            String avatar) {
+    private UserEntity saveNewUser(
+        String googleId,
+        String facebookId,
+        String name,
+        String email,
+        String avatar) {
         UserEntity user = new UserEntity();
         user.googleId = googleId;
         user.facebookId = facebookId;

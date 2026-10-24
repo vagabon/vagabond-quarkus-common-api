@@ -62,8 +62,9 @@ public class EmailService extends BaseService<EmailEntity> {
     @Transactional
     public void finishEmail(EmailEntity email) {
         var hqlLink = "update EmailEntity set send = true, error = false where id = :emailId";
-        getRepository().getEntityManager().createQuery(hqlLink).setParameter("emailId", email.id)
-                .executeUpdate();
+        getRepository().getEntityManager().createQuery(hqlLink)
+            .setParameter("emailId", email.id)
+            .executeUpdate();
     }
 
     @Transactional

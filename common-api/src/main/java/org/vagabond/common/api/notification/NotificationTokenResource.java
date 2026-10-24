@@ -13,6 +13,7 @@ import org.vagabond.common.notification.token.NotificationTokenService;
 import org.vagabond.common.notification.token.payload.NotificationTokenRequest;
 import org.vagabond.common.notification.token.payload.NotificationTokenResponse;
 import org.vagabond.common.user.entity.UserEntity;
+import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
@@ -21,10 +22,13 @@ import io.smallrye.common.annotation.RunOnVirtualThread;
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class NotificationTokenResource
-        extends BaseSecurityResource<NotificationTokenEntity, UserEntity> {
+    extends BaseSecurityResource<NotificationTokenEntity, UserEntity> {
 
     @Inject
     NotificationTokenService notificationService;
+
+    @Inject
+    UserService userService;
 
     @PostConstruct
     public void postConstruct() {
@@ -35,9 +39,11 @@ public class NotificationTokenResource
     @PUT
     @Path("/user")
     public Response user(@RequestBody NotificationTokenRequest request) {
-        UserEntity userConnected = getUserConnected();
+        var userConnected = getUserConnected();
         verifyUserConnected(userConnected, request.userId());
-        var mergeToken = notificationService.mergeToken(userConnected, request.token());
+        var mergeToken = notificationService.mergeToken(
+            userService.findById(userConnected.id()),
+            request.token());
         return responseOk(doAfterFindById(userConnected, mergeToken));
     }
 }

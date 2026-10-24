@@ -18,6 +18,7 @@ import org.vagabond.common.file.entity.FileEntity;
 import org.vagabond.common.file.payload.FileResponse;
 import org.vagabond.common.file.service.FileService;
 import org.vagabond.common.user.entity.UserEntity;
+import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
@@ -29,6 +30,9 @@ public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
 
     @Inject
     FileService fileService;
+
+    @Inject
+    UserService userService;
 
     @PostConstruct
     public void postConstruct() {
@@ -50,18 +54,20 @@ public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
     @Path(value = "/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Transactional
-    public Response handleFileUpload(@QueryParam(value = "directory") String directory,
-            MultipartFormDataInput fileForm) {
+    public Response handleFileUpload(
+        @QueryParam(value = "directory") String directory,
+        MultipartFormDataInput fileForm) {
         var userConnected = getUserConnected();
 
         var entry = fileForm.getValues().entrySet().stream().toList();
         var firstFile = entry.get(0).getValue().stream().findFirst().orElseThrow();
         var fileName = firstFile.getFileName();
 
-        var file = fileService.findByFilename(fileName, userConnected.id);
+        var file = fileService.findByFilename(fileName, userConnected.id());
         if (file == null) {
             String image = fileService.uploadFile(firstFile, directory);
-            file = fileService.create(fileName, directory, image, userConnected);
+            file = fileService.create(fileName, directory, image,
+                userService.findById(userConnected.id()));
         }
 
         return responseOk(file);

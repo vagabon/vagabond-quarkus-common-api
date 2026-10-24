@@ -1,26 +1,26 @@
 package org.vagabond.engine.crud.resource;
 
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.vagabond.engine.auth.BaseAuthResource;
 import org.vagabond.engine.auth.entity.BaseUserEntity;
 import org.vagabond.engine.auth.service.BaseAuthService;
 import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.response.BaseResponse;
 import org.vagabond.engine.crud.service.ICrudService;
-import org.vagabond.engine.crud.utils.SecurityUtils;
 import org.vagabond.engine.exeption.MetierException;
+import org.vagabond.engine.gateway.CurrentUser;
+import org.vagabond.engine.gateway.GatewayUser;
 import org.vagabond.engine.mapper.MapperUtils;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
 public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseUserEntity<?>>
-        implements BaseResource {
+    implements BaseResource {
 
     @Inject
     protected BaseAuthService<U, ?> authService;
@@ -30,10 +30,7 @@ public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseU
     protected Class<? extends BaseResponse> responseClass;
 
     @Inject
-    JsonWebToken jwt;
-
-    @Inject
-    EntityManager entityManager;
+    GatewayUser gatewayUser;
 
     @GET()
     @Path("/{id}")
@@ -43,8 +40,8 @@ public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseU
         return responseOk(doAfterFindById(userConnected, entity));
     }
 
-    protected Object doAfterFindById(U userConnected, T response) {
-        if (SecurityUtils.hasRole(userConnected, ADMIN)) {
+    protected Object doAfterFindById(CurrentUser userConnected, T response) {
+        if (userConnected != null && userConnected.hasRole(ADMIN)) {
             return response;
         }
         return toDto(response);
@@ -54,13 +51,16 @@ public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseU
         return responseClass != null ? MapperUtils.toDto(entity, responseClass) : entity;
     }
 
-    protected U getUserConnected() {
-        return authService.findByUsername(jwt.getName());
+    protected CurrentUser getUserConnected() {
+        var user = gatewayUser.get();
+        if (user == null) {
+            throw new MetierException(BaseAuthResource.REFRESH_TOKEN_ERROR);
+        }
+        return user;
     }
 
-    protected void verifyUserConnected(U user, Long id) {
-        if (!user.id.equals(id) && user.getProfiles().stream()
-                .filter(profile -> profile.roles.contains((ADMIN))).toList().isEmpty()) {
+    protected void verifyUserConnected(CurrentUser user, Long id) {
+        if (!user.id().equals(id) && !user.hasRole(ADMIN)) {
             throw new MetierException("ERRORS.NOT_ALLOWED");
         }
     }

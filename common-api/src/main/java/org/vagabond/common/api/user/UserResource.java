@@ -42,7 +42,7 @@ public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
     @AuthSecure
     @AuthRole("USER")
     public Response updateEmail(@RequestBody UserEntity user) {
-        UserEntity userConnected = getUserConnected();
+        var userConnected = getUserConnected();
         verifyUserConnected(userConnected, user.id);
         return responseOk(userService.updateEmail(user.id, user.email));
     }
@@ -52,10 +52,10 @@ public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
     @AuthSecure
     @AuthRole("USER")
     public Response updatePassword(@RequestBody PasswordRequest passwordRequest) {
-        UserEntity userConnected = getUserConnected();
+        var userConnected = getUserConnected();
         verifyUserConnected(userConnected, passwordRequest.id());
         return responseOk(userService.updatePassword(passwordRequest.id(),
-                passwordRequest.password(), passwordRequest.newPassword()));
+            passwordRequest.password(), passwordRequest.newPassword()));
     }
 
     @POST
@@ -63,11 +63,12 @@ public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
     @AuthSecure
     @AuthRole("USER")
     public Response updateAvatar(@RequestBody UserEntity user) {
-        UserEntity userConnected = getUserConnected();
+        var userConnected = getUserConnected();
         verifyUserConnected(userConnected, user.id);
-        userConnected.avatar = user.avatar;
-        userConnected = userService.persist(userConnected);
-        return responseOk(Map.of("id", userConnected.id));
+        var userEntity = userService.findById(userConnected.id());
+        userEntity.avatar = user.avatar;
+        userEntity = userService.persist(userEntity);
+        return responseOk(Map.of("id", userEntity.id));
     }
 
     @GET

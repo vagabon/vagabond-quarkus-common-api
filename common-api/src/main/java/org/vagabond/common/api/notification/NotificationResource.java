@@ -18,37 +18,41 @@ import org.vagabond.common.notification.payload.NotificationRequest;
 import org.vagabond.common.notification.payload.NotificationResponse;
 import org.vagabond.common.notification.service.NotificationService;
 import org.vagabond.common.user.entity.UserEntity;
-import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.auth.annotation.AuthRole;
 import org.vagabond.engine.auth.annotation.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 import org.vagabond.engine.crud.response.PageResponse;
+import org.vagabond.engine.gateway.CurrentUser;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/notification")
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
-public class NotificationResource extends BaseCrudResource<NotificationEntity, UserEntity> {
+public class NotificationResource
+    extends BaseCrudResource<NotificationEntity, UserEntity> {
 
     @Inject
     NotificationService notificationService;
 
-    @Inject
-    UserService userService;
-
     @Override
-    public void doBeforeCreate(UserEntity userConnected, NotificationEntity notification) {
+    public void doBeforeCreate(
+        CurrentUser userConnected,
+        NotificationEntity notification) {
         verifyUserConnected(userConnected, notification.user.id);
     }
 
     @Override
-    public void doBeforeUpdate(UserEntity userConnected, NotificationEntity notification) {
+    public void doBeforeUpdate(
+        CurrentUser userConnected,
+        NotificationEntity notification) {
         verifyUserConnected(userConnected, notification.user.id);
     }
 
     @Override
-    public void doBeforeDelete(UserEntity userConnected, NotificationEntity notification) {
+    public void doBeforeDelete(
+        CurrentUser userConnected,
+        NotificationEntity notification) {
         verifyUserConnected(userConnected, notification.user.id);
     }
 
@@ -62,12 +66,15 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @Path("/search")
     @AuthSecure
     @AuthRole("USER")
-    public PageResponse<NotificationResponse> findBy(@DefaultValue("") @QueryParam("search") String search,
-            @DefaultValue("") @QueryParam("category") String category,
-            @DefaultValue("") @QueryParam("type") String type, @QueryParam("entityId") Long entityId,
-            @DefaultValue("1") @QueryParam("page") Integer page) {
+    public PageResponse<NotificationResponse> findBy(
+        @DefaultValue("") @QueryParam("search") String search,
+        @DefaultValue("") @QueryParam("category") String category,
+        @DefaultValue("") @QueryParam("type") String type,
+        @QueryParam("entityId") Long entityId,
+        @DefaultValue("1") @QueryParam("page") Integer page) {
         var userConnected = getUserConnected();
-        return notificationService.search(userConnected.id, category, type, entityId, search, page - 1);
+        return notificationService.search(userConnected.id(), category, type, entityId,
+            search, page - 1);
     }
 
     @GET
@@ -76,7 +83,7 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @AuthRole("USER")
     public Response countByUserConnected() {
         var userConnected = getUserConnected();
-        return responseOk(notificationService.countNotReadByUser(userConnected.id));
+        return responseOk(notificationService.countNotReadByUser(userConnected.id()));
     }
 
     @GET
@@ -91,7 +98,7 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @AuthRole("USER")
     public Response readByUserConnected() {
         var userConnected = getUserConnected();
-        return responseOk(notificationService.readAll(userConnected.id));
+        return responseOk(notificationService.readAll(userConnected.id()));
     }
 
     @PUT
@@ -113,10 +120,11 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @AuthSecure
     @AuthRole("USER")
     public Response sendNotification() {
-        UserEntity userConnected = getUserConnected();
+        var userConnected = getUserConnected();
         var notification = new NotificationRequest("test", "test", "/notification");
-        notificationService.sendNotification(userConnected, Arrays.asList(userConnected.id), notification,
-                null, "test", "test", "test");
+        notificationService.sendNotification(userConnected,
+            Arrays.asList(userConnected.id()), notification,
+            null, "test", "test", "test");
         return responseOkJson();
     }
 }

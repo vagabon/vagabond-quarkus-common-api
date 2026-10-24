@@ -10,6 +10,7 @@ import org.vagabond.common.email.payload.EmailRequest;
 import org.vagabond.common.email.service.EmailService;
 import org.vagabond.common.notification.entity.NotificationEntity;
 import org.vagabond.common.user.entity.UserEntity;
+import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.auth.annotation.AuthRole;
 import org.vagabond.engine.auth.annotation.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
@@ -26,15 +27,19 @@ public class EmailResource extends BaseSecurityResource<NotificationEntity, User
     @Inject
     EmailService emailService;
 
+    @Inject
+    UserService userService;
+
     @POST
     @Path("/produce")
     @AuthSecure
     @AuthRole("ADMIN")
     public Response produce() {
-        UserEntity userConnected = getUserConnected();
-        log.info("{}", userConnected.username);
+        var userConnected = getUserConnected();
+        log.info("{}", userConnected.username());
         EmailRequest mail = emailService.sendEmailOutgoing(
-                new EmailRequest(userConnected.email, "test", "test", userConnected));
+            new EmailRequest(userConnected.email(), "test", "test",
+                userService.findById(userConnected.id())));
         return Response.ok(mail).build();
     }
 

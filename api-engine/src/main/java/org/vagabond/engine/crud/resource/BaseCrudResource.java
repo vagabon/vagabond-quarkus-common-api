@@ -19,8 +19,8 @@ import org.vagabond.engine.auth.entity.BaseUserEntity;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.response.PageResponse;
-import org.vagabond.engine.crud.utils.SecurityUtils;
 import org.vagabond.engine.crud.utils.query.QueryUtils;
+import org.vagabond.engine.gateway.CurrentUser;
 import org.vagabond.engine.mapper.MapperUtils;
 
 import io.quarkus.panache.common.Page;
@@ -28,24 +28,24 @@ import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
 public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserEntity<?>>
-        extends BaseSecurityResource<T, U> {
+    extends BaseSecurityResource<T, U> {
 
     @POST
     @Path("/")
     @AuthSecure
     @AuthRole("ADMIN")
     public Response create(@RequestBody T entity) {
-        U userConnected = getUserConnected();
+        var userConnected = getUserConnected();
         doBeforeCreate(userConnected, entity);
         var entityCreate = service.create(entity);
         doAfterCreate(userConnected, entityCreate);
         return responseOk(doAfterFindById(userConnected, entityCreate));
     }
 
-    public void doBeforeCreate(U userConnected, T entity) {
+    public void doBeforeCreate(CurrentUser userConnected, T entity) {
     }
 
-    public void doAfterCreate(U userConnected, T entity) {
+    public void doAfterCreate(CurrentUser userConnected, T entity) {
     }
 
     @PUT
@@ -53,17 +53,17 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @AuthSecure
     @AuthRole("ADMIN")
     public Response update(@RequestBody T entity) {
-        U userConnected = getUserConnected();
+        var userConnected = getUserConnected();
         doBeforeUpdate(userConnected, entity);
         var update = service.update(entity);
         doAfterUpdate(userConnected, update);
         return responseOk(doAfterFindById(userConnected, update));
     }
 
-    public void doBeforeUpdate(U userConnected, T entity) {
+    public void doBeforeUpdate(CurrentUser userConnected, T entity) {
     }
 
-    public void doAfterUpdate(U userConnected, T entity) {
+    public void doAfterUpdate(CurrentUser userConnected, T entity) {
     }
 
     @DELETE
@@ -71,7 +71,7 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @AuthSecure
     @AuthRole("ADMIN")
     public Response delete(@QueryParam("id") Long id) {
-        U userConnected = getUserConnected();
+        var userConnected = getUserConnected();
         var entityBefore = service.findById(id);
         doBeforeDelete(userConnected, entityBefore);
         var entity = service.delete(id);
@@ -84,7 +84,7 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @AuthSecure
     @AuthRole("ADMIN")
     public Response desactivate(@QueryParam("id") Long id) {
-        U userConnected = getUserConnected();
+        var userConnected = getUserConnected();
         var entityBefore = service.findById(id);
         doBeforeDelete(userConnected, entityBefore);
         if (entityBefore instanceof BaseCrudEntity crudEntity) {
@@ -96,18 +96,20 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
         return responseOk(Map.of("id", id));
     }
 
-    public void doBeforeDelete(U userConnected, T entityBefore) {
+    public void doBeforeDelete(CurrentUser userConnected, T entityBefore) {
     }
 
-    public void doAfterDelete(U userConnected, T entity) {
+    public void doAfterDelete(CurrentUser userConnected, T entity) {
     }
 
     @GET
     @Path("/")
     @AuthSecure
     @AuthRole("USER")
-    public Response findAll(@QueryParam("page") Integer page, @QueryParam("max") Integer max,
-            @QueryParam("sort") String sort) {
+    public Response findAll(
+        @QueryParam("page") Integer page,
+        @QueryParam("max") Integer max,
+        @QueryParam("sort") String sort) {
         var response = service.findByPage(page, max, sort);
         return responseOk(doAfterFindBy(getUserConnected(), response));
     }
@@ -116,9 +118,11 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
     @Path("/findBy")
     @AuthSecure
     @AuthRole("USER")
-    public Response findBy(@DefaultValue("") @QueryParam("fields") String fields,
-            @DefaultValue("") @QueryParam("values") String values, @QueryParam("first") Integer first,
-            @QueryParam("max") Integer max) {
+    public Response findBy(
+        @DefaultValue("") @QueryParam("fields") String fields,
+        @DefaultValue("") @QueryParam("values") String values,
+        @QueryParam("first") Integer first,
+        @QueryParam("max") Integer max) {
         var userConnected = getUserConnected();
         if (first == null) {
             first = 0;
@@ -126,12 +130,15 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
         if (max == null) {
             max = 100;
         }
-        var response = service.constructQuery(first, max, fields, (Object[]) values.split(","));
+        var response = service.constructQuery(first, max, fields,
+            (Object[]) values.split(","));
         return responseOk(doAfterFindBy(userConnected, response));
     }
 
-    protected PageResponse<T> doAfterFindBy(U userConnected, PageResponse<T> response) {
-        if (SecurityUtils.hasRole(userConnected, ADMIN)) {
+    protected PageResponse<T> doAfterFindBy(
+        CurrentUser userConnected,
+        PageResponse<T> response) {
+        if (userConnected != null && userConnected.hasRole(ADMIN)) {
             return response;
         }
         return toPage(response);
@@ -144,18 +151,24 @@ public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserE
         return MapperUtils.toPage(response, responseClass);
     }
 
-    public Response doSearch(U userEntity, StringBuilder hqlQuery, String fields, String values,
-            Integer first, Integer max) {
+    public Response doSearch(
+        CurrentUser user,
+        StringBuilder hqlQuery,
+        String fields,
+        String values,
+        Integer first,
+        Integer max) {
         var valuesSplits = fields.split(">>");
 
         hqlQuery.append("AND e.active = true ");
         hqlQuery.append("ORDER BY e.").append(valuesSplits[1].replace("Desc", " desc"));
 
-        var query = service.getRepository().find(hqlQuery.toString(), QueryUtils.getLike(values));
+        var query = service.getRepository().find(hqlQuery.toString(),
+            QueryUtils.getLike(values));
         query.page(Page.ofSize(max));
         var response = new PageResponse<>(first, query.pageCount(), query.count(), max,
-                query.page(Page.of(first, max)).list());
-        return responseOk(doAfterFindBy(userEntity, response));
+            query.page(Page.of(first, max)).list());
+        return responseOk(doAfterFindBy(user, response));
 
     }
 }

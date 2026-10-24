@@ -28,7 +28,7 @@ import io.smallrye.common.annotation.RunOnVirtualThread;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public abstract class BaseAuthResource<U extends BaseUserEntity<P>, P extends BaseProfileEntity, T extends BaseUserTokenEntity>
-        implements BaseResource {
+    implements BaseResource {
 
     public static final String REFRESH_TOKEN_ERROR = "NO_REFRESH_TOKEN";
 
@@ -79,14 +79,16 @@ public abstract class BaseAuthResource<U extends BaseUserEntity<P>, P extends Ba
     protected Response getJwtTokens(U user) {
         var token = getService().generateTokenJwt(user);
         var refreshToken = getAuthTokenService().generateRefreshToken(user);
-        var refreshCookie = createCookieRefresh(refreshToken, getAuthTokenService().getRefreshTokenTtl());
+        var refreshCookie = createCookieRefresh(refreshToken,
+            getAuthTokenService().getRefreshTokenTtl());
 
-        return Response.ok(new AuthResponse<>(toDto(user), token)).cookie(refreshCookie).build();
+        return Response.ok(new AuthResponse<>(toDto(user), token)).cookie(refreshCookie)
+            .build();
     }
 
     private NewCookie createCookieRefresh(String refreshToken, int tll) {
         return new NewCookie.Builder(cookieName).value(refreshToken).httpOnly(true)
-                .sameSite(NewCookie.SameSite.LAX).path(refreshTokenPath).maxAge(tll).build();
+            .sameSite(NewCookie.SameSite.LAX).path(refreshTokenPath).maxAge(tll).build();
 
     }
 

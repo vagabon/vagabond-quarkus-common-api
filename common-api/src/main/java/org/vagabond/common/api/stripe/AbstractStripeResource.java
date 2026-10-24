@@ -18,11 +18,13 @@ import org.vagabond.common.stripe.configuration.StripeConfiguration;
 import org.vagabond.common.stripe.payload.StripePayloadRequest;
 import org.vagabond.common.stripe.payment.UserPaymentService;
 import org.vagabond.common.user.entity.UserEntity;
+import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
 import io.quarkus.logging.Log;
 
-public abstract class AbstractStripeResource extends BaseSecurityResource<UserEntity, UserEntity> {
+public abstract class AbstractStripeResource
+    extends BaseSecurityResource<UserEntity, UserEntity> {
 
     @ConfigProperty(name = "website.url")
     protected String websiteUrl;
@@ -36,6 +38,9 @@ public abstract class AbstractStripeResource extends BaseSecurityResource<UserEn
 
     @Inject
     protected UserPaymentService userPaymentService;
+
+    @Inject
+    UserService userService;
 
     protected int amount;
     protected String plan;
@@ -57,28 +62,33 @@ public abstract class AbstractStripeResource extends BaseSecurityResource<UserEn
 
     @GET
     @Path("/payment-intent")
-    public Response validatePaypmentIntent(@QueryParam("payment_intent") String paymentIntent,
-            @QueryParam("payment_intent_client_secret") String pamentIntentCLientSecret,
-            @QueryParam("redirect_status") String redirectStatus) throws StripeException {
+    public Response validatePaypmentIntent(
+        @QueryParam("payment_intent") String paymentIntent,
+        @QueryParam("payment_intent_client_secret") String pamentIntentCLientSecret,
+        @QueryParam("redirect_status") String redirectStatus) throws StripeException {
         PaymentIntent intent = stripeConfiguration.retrieve(paymentIntent);
         String htmlPageUrl = websiteUrl + websiteUrlPaymentKo;
         if (intent != null && pamentIntentCLientSecret.equals(intent.getClientSecret())) {
-            htmlPageUrl = websiteUrl + websiteUrlPaymentOk + plan + "/" + paymentIntent + "/"
-                    + pamentIntentCLientSecret;
+            htmlPageUrl = websiteUrl + websiteUrlPaymentOk + plan + "/" + paymentIntent
+                + "/"
+                + pamentIntentCLientSecret;
         }
-        return Response.status(Response.Status.FOUND).header("Location", htmlPageUrl).build();
+        return Response.status(Response.Status.FOUND).header("Location", htmlPageUrl)
+            .build();
     }
 
     @POST
     @Path("/validate")
-    public Response validatePayment(StripePayloadRequest stripePayload) throws StripeException {
+    public Response validatePayment(StripePayloadRequest stripePayload)
+        throws StripeException {
         var intent = stripeConfiguration.retrieve(stripePayload.intent());
         if (intent != null && stripePayload.secret().equals(intent.getClientSecret())) {
             Log.infof("%s %s ", stripePayload.secret(), intent.getClientSecret());
         }
         var userConnected = getUserConnected();
-        userPaymentService.createPayment(stripePayload.intent(), stripePayload.secret(), intent);
-        doAfterCreatePayment(userConnected);
+        userPaymentService.createPayment(stripePayload.intent(), stripePayload.secret(),
+            intent);
+        doAfterCreatePayment(userService.findById(userConnected.id()));
         return responseOk(userConnected);
     }
 
