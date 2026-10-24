@@ -9,10 +9,8 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement
 import org.vagabond.common.email.payload.EmailRequest;
 import org.vagabond.common.email.service.EmailService;
 import org.vagabond.common.notification.entity.NotificationEntity;
-import org.vagabond.common.user.entity.UserEntity;
-import org.vagabond.common.user.service.UserService;
-import org.vagabond.engine.auth.annotation.AuthRole;
-import org.vagabond.engine.auth.annotation.AuthSecure;
+import org.vagabond.engine.auth.AuthRole;
+import org.vagabond.engine.auth.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
@@ -22,13 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 @Slf4j
-public class EmailResource extends BaseSecurityResource<NotificationEntity, UserEntity> {
+public class EmailResource extends BaseSecurityResource<NotificationEntity> {
 
     @Inject
     EmailService emailService;
-
-    @Inject
-    UserService userService;
 
     @POST
     @Path("/produce")
@@ -39,7 +34,7 @@ public class EmailResource extends BaseSecurityResource<NotificationEntity, User
         log.info("{}", userConnected.username());
         EmailRequest mail = emailService.sendEmailOutgoing(
             new EmailRequest(userConnected.email(), "test", "test",
-                userService.findById(userConnected.id())));
+                userConnected));
         return Response.ok(mail).build();
     }
 

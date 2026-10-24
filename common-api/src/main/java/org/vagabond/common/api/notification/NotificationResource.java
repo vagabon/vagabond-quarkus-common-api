@@ -17,9 +17,8 @@ import org.vagabond.common.notification.entity.NotificationEntity;
 import org.vagabond.common.notification.payload.NotificationRequest;
 import org.vagabond.common.notification.payload.NotificationResponse;
 import org.vagabond.common.notification.service.NotificationService;
-import org.vagabond.common.user.entity.UserEntity;
-import org.vagabond.engine.auth.annotation.AuthRole;
-import org.vagabond.engine.auth.annotation.AuthSecure;
+import org.vagabond.engine.auth.AuthRole;
+import org.vagabond.engine.auth.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 import org.vagabond.engine.crud.response.PageResponse;
 import org.vagabond.engine.gateway.CurrentUser;
@@ -30,7 +29,7 @@ import io.smallrye.common.annotation.RunOnVirtualThread;
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class NotificationResource
-    extends BaseCrudResource<NotificationEntity, UserEntity> {
+    extends BaseCrudResource<NotificationEntity> {
 
     @Inject
     NotificationService notificationService;
@@ -39,21 +38,21 @@ public class NotificationResource
     public void doBeforeCreate(
         CurrentUser userConnected,
         NotificationEntity notification) {
-        verifyUserConnected(userConnected, notification.user.id);
+        verifyUserConnected(userConnected, notification.userId);
     }
 
     @Override
     public void doBeforeUpdate(
         CurrentUser userConnected,
         NotificationEntity notification) {
-        verifyUserConnected(userConnected, notification.user.id);
+        verifyUserConnected(userConnected, notification.userId);
     }
 
     @Override
     public void doBeforeDelete(
         CurrentUser userConnected,
         NotificationEntity notification) {
-        verifyUserConnected(userConnected, notification.user.id);
+        verifyUserConnected(userConnected, notification.userId);
     }
 
     @PostConstruct

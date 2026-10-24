@@ -54,7 +54,7 @@ public class EmailService extends BaseService<EmailEntity> {
         email.to = emailRequest.to();
         email.subject = emailRequest.subject();
         email.text = emailRequest.html();
-        email.userId = emailRequest.user() != null ? emailRequest.user().id : null;
+        email.userId = emailRequest.user() != null ? emailRequest.user().id() : null;
         email.send = false;
         return persist(email);
     }

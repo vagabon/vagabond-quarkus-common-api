@@ -2,11 +2,8 @@ package org.vagabond.common.notification.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 
 import lombok.EqualsAndHashCode;
@@ -22,23 +19,19 @@ import lombok.ToString;
 @ToString
 public class NotificationEntity extends BaseCrudEntity {
 
-    @ManyToOne()
-    @JoinColumn(name = "user_id")
-    public UserEntity user;
+    public Long userId;
 
     public String title;
 
     @Column(columnDefinition = "TEXT")
     public String message;
 
-    @Column(name = "super_type")
     public String superType;
     public String category;
     public String type;
 
     public String url;
 
-    @Column(name = "entity_id")
     public Long entityId;
 
     public String users;

@@ -15,10 +15,10 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.reactive.server.multipart.FormValue;
 import org.vagabond.common.file.entity.FileEntity;
 import org.vagabond.common.file.repository.FileRepository;
-import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
 import org.vagabond.engine.exeption.MetierException;
+import org.vagabond.engine.gateway.CurrentUser;
 
 @ApplicationScoped
 public class FileService extends BaseService<FileEntity> {
@@ -35,20 +35,26 @@ public class FileService extends BaseService<FileEntity> {
 
     public String uploadFile(FormValue file, String directory) {
         try {
-            return uploadFile(file.getFileName(), file.getFileItem().getInputStream(), directory);
+            return uploadFile(file.getFileName(), file.getFileItem().getInputStream(),
+                directory);
         } catch (IOException exception) {
-            throw new MetierException("Could not extract file: " + file.getFileName(), exception);
+            throw new MetierException("Could not extract file: " + file.getFileName(),
+                exception);
         }
     }
 
-    public String uploadFile(String fileName, InputStream fileInputStream, String directory) {
+    public String uploadFile(
+        String fileName,
+        InputStream fileInputStream,
+        String directory) {
         String updloadDirectory = String.format("%s/%s", uploadDirectory, directory);
         Path uploadPath = Paths.get(updloadDirectory);
         if (!Files.exists(uploadPath)) {
             try {
                 Files.createDirectories(uploadPath);
             } catch (IOException exception) {
-                throw new MetierException("Error on création directory : " + uploadPath, exception);
+                throw new MetierException("Error on création directory : " + uploadPath,
+                    exception);
             }
         }
         Path filePath = uploadPath.resolve(fileName);
@@ -65,17 +71,21 @@ public class FileService extends BaseService<FileEntity> {
         return path.toFile();
     }
 
-    public FileEntity create(String name, String directory, String path, UserEntity user) {
+    public FileEntity create(
+        String name,
+        String directory,
+        String path,
+        CurrentUser user) {
         FileEntity file = new FileEntity();
         file.name = name;
         file.directory = directory;
         file.path = path;
-        file.user = user;
+        file.userId = user.id();
         return persist(file);
     }
 
     public FileEntity findByFilename(String filename, Long userId) {
-        var files = findBy("where name = ?1 and user.id = ?2", filename, userId);
+        var files = findBy("where name = ?1 and userId = ?2", filename, userId);
         return files.isEmpty() ? null : files.get(0);
     }
 

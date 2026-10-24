@@ -4,7 +4,7 @@ import java.time.Instant;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.vagabond.engine.crud.entity.BaseEntity;
+import org.vagabond.engine.crud.entity.BaseIdEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -49,7 +49,7 @@ class EntityUtilsTest {
 
     @Getter
     @Setter
-    class Entity extends BaseEntity {
+    class Entity extends BaseIdEntity {
         public String name;
         public String username;
         public Instant myDate;
@@ -57,7 +57,7 @@ class EntityUtilsTest {
 
     @Getter
     @Setter
-    class Entity2 extends BaseEntity {
+    class Entity2 extends BaseIdEntity {
         public String name;
     }
 

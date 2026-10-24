@@ -1,11 +1,8 @@
 package org.vagabond.common.stripe.payment;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 
 import lombok.EqualsAndHashCode;
@@ -32,7 +29,5 @@ public class UserPaymentEntity extends BaseCrudEntity {
     public String source;
     public String status;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    public UserEntity user;
+    public Long userId;
 }

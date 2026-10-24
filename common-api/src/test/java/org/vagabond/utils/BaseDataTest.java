@@ -1,68 +1,27 @@
 package org.vagabond.utils;
 
-import java.util.Arrays;
-import java.util.List;
-
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.vagabond.common.profile.entity.ProfileEntity;
-import org.vagabond.common.profile.service.ProfileService;
-import org.vagabond.common.user.entity.UserEntity;
-import org.vagabond.common.user.service.UserService;
-import org.vagabond.engine.auth.utils.AuthUtils;
-import org.vagabond.engine.exeption.MetierException;
 
 public abstract class BaseDataTest {
 
-    @Inject
-    protected ProfileService profileService;
-    @Inject
-    protected UserService userService;
+    protected CurrentUserTest admin;
+    protected CurrentUserTest user;
 
-    protected ProfileEntity profileAdmin;
-    protected ProfileEntity profileUser;
-    protected ProfileEntity profilePremium;
-
-    protected UserEntity admin;
-    protected UserEntity user;
-
-    @Transactional
     @BeforeEach
     public void prepareTest() {
-        profileAdmin = getProfile("ADMIN", "ADMIN, USER");
-        profileUser = getProfile("USER", "USER");
-        profilePremium = getProfile("PREMIUM", "USER,PREMIUM");
 
-        admin = getUser("admin", Arrays.asList(profileAdmin, profileUser));
-        user = getUser("user", Arrays.asList(profileUser));
+        admin = getUser(1L, "admin", "USER,ADMIN");
+        user = getUser(2L, "user", "USER");
     }
 
-    private ProfileEntity getProfile(String name, String roles) {
-        var profiles = profileService.findBy("WHERE name = ?1 ", name);
-        if (profiles.isEmpty()) {
-            var profile = new ProfileEntity();
-            profile.active = true;
-            profile.name = name;
-            profile.roles = roles;
-            return profileService.persist(profile);
-        }
-        return profiles.get(0);
+    private CurrentUserTest getUser(Long id, String username, String profiles) {
+        return new CurrentUserTest(id, username, profiles);
     }
 
-    private UserEntity getUser(String username, List<ProfileEntity> profiles) {
-        try {
-            return userService.findByUsername(username);
-
-        } catch (MetierException _) {
-            var newUser = new UserEntity();
-            newUser.active = true;
-            newUser.username = username;
-            newUser.password = AuthUtils.encrypePassword("password");
-            newUser.profiles = profiles;
-            return userService.persist(newUser);
-        }
+    public record CurrentUserTest(
+        Long id,
+        String username,
+        String roles) {
     }
 
 }

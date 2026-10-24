@@ -14,40 +14,51 @@ public class NotificationRepository extends BaseRepository<NotificationEntity> {
 
     public static final String LIKE_FORMAT = "%%%s%%";
 
-    public PanacheQuery<NotificationEntity> search(Long userId, String category, String type, Long entityId,
-            String search) {
+    public PanacheQuery<NotificationEntity> search(
+        Long userId,
+        String category,
+        String type,
+        Long entityId,
+        String search) {
         var userIdLike = String.format(LIKE_FORMAT, userId + ",");
         var categoryLike = String.format(LIKE_FORMAT, category.toLowerCase());
         var typeLike = String.format(LIKE_FORMAT, type.toLowerCase());
         var searchLike = String.format(LIKE_FORMAT, search.toLowerCase());
 
         var sql = """
-                    WHERE users like ?1
-                        AND lower(category) like ?2
-                        AND lower(type) like ?3
-                        AND (lower(title) like ?4 OR lower(message) like ?4)
-                """;
+                WHERE users like ?1
+                    AND lower(category) like ?2
+                    AND lower(type) like ?3
+                    AND (lower(title) like ?4 OR lower(message) like ?4)
+            """;
         var order = " order by id desc";
 
         if (entityId != null) {
             sql = String.format("%s AND entityId = ?5", sql);
-            return find(String.format("%s %s", sql, order), userIdLike, categoryLike, typeLike, searchLike, entityId);
+            return find(String.format("%s %s", sql, order), userIdLike, categoryLike,
+                typeLike, searchLike, entityId);
         }
 
-        return find(String.format("%s %s", sql, order), userIdLike, categoryLike, typeLike, searchLike);
+        return find(String.format("%s %s", sql, order), userIdLike, categoryLike,
+            typeLike, searchLike);
     }
 
     public long countNotReadByUser(Long userId) {
-        return count("where active = true and (read is null or read = false) and user.id = ?1", userId);
+        return count(
+            "where active = true and (read is null or read = false) and userId = ?1",
+            userId);
     }
 
     public long countCountLastSend(Instant date, String category, Long userId) {
-        return count("where creationDate > ?1 and category = ?2 and users like ?3", date, category,
-                "%" + userId + ",%");
+        return count("where creationDate > ?1 and category = ?2 and users like ?3", date,
+            category,
+            "%" + userId + ",%");
     }
 
     public int readAllByUser(Long userId) {
-        return update("read = ?1 where active = true and (read is null or read = false) and user.id = ?2", true,
-                userId);
+        return update(
+            "read = ?1 where active = true and (read is null or read = false) and userId = ?2",
+            true,
+            userId);
     }
 }

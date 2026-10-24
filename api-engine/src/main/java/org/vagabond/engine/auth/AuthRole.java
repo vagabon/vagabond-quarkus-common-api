@@ -1,4 +1,4 @@
-package org.vagabond.engine.auth.annotation;
+package org.vagabond.engine.auth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

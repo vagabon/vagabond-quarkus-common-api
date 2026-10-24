@@ -1,6 +1,7 @@
 package org.vagabond.common.api.news;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import jakarta.inject.Inject;
@@ -17,7 +18,6 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.security.TestSecurity;
 
 @QuarkusTest
 class NewsResourceTest extends BaseDataTest {
@@ -30,8 +30,9 @@ class NewsResourceTest extends BaseDataTest {
 
     @Test
     void doSearch() {
-        var currentUser = new CurrentUser(user.id, user.username, user.email,
-            user.profiles.stream().map(p -> p.name).collect(Collectors.toSet()));
+        var currentUser = new CurrentUser(user.id(), user.username(), "",
+            Arrays.asList(user.roles().split(",")).stream()
+                .collect(Collectors.toSet()));
         var response = newsResource.doSearch(currentUser,
             new StringBuilder("from NewsEntity e where e.title like ?1"), ">>id", "null",
             0,
@@ -40,27 +41,37 @@ class NewsResourceTest extends BaseDataTest {
     }
 
     @Test
-    @TestSecurity(user = "admin")
+    @SuppressWarnings("null")
     void crud() {
         var newsRequest = new NewsEntity();
         newsRequest.description = "description";
         var news = given().body(newsRequest)
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles())
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
             .post("/news")
             .then().statusCode(200).extract().body().as(NewsEntity.class);
 
-        given().when().get("/news/" + news.id).then().statusCode(200);
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when().get("/news/" + news.id).then()
+            .statusCode(200);
 
         newsRequest.id = news.id;
-        given().body(news).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).body(news)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
             .when()
             .put("/news").then().statusCode(200);
     }
 
     @Test
-    @TestSecurity(user = "admin")
+    @SuppressWarnings("null")
     void upload() {
         var image = given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles())
             .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA)
             .multiPart("file", FILE, "text/plain").when()
             .post("/file/upload?directory=/news")
@@ -71,10 +82,15 @@ class NewsResourceTest extends BaseDataTest {
     }
 
     @Test
-    @TestSecurity(user = "user")
     void find() {
-        given().when().get("/news/1").then().statusCode(200);
-        given().when().get("/news/findBy?fields=active&values=true").then()
+        given()
+            .header("X-User-Id", user.id())
+            .header("X-User-Roles", user.roles()).when().get("/news/1").then()
+            .statusCode(200);
+        given()
+            .header("X-User-Id", user.id())
+            .header("X-User-Roles", user.roles()).when()
+            .get("/news/findBy?fields=active&values=true").then()
             .statusCode(200);
 
     }

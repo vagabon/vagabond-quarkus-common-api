@@ -1,6 +1,5 @@
 package org.vagabond.common.notification.payload;
 
-import org.vagabond.common.user.payload.UserSmallResponse;
 import org.vagabond.engine.crud.response.BaseResponse;
 
 import lombok.Getter;
@@ -24,5 +23,5 @@ public class NotificationResponse extends BaseResponse {
 
     private Boolean read;
 
-    private UserSmallResponse user;
+    private Long userId;
 }

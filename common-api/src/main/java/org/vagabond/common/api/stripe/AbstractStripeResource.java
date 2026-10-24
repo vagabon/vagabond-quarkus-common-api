@@ -16,15 +16,15 @@ import com.stripe.model.PaymentIntent;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.vagabond.common.stripe.configuration.StripeConfiguration;
 import org.vagabond.common.stripe.payload.StripePayloadRequest;
+import org.vagabond.common.stripe.payment.UserPaymentEntity;
 import org.vagabond.common.stripe.payment.UserPaymentService;
-import org.vagabond.common.user.entity.UserEntity;
-import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
+import org.vagabond.engine.gateway.CurrentUser;
 
 import io.quarkus.logging.Log;
 
 public abstract class AbstractStripeResource
-    extends BaseSecurityResource<UserEntity, UserEntity> {
+    extends BaseSecurityResource<UserPaymentEntity> {
 
     @ConfigProperty(name = "website.url")
     protected String websiteUrl;
@@ -38,9 +38,6 @@ public abstract class AbstractStripeResource
 
     @Inject
     protected UserPaymentService userPaymentService;
-
-    @Inject
-    UserService userService;
 
     protected int amount;
     protected String plan;
@@ -88,11 +85,11 @@ public abstract class AbstractStripeResource
         var userConnected = getUserConnected();
         userPaymentService.createPayment(stripePayload.intent(), stripePayload.secret(),
             intent);
-        doAfterCreatePayment(userService.findById(userConnected.id()));
+        doAfterCreatePayment(userConnected);
         return responseOk(userConnected);
     }
 
-    public void doAfterCreatePayment(UserEntity user) {
+    public void doAfterCreatePayment(CurrentUser user) {
     }
 
 }

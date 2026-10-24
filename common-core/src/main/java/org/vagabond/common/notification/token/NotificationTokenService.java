@@ -6,9 +6,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
+import org.vagabond.engine.gateway.CurrentUser;
 
 @ApplicationScoped
 public class NotificationTokenService extends BaseService<NotificationTokenEntity> {
@@ -22,12 +22,13 @@ public class NotificationTokenService extends BaseService<NotificationTokenEntit
     }
 
     @Transactional
-    public NotificationTokenEntity mergeToken(UserEntity user, String token) {
-        var entity = notificationTokenRepository.find("WHERE user.id = ?1 and token = ?2", user.id, token)
-                .firstResultOptional();
+    public NotificationTokenEntity mergeToken(CurrentUser user, String token) {
+        var entity = notificationTokenRepository
+            .find("WHERE userId = ?1 and token = ?2", user.id(), token)
+            .firstResultOptional();
         if (!entity.isPresent()) {
             var newEntity = new NotificationTokenEntity();
-            newEntity.user = user;
+            newEntity.userId = user.id();
             newEntity.token = token;
             newEntity.creationDate = Instant.now();
             newEntity.updatedDate = Instant.now();

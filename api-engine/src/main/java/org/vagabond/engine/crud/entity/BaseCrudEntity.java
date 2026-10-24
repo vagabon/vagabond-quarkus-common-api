@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class BaseCrudEntity extends BaseEntity {
+public abstract class BaseCrudEntity extends BaseIdEntity {
 
     @Column(name = "creation_date")
     public Instant creationDate;

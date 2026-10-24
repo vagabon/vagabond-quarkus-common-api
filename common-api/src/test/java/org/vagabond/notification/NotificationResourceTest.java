@@ -16,37 +16,76 @@ import io.quarkus.test.security.TestSecurity;
 class NotificationResourceTest extends BaseDataTest {
 
     @Test
-    @TestSecurity(user = "admin")
     void sendNotification() {
-        given().body(user.id).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-                .post("/notification/send").then().statusCode(200);
+
+        given().body(user.id())
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles())
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+            .post("/notification/send").then().statusCode(200);
     }
 
     @Test
+    @SuppressWarnings("null")
     @TestSecurity(user = "admin")
     void notificationCrud() {
-
         var notification = new NotificationEntity();
-        notification.user = user;
+        notification.userId = user.id();
         var notificationPersist = given().body(notification)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/notification")
-                .then().statusCode(200).extract().body().as(NotificationEntity.class);
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles())
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+            .post("/notification")
+            .then().statusCode(200).extract().body().as(NotificationEntity.class);
 
-        given().body(notificationPersist).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-                .put("/notification").then().statusCode(200);
+        given().body(notificationPersist)
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles())
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+            .put("/notification").then().statusCode(200);
 
-        given().when().get("/notification/" + notificationPersist.id).then().statusCode(200);
-        given().when().get("/notification/").then().statusCode(200);
-        given().when().get("/notification/count").then().statusCode(200);
-        given().when().get("/notification/count/" + user.id).then().statusCode(200);
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when()
+            .get("/notification/" + notificationPersist.id).then()
+            .statusCode(200);
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when().get("/notification/").then()
+            .statusCode(200);
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when().get("/notification/count")
+            .then().statusCode(200);
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when()
+            .get("/notification/count/" + user.id()).then().statusCode(200);
 
-        given().when().get("/notification/search?search=search").then().statusCode(200);
-        given().when().get("/notification/search?search=search&entityId=1").then().statusCode(200);
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when()
+            .get("/notification/search?search=search").then().statusCode(200);
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when()
+            .get("/notification/search?search=search&entityId=1").then()
+            .statusCode(200);
 
-        given().when().put("/notification/read-all").then().statusCode(200);
-        given().when().put("/notification/readAll/" + user.id).then().statusCode(200);
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when().put("/notification/read-all")
+            .then().statusCode(200);
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when()
+            .put("/notification/readAll/" + user.id()).then().statusCode(200);
 
-        given().when().delete("/notification/desactivate?id=" + notificationPersist.id).then()
-                .statusCode(200);
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when()
+            .delete("/notification/desactivate?id=" + notificationPersist.id)
+            .then()
+            .statusCode(200);
     }
 }

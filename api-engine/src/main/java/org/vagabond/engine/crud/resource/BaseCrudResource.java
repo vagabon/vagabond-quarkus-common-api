@@ -13,9 +13,8 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.vagabond.engine.auth.annotation.AuthRole;
-import org.vagabond.engine.auth.annotation.AuthSecure;
-import org.vagabond.engine.auth.entity.BaseUserEntity;
+import org.vagabond.engine.auth.AuthRole;
+import org.vagabond.engine.auth.AuthSecure;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.response.PageResponse;
@@ -27,8 +26,8 @@ import io.quarkus.panache.common.Page;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
-public abstract class BaseCrudResource<T extends BaseEntity, U extends BaseUserEntity<?>>
-    extends BaseSecurityResource<T, U> {
+public abstract class BaseCrudResource<T extends BaseEntity>
+    extends BaseSecurityResource<T> {
 
     @POST
     @Path("/")

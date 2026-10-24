@@ -1,11 +1,8 @@
 package org.vagabond.common.file.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-import org.vagabond.common.user.entity.UserEntity;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 
 import lombok.EqualsAndHashCode;
@@ -25,7 +22,5 @@ public class FileEntity extends BaseCrudEntity {
     public String directory;
     public String path;
 
-    @ManyToOne()
-    @JoinColumn(name = "user_id")
-    public UserEntity user;
+    public Long userId;
 }

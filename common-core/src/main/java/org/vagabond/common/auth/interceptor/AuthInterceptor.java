@@ -8,9 +8,9 @@ import jakarta.interceptor.InvocationContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.internal.util.Assert;
-import org.vagabond.engine.auth.annotation.AuthRole;
-import org.vagabond.engine.auth.annotation.AuthSecure;
-import org.vagabond.engine.auth.service.BaseAuthService;
+import org.vagabond.engine.auth.AuthRole;
+import org.vagabond.engine.auth.AuthSecure;
+import org.vagabond.engine.crud.resource.BaseSecurityResource;
 import org.vagabond.engine.exeption.MetierException;
 import org.vagabond.engine.gateway.GatewayUser;
 
@@ -36,8 +36,10 @@ public class AuthInterceptor {
         if (authRole != null) {
             String role = authRole.value();
             if (StringUtils.isNotBlank(role)) {
-                if (gatewayUser.get() == null || !gatewayUser.get().hasRole(role)) {
-                    throw new MetierException(BaseAuthService.USER_NOT_CONNECTED);
+                if (gatewayUser.get() == null) {
+                    throw new MetierException(BaseSecurityResource.USER_NOT_CONNECTED);
+                } else if (!gatewayUser.get().hasRole(role)) {
+                    throw new MetierException(BaseSecurityResource.USER_NOT_ALLOWED);
                 }
             }
         }

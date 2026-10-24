@@ -5,9 +5,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
 
-import org.vagabond.engine.auth.BaseAuthResource;
-import org.vagabond.engine.auth.entity.BaseUserEntity;
-import org.vagabond.engine.auth.service.BaseAuthService;
 import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.response.BaseResponse;
 import org.vagabond.engine.crud.service.ICrudService;
@@ -19,18 +16,18 @@ import org.vagabond.engine.mapper.MapperUtils;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
-public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseUserEntity<?>>
+public abstract class BaseSecurityResource<T extends BaseEntity>
     implements BaseResource {
 
-    @Inject
-    protected BaseAuthService<U, ?> authService;
+    public static final String USER_NOT_CONNECTED = "USER_NOT_CONNECTED";
+    public static final String USER_NOT_ALLOWED = "USER_NOT_ALLOWED";
 
     protected ICrudService<T> service;
 
     protected Class<? extends BaseResponse> responseClass;
 
     @Inject
-    GatewayUser gatewayUser;
+    protected GatewayUser gatewayUser;
 
     @GET()
     @Path("/{id}")
@@ -52,11 +49,7 @@ public abstract class BaseSecurityResource<T extends BaseEntity, U extends BaseU
     }
 
     protected CurrentUser getUserConnected() {
-        var user = gatewayUser.get();
-        if (user == null) {
-            throw new MetierException(BaseAuthResource.REFRESH_TOKEN_ERROR);
-        }
-        return user;
+        return gatewayUser.get();
     }
 
     protected void verifyUserConnected(CurrentUser user, Long id) {

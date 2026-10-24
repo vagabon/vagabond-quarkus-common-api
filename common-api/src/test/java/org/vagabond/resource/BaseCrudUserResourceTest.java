@@ -7,27 +7,24 @@ import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 
 import org.junit.jupiter.api.Test;
-import org.vagabond.common.user.entity.UserEntity;
-import org.vagabond.common.user.payload.UserResponse;
-import org.vagabond.common.user.service.UserService;
+import org.vagabond.common.email.entity.EmailEntity;
+import org.vagabond.common.email.service.EmailService;
 import org.vagabond.engine.crud.resource.BaseCrudUserResource;
 import org.vagabond.utils.BaseDataTest;
 
 import static io.restassured.RestAssured.given;
 
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.security.TestSecurity;
 
-@Path("/crud-user")
-class CrudUserResource extends BaseCrudUserResource<UserEntity, UserEntity> {
+@Path("/email-test")
+class CrudUserResource extends BaseCrudUserResource<EmailEntity> {
 
     @Inject
-    private UserService userService;
+    private EmailService emailService;
 
     @PostConstruct
     public void postConstruct() {
-        service = userService;
-        responseClass = UserResponse.class;
+        service = emailService;
     }
 }
 
@@ -35,21 +32,30 @@ class CrudUserResource extends BaseCrudUserResource<UserEntity, UserEntity> {
 class BaseCrudUserResourceTest extends BaseDataTest {
 
     @Test
-    @TestSecurity(user = "user")
+    @SuppressWarnings("null")
     void testCreate() {
-        var url = "/crud-user";
+        var url = "/email-test";
 
-        var user = new UserEntity();
-        user.username = "blablablu";
-        user.password = "password";
-        var userPersist = given().body(user)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post(url)
-                .then().statusCode(200).extract().body().as(UserEntity.class);
+        var email = new EmailEntity();
+        email.to = "to";
+        email.subject = "subject";
+        var emailPersist = given()
+            .header("X-User-Id", user.id())
+            .header("X-User-Roles", user.roles()).body(email)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post(url)
+            .then().statusCode(200).extract().body().as(EmailEntity.class);
 
-        userPersist.password = "password2";
-        given().body(userPersist).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .when().put(url).then().statusCode(200);
+        emailPersist.subject = "subject2";
+        given()
+            .header("X-User-Id", user.id())
+            .header("X-User-Roles", user.roles()).body(emailPersist)
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .when().put(url).then().statusCode(200);
 
-        given().when().delete(url + "/desactivate?id=" + userPersist.id).then().statusCode(200);
+        given()
+            .header("X-User-Id", user.id())
+            .header("X-User-Roles", user.roles()).when()
+            .delete(url + "/desactivate?id=" + emailPersist.id).then()
+            .statusCode(200);
     }
 }

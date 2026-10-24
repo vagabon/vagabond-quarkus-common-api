@@ -1,5 +1,8 @@
 package org.vagabond.common.api.email;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 
@@ -9,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.vagabond.common.email.entity.EmailEntity;
 import org.vagabond.common.email.service.EmailService;
+import org.vagabond.engine.gateway.CurrentUser;
+import org.vagabond.engine.gateway.GatewayUser;
 import org.vagabond.utils.BaseDataTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +23,6 @@ import static org.mockito.Mockito.doThrow;
 import io.quarkus.mailer.Mail;
 import io.quarkus.mailer.Mailer;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.security.TestSecurity;
 
 @QuarkusTest
 class EmailResourceTest extends BaseDataTest {
@@ -32,6 +36,9 @@ class EmailResourceTest extends BaseDataTest {
     @Mock
     Mailer mailer;
 
+    @Inject
+    GatewayUser gatewayUser;
+
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
@@ -39,8 +46,11 @@ class EmailResourceTest extends BaseDataTest {
     }
 
     @Test
-    @TestSecurity(user = "admin")
     void testProduce() {
+        gatewayUser.set(new CurrentUser(admin.id(), admin.username(), "",
+            Arrays.asList(admin.roles().split(",")).stream()
+                .collect(Collectors.toSet())));
+
         Response response = emailResource.produce();
 
         var email = new EmailEntity();
@@ -62,7 +72,8 @@ class EmailResourceTest extends BaseDataTest {
         email.subject = "Test Subject";
         email.text = "<p>Test HTML</p>";
 
-        doThrow(new RuntimeException("Failed to send email")).when(mailer).send(any(Mail.class));
+        doThrow(new RuntimeException("Failed to send email")).when(mailer)
+            .send(any(Mail.class));
 
         boolean result = emailService.sendMail(email);
 

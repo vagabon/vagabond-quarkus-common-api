@@ -4,15 +4,14 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.vagabond.engine.auth.annotation.AuthRole;
-import org.vagabond.engine.auth.entity.BaseUserEntity;
+import org.vagabond.engine.auth.AuthRole;
 import org.vagabond.engine.crud.entity.BaseEntity;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @RunOnVirtualThread
-public abstract class BaseCrudUserResource<T extends BaseEntity, U extends BaseUserEntity<?>>
-        extends BaseCrudResource<T, U> {
+public abstract class BaseCrudUserResource<T extends BaseEntity>
+    extends BaseCrudResource<T> {
 
     @Override
     @AuthRole("USER")

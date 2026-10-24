@@ -41,6 +41,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
     @Inject
     private NotificationKafkaService notificationKafkaService;
 
+    @SuppressWarnings("null")
     public PageResponse<NotificationResponse> search(
         Long userId,
         String category,
@@ -92,7 +93,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
         newEntity.category = category;
         newEntity.type = type;
         newEntity.entityId = entityId;
-        // newEntity.user = userConnected;
+        newEntity.userId = userConnected.id();
         var joinUserIds = userIds != null
             ? (String.join(",",
                 userIds.stream().map(Object::toString).toArray(String[]::new)) + ",")
@@ -113,7 +114,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
     @Transactional
     public List<String> getTokens(List<Long> userIds) {
         var entityTokens = notificationTokenRepository
-            .find("WHERE user.id in ?1", userIds).list();
+            .find("WHERE userId in ?1", userIds).list();
         return entityTokens.stream().map(entity -> entity.token).distinct().toList();
     }
 

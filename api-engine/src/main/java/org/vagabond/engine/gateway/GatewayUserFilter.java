@@ -19,16 +19,19 @@ public class GatewayUserFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext ctx) {
         var id = ctx.getHeaderString("X-User-Id");
+        var name = ctx.getHeaderString("X-User-Name");
+        var email = ctx.getHeaderString("X-User-Email");
+        var roles = ctx.getHeaderString("X-User-Roles");
 
         if (id == null || id.isBlank()) {
+            gatewayUser.set(null);
             return;
         }
 
-        var roles = ctx.getHeaderString("X-User-Roles");
         gatewayUser.set(new CurrentUser(
             Long.valueOf(id),
-            ctx.getHeaderString("X-User-Name"),
-            ctx.getHeaderString("X-User-Email"),
+            name,
+            email,
             roles == null || roles.isBlank()
                 ? Set.of()
                 : Set.of(roles.split(","))));

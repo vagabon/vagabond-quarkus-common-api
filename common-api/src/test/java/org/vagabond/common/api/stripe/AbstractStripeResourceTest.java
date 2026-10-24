@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.security.TestSecurity;
 
 @QuarkusTest
 class AbstractStripeResourceTest extends BaseDataTest {
@@ -32,32 +31,47 @@ class AbstractStripeResourceTest extends BaseDataTest {
     private StripeConfiguration stripeConfiguration;
 
     @Test
-    @TestSecurity(user = "user")
     void doPaiement() throws StripeException {
-
         var paymentIntent = new PaymentIntent();
         paymentIntent.setClientSecret("clientSecret");
-        Mockito.when(stripeConfiguration.create(Mockito.anyMap())).thenReturn(paymentIntent);
+        Mockito.when(stripeConfiguration.create(Mockito.anyMap()))
+            .thenReturn(paymentIntent);
 
-        given().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/stripe/payment-intent").then().statusCode(200);
+        given()
+            .header("X-User-Id", user.id())
+            .header("X-User-Roles", user.roles())
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+            .post("/stripe/payment-intent").then().statusCode(200);
 
-        Mockito.when(stripeConfiguration.retrieve(Mockito.any())).thenReturn(paymentIntent);
+        Mockito.when(stripeConfiguration.retrieve(Mockito.any()))
+            .thenReturn(paymentIntent);
 
-        given().body(new StripePayloadRequest("", "clientSecret")).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-                .post("/stripe/validate").then().statusCode(200);
-        given().body(new StripePayloadRequest("", "clientSecret")).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-                .post("/stripe/validate").then().statusCode(200);
+        given()
+            .header("X-User-Id", user.id())
+            .header("X-User-Roles", user.roles())
+            .body(new StripePayloadRequest("", "clientSecret"))
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+            .post("/stripe/validate").then().statusCode(200);
+        given()
+            .header("X-User-Id", user.id())
+            .header("X-User-Roles", user.roles())
+            .body(new StripePayloadRequest("", "clientSecret"))
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+            .post("/stripe/validate").then().statusCode(200);
     }
 
     @Test
     void testValidatePaypmentIntentWithError() throws StripeException {
         var paymentIntent = new PaymentIntent();
         paymentIntent.setClientSecret("clientSecret");
-        Mockito.when(stripeConfiguration.retrieve(Mockito.any())).thenReturn(paymentIntent);
+        Mockito.when(stripeConfiguration.retrieve(Mockito.any()))
+            .thenReturn(paymentIntent);
 
-        var response = resource.validatePaypmentIntent("payment_intent", "clientSecret", "redirect_status");
+        var response = resource.validatePaypmentIntent("payment_intent", "clientSecret",
+            "redirect_status");
 
         assertEquals(Response.Status.FOUND.getStatusCode(), response.getStatus());
-        assertEquals("http://localhost:3000/pro/payment_intent/clientSecret", response.getHeaderString("Location"));
+        assertEquals("http://localhost:3000/pro/payment_intent/clientSecret",
+            response.getHeaderString("Location"));
     }
 }

@@ -17,8 +17,6 @@ import org.jboss.resteasy.reactive.server.multipart.MultipartFormDataInput;
 import org.vagabond.common.file.entity.FileEntity;
 import org.vagabond.common.file.payload.FileResponse;
 import org.vagabond.common.file.service.FileService;
-import org.vagabond.common.user.entity.UserEntity;
-import org.vagabond.common.user.service.UserService;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
@@ -26,13 +24,10 @@ import io.smallrye.common.annotation.RunOnVirtualThread;
 @Path("/file")
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
-public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
+public class FileResource extends BaseCrudResource<FileEntity> {
 
     @Inject
     FileService fileService;
-
-    @Inject
-    UserService userService;
 
     @PostConstruct
     public void postConstruct() {
@@ -67,7 +62,7 @@ public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
         if (file == null) {
             String image = fileService.uploadFile(firstFile, directory);
             file = fileService.create(fileName, directory, image,
-                userService.findById(userConnected.id()));
+                userConnected);
         }
 
         return responseOk(file);
