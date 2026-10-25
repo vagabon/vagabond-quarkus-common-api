@@ -16,11 +16,11 @@ import org.vagabond.common.notification.entity.NotificationEntity;
 import org.vagabond.common.notification.payload.NotificationRequest;
 import org.vagabond.common.notification.payload.NotificationResponse;
 import org.vagabond.common.notification.service.NotificationService;
-import org.vagabond.engine.auth.AuthRole;
-import org.vagabond.engine.auth.AuthSecure;
+import org.vagabond.engine.auth.decorator.AuthRole;
+import org.vagabond.engine.auth.decorator.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 import org.vagabond.engine.crud.response.PageResponse;
-import org.vagabond.engine.gateway.CurrentUser;
+import org.vagabond.engine.user.CurrentUser;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 

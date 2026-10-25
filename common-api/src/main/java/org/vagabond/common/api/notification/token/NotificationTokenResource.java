@@ -1,4 +1,4 @@
-package org.vagabond.common.api.notification;
+package org.vagabond.common.api.notification.token;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;

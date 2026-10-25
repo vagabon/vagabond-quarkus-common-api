@@ -21,17 +21,21 @@ import io.quarkus.logging.Log;
 public class HttpComponent {
 
     public <T> T httpGet(String url, Class<T> payloadCLass) {
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).header("Accept", "application/json").GET().build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url))
+            .header("Accept", "application/json").GET().build();
         return send(request, payloadCLass);
     }
 
     public <T> T httpPost(String url, String jsonBody, Class<T> payloadCLass) {
-        var request = HttpRequest.newBuilder().uri(URI.create(url)).header("Accept", "application/json")
-                .POST(BodyPublishers.ofString(jsonBody)).build();
+        var request = HttpRequest.newBuilder().uri(URI.create(url))
+            .header("Accept", "application/json")
+            .POST(BodyPublishers.ofString(jsonBody)).build();
         return send(request, payloadCLass);
     }
 
-    public <T> HttpResponse<T> send(HttpRequest request, HttpResponse.BodyHandler<T> bodyHandler) {
+    public <T> HttpResponse<T> send(
+        HttpRequest request,
+        HttpResponse.BodyHandler<T> bodyHandler) {
         var client = HttpClient.newHttpClient();
         try {
             HttpResponse<T> response = client.send(request, bodyHandler);
@@ -54,7 +58,8 @@ public class HttpComponent {
         var response = send(request, HttpResponse.BodyHandlers.ofString());
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(response.body(), objectMapper.getTypeFactory().constructType(payloadCLass));
+            return objectMapper.readValue(response.body(),
+                objectMapper.getTypeFactory().constructType(payloadCLass));
         } catch (JsonProcessingException exception) {
             throw new MetierException(exception.getMessage(), exception);
         }

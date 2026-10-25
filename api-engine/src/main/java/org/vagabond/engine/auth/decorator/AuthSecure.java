@@ -1,4 +1,4 @@
-package org.vagabond.engine.auth;
+package org.vagabond.engine.auth.decorator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

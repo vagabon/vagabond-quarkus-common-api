@@ -8,11 +8,11 @@ import jakarta.interceptor.InvocationContext;
 
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.internal.util.Assert;
-import org.vagabond.engine.auth.AuthRole;
-import org.vagabond.engine.auth.AuthSecure;
+import org.vagabond.engine.auth.decorator.AuthRole;
+import org.vagabond.engine.auth.decorator.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
 import org.vagabond.engine.exeption.MetierException;
-import org.vagabond.engine.gateway.GatewayUser;
+import org.vagabond.engine.gateway.user.GatewayUser;
 
 @AuthSecure
 @Interceptor

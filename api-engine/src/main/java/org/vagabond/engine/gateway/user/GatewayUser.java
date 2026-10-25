@@ -1,6 +1,8 @@
-package org.vagabond.engine.gateway;
+package org.vagabond.engine.gateway.user;
 
 import jakarta.enterprise.context.RequestScoped;
+
+import org.vagabond.engine.user.CurrentUser;
 
 @RequestScoped
 public class GatewayUser {

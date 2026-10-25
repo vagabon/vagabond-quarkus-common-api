@@ -18,7 +18,7 @@ import org.vagabond.common.file.repository.FileRepository;
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
 import org.vagabond.engine.exeption.MetierException;
-import org.vagabond.engine.gateway.CurrentUser;
+import org.vagabond.engine.user.CurrentUser;
 
 @ApplicationScoped
 public class FileService extends BaseService<FileEntity> {

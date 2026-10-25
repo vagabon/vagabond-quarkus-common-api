@@ -9,9 +9,9 @@ import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.response.BaseResponse;
 import org.vagabond.engine.crud.service.ICrudService;
 import org.vagabond.engine.exeption.MetierException;
-import org.vagabond.engine.gateway.CurrentUser;
-import org.vagabond.engine.gateway.GatewayUser;
+import org.vagabond.engine.gateway.user.GatewayUser;
 import org.vagabond.engine.mapper.MapperUtils;
+import org.vagabond.engine.user.CurrentUser;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 

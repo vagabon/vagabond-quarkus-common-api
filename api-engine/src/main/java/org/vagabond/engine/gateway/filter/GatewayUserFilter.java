@@ -1,4 +1,4 @@
-package org.vagabond.engine.gateway;
+package org.vagabond.engine.gateway.filter;
 
 import java.util.Set;
 
@@ -8,6 +8,9 @@ import jakarta.interceptor.Interceptor;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.ext.Provider;
+
+import org.vagabond.engine.gateway.user.GatewayUser;
+import org.vagabond.engine.user.CurrentUser;
 
 @Provider
 @Priority(Interceptor.Priority.APPLICATION + 1)

@@ -4,7 +4,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.vagabond.engine.auth.AuthRole;
+import org.vagabond.engine.auth.decorator.AuthRole;
 import org.vagabond.engine.crud.entity.BaseEntity;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;

@@ -1,4 +1,4 @@
-package org.vagabond.engine.gateway;
+package org.vagabond.engine.user;
 
 import java.util.Set;
 

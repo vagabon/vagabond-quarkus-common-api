@@ -8,8 +8,8 @@ import jakarta.ws.rs.core.Response;
 import org.vagabond.common.email.payload.EmailRequest;
 import org.vagabond.common.email.service.EmailService;
 import org.vagabond.common.notification.entity.NotificationEntity;
-import org.vagabond.engine.auth.AuthRole;
-import org.vagabond.engine.auth.AuthSecure;
+import org.vagabond.engine.auth.decorator.AuthRole;
+import org.vagabond.engine.auth.decorator.AuthSecure;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;

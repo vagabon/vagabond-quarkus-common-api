@@ -9,7 +9,7 @@ import jakarta.ws.rs.core.Response;
 import org.vagabond.common.news.entity.NewsEntity;
 import org.vagabond.common.news.payload.NewsResponse;
 import org.vagabond.common.news.service.NewsService;
-import org.vagabond.engine.auth.AuthRole;
+import org.vagabond.engine.auth.decorator.AuthRole;
 import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;

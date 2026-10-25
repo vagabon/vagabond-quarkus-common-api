@@ -19,7 +19,7 @@ import org.vagabond.common.stripe.payload.StripePayloadRequest;
 import org.vagabond.common.stripe.payment.UserPaymentEntity;
 import org.vagabond.common.stripe.payment.UserPaymentService;
 import org.vagabond.engine.crud.resource.BaseSecurityResource;
-import org.vagabond.engine.gateway.CurrentUser;
+import org.vagabond.engine.user.CurrentUser;
 
 import io.quarkus.logging.Log;
 

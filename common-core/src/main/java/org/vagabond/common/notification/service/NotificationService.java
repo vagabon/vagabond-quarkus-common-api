@@ -17,8 +17,8 @@ import org.vagabond.common.notification.repository.NotificationRepository;
 import org.vagabond.common.notification.token.NotificationTokenRepository;
 import org.vagabond.engine.crud.response.PageResponse;
 import org.vagabond.engine.crud.service.BaseService;
-import org.vagabond.engine.gateway.CurrentUser;
 import org.vagabond.engine.mapper.MapperUtils;
+import org.vagabond.engine.user.CurrentUser;
 
 import io.quarkus.panache.common.Page;
 import lombok.Getter;

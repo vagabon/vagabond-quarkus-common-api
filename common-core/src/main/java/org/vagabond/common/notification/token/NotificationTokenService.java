@@ -8,7 +8,7 @@ import jakarta.transaction.Transactional;
 
 import org.vagabond.engine.crud.repository.BaseRepository;
 import org.vagabond.engine.crud.service.BaseService;
-import org.vagabond.engine.gateway.CurrentUser;
+import org.vagabond.engine.user.CurrentUser;
 
 @ApplicationScoped
 public class NotificationTokenService extends BaseService<NotificationTokenEntity> {

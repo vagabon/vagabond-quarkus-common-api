@@ -11,7 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 import org.junit.jupiter.api.Test;
 import org.vagabond.common.file.entity.FileEntity;
 import org.vagabond.common.news.entity.NewsEntity;
-import org.vagabond.engine.gateway.CurrentUser;
+import org.vagabond.engine.user.CurrentUser;
 import org.vagabond.utils.BaseDataTest;
 
 import static io.restassured.RestAssured.given;

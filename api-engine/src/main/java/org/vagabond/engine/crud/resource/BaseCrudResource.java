@@ -13,14 +13,14 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
-import org.vagabond.engine.auth.AuthRole;
-import org.vagabond.engine.auth.AuthSecure;
+import org.vagabond.engine.auth.decorator.AuthRole;
+import org.vagabond.engine.auth.decorator.AuthSecure;
 import org.vagabond.engine.crud.entity.BaseCrudEntity;
 import org.vagabond.engine.crud.entity.BaseEntity;
 import org.vagabond.engine.crud.response.PageResponse;
 import org.vagabond.engine.crud.utils.query.QueryUtils;
-import org.vagabond.engine.gateway.CurrentUser;
 import org.vagabond.engine.mapper.MapperUtils;
+import org.vagabond.engine.user.CurrentUser;
 
 import io.quarkus.panache.common.Page;
 import io.smallrye.common.annotation.RunOnVirtualThread;

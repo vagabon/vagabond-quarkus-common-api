@@ -12,8 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.vagabond.common.email.entity.EmailEntity;
 import org.vagabond.common.email.service.EmailService;
-import org.vagabond.engine.gateway.CurrentUser;
-import org.vagabond.engine.gateway.GatewayUser;
+import org.vagabond.engine.gateway.user.GatewayUser;
+import org.vagabond.engine.user.CurrentUser;
 import org.vagabond.utils.BaseDataTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
