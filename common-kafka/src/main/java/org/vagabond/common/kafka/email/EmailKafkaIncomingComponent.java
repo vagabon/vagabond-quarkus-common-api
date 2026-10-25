@@ -8,7 +8,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.OnOverflow;
 import org.vagabond.common.email.entity.EmailEntity;
 import org.vagabond.common.email.service.EmailService;
-import org.vagabond.common.kafka.engine.IKafkaUniService;
+import org.vagabond.engine.kafka.service.IKafkaUniService;
 
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Uni;

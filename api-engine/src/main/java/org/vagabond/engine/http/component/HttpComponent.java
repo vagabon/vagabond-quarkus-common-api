@@ -1,4 +1,4 @@
-package org.vagabond.engine.http;
+package org.vagabond.engine.http.component;
 
 import java.io.IOException;
 import java.net.URI;

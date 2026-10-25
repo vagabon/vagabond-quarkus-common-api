@@ -1,4 +1,4 @@
-package org.vagabond.common.kafka.engine;
+package org.vagabond.engine.kafka.service;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 

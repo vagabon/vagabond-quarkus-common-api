@@ -9,7 +9,7 @@ import jakarta.inject.Inject;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.vagabond.common.email.service.EmailService;
-import org.vagabond.common.kafka.engine.ICronComponent;
+import org.vagabond.engine.cron.component.ICronComponent;
 
 import io.quarkus.logging.Log;
 import io.quarkus.mailer.Mail;
@@ -32,7 +32,8 @@ public class EmailKafkaCronComponent implements ICronComponent {
         var date = Instant.now().minus(SECONDES_ADD_TO_CHECK, ChronoUnit.SECONDS);
         String hql = "where send = false and error is null and active = true and creationDate <= ?1";
 
-        var emails = emailService.getRepository().find(hql, date).page(0, MAX_EMAIL).list();
+        var emails = emailService.getRepository().find(hql, date).page(0, MAX_EMAIL)
+            .list();
 
         var nbSend = 0;
         for (var emailEntity : emails) {
