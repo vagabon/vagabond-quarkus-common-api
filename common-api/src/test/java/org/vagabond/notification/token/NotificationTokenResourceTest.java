@@ -22,7 +22,7 @@ class NotificationTokenResourceTest extends BaseDataTest {
             .header("X-User-Id", user.id())
             .header("X-User-Roles", user.roles()).body(entity)
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-            .when().put("/notification/token/user").then()
+            .when().put("/notifications/tokens/user").then()
             .statusCode(200);
     }
 }

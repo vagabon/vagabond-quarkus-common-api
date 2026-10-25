@@ -74,10 +74,10 @@ class NewsResourceTest extends BaseDataTest {
             .header("X-User-Roles", admin.roles())
             .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA)
             .multiPart("file", FILE, "text/plain").when()
-            .post("/file/upload?directory=/news")
+            .post("/files/upload?directory=/news")
             .then().statusCode(200).extract().body().as(FileEntity.class);
 
-        given().when().get("/file/download?fileName=" + image.path).then()
+        given().when().get("/files/download?fileName=" + image.path).then()
             .statusCode(200);
     }
 

@@ -41,7 +41,7 @@ class AbstractStripeResourceTest extends BaseDataTest {
             .header("X-User-Id", user.id())
             .header("X-User-Roles", user.roles())
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-            .post("/stripe/payment-intent").then().statusCode(200);
+            .post("/stripes/payment-intent").then().statusCode(200);
 
         Mockito.when(stripeConfiguration.retrieve(Mockito.any()))
             .thenReturn(paymentIntent);
@@ -51,13 +51,13 @@ class AbstractStripeResourceTest extends BaseDataTest {
             .header("X-User-Roles", user.roles())
             .body(new StripePayloadRequest("", "clientSecret"))
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-            .post("/stripe/validate").then().statusCode(200);
+            .post("/stripes/validate").then().statusCode(200);
         given()
             .header("X-User-Id", user.id())
             .header("X-User-Roles", user.roles())
             .body(new StripePayloadRequest("", "clientSecret"))
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-            .post("/stripe/validate").then().statusCode(200);
+            .post("/stripes/validate").then().statusCode(200);
     }
 
     @Test

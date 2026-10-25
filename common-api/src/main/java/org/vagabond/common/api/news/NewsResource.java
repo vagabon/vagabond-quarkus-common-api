@@ -6,7 +6,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
 
-import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.vagabond.common.news.entity.NewsEntity;
 import org.vagabond.common.news.payload.NewsResponse;
 import org.vagabond.common.news.service.NewsService;
@@ -16,7 +15,6 @@ import org.vagabond.engine.crud.resource.BaseCrudResource;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
 @Path("/news")
-@SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class NewsResource extends BaseCrudResource<NewsEntity> {
 
