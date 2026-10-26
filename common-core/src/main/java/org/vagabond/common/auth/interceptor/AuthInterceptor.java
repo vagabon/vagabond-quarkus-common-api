@@ -18,29 +18,31 @@ import org.vagabond.engine.auth.annotation.AuthSecure;
 @Priority(Interceptor.Priority.APPLICATION + 1)
 public class AuthInterceptor {
 
-  @Inject
-  private JsonWebToken jwt;
+    @Inject
+    private JsonWebToken jwt;
 
-  @Inject
-  private AuthService authService;
+    @Inject
+    private AuthService authService;
 
-  @AroundInvoke
-  public Object validateToken(InvocationContext ctx) throws Exception {
-    Assert.notNull(jwt);
+    @AroundInvoke
+    @SuppressWarnings({ "null", "unused" })
+    public Object validateToken(InvocationContext ctx) throws Exception {
+        Assert.notNull(jwt);
 
-    var method = ctx.getMethod();
+        var method = ctx.getMethod();
 
-    var authRole = method.getAnnotation(AuthRole.class);
-    if (authRole == null) {
-      authRole = ctx.getTarget().getClass().getAnnotation(AuthRole.class);
+        @SuppressWarnings("null")
+        var authRole = method.getAnnotation(AuthRole.class);
+        if (authRole == null) {
+            authRole = ctx.getTarget().getClass().getAnnotation(AuthRole.class);
+        }
+        if (authRole != null) {
+            String role = authRole.value();
+            if (StringUtils.isNotBlank(role)) {
+                var user = authService.findByUsername(jwt.getName());
+                authService.hasRole(user, role);
+            }
+        }
+        return ctx.proceed();
     }
-    if (authRole != null) {
-      String role = authRole.value();
-      if (StringUtils.isNotBlank(role)) {
-        var user = authService.findByUsername(jwt.getName());
-        authService.hasRole(user, role);
-      }
-    }
-    return ctx.proceed();
-  }
 }

@@ -28,14 +28,17 @@ public class SecurityUtils {
                 return find;
             }).toList();
             if (simpleGrantedAuthorities.isEmpty()) {
-                throw new MetierException("ACCES DENIED - ROLE(S) '" + roles + "' NEEDED");
+                throw new MetierException(
+                    "ACCES DENIED - ROLE(S) '" + roles + "' NEEDED");
             }
         }
     }
 
+    @SuppressWarnings("null")
     public static <U extends BaseUserEntity<?>> boolean hasRole(U user, String role) {
         if (user != null && user.getProfiles() != null) {
-            var profiles = user.getProfiles().stream().map(profile -> profile.name).toList();
+            var profiles = user.getProfiles().stream().map(profile -> profile.name)
+                .toList();
             return profiles.contains(role);
 
         }

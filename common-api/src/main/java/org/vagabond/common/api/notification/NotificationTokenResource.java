@@ -17,11 +17,11 @@ import org.vagabond.engine.crud.resource.BaseSecurityResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
-@Path("/notification/token")
+@Path("/notifications/tokens")
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class NotificationTokenResource
-        extends BaseSecurityResource<NotificationTokenEntity, UserEntity> {
+    extends BaseSecurityResource<NotificationTokenEntity, UserEntity> {
 
     @Inject
     NotificationTokenService notificationService;

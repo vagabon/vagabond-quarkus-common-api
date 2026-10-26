@@ -19,7 +19,8 @@ class NotificationTokenResourceTest extends BaseDataTest {
     @TestSecurity(user = "user")
     void createNotificationuser() {
         var entity = new NotificationTokenRequest(user.id, "token");
-        given().body(entity).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().put("/notification/token/user").then()
-                .statusCode(200);
+        given().body(entity).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .when().put("/notifications/tokens/user").then()
+            .statusCode(200);
     }
 }

@@ -24,7 +24,7 @@ import io.quarkus.elytron.security.common.BcryptUtil;
 import io.smallrye.jwt.build.Jwt;
 
 public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends BaseProfileEntity>
-        extends BaseService<T> {
+    extends BaseService<T> {
 
     private static final String USER_NOT_CONNECTED = "USER NOT CONNECTED";
     public static final String LOGIN_ERROR = "AUTH:ERROR.LOGIN_ERROR";
@@ -47,13 +47,16 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         return generateTokenJwt(user, duration);
     }
 
+    @SuppressWarnings("null")
     public String generateTokenJwt(T user, Long customDuration) {
         var profiles = loadProfileOrGetDefaultOne(user);
         return Jwt.issuer(issuer).upn(user.username)
-                .groups(profiles.stream().map(profile -> profile.name).collect(Collectors.toSet()))
-                .expiresIn(customDuration).sign();
+            .groups(profiles.stream().map(profile -> profile.name)
+                .collect(Collectors.toSet()))
+            .expiresIn(customDuration).sign();
     }
 
+    @SuppressWarnings("null")
     private List<P> loadProfileOrGetDefaultOne(T user) {
         if (user.getProfiles() == null || user.getProfiles().isEmpty()) {
             var userProfile = getProfileRepository().findByOneField("name", "USER");
@@ -96,6 +99,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         return resetConnectionTrials(user);
     }
 
+    @SuppressWarnings("null")
     @Transactional
     public T doConnectionTrials(T user) {
         user.lastFailedTrialDate = Instant.now();
@@ -104,6 +108,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         return persist(user);
     }
 
+    @SuppressWarnings("null")
     @Transactional
     public T resetConnectionTrials(T user) {
         user.connectionTrials = 0;
@@ -113,6 +118,7 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
 
     public abstract void doBeforeSignin(T user);
 
+    @SuppressWarnings("null")
     private boolean checkAttemptDelay(T user, int attemptMax, int trialWaitingTime) {
         if (null == user.lastFailedTrialDate) {
             return true;
@@ -134,13 +140,14 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
         return !(tooManyAttempts && isAttemptTooSoon);
     }
 
+    @SuppressWarnings("null")
     public T signup(T user) {
         if (getRepository().existBy(USERNAME, user.username)) {
             throw new MetierException("ERRORS:USERNAME_ALREADY_EXIST");
         }
 
         if (getRepository().existBy("email", user.email)
-                && !user.email.equals("gonzague.clement@gmail.com")) {
+            && !user.email.equals("gonzague.clement@gmail.com")) {
             throw new MetierException("ERRORS:EMAIL_ALREADY_EXIST");
         }
 
@@ -157,12 +164,13 @@ public abstract class BaseAuthService<T extends BaseUserEntity<P>, P extends Bas
 
     public abstract void doAfterSignUp(T user);
 
+    @SuppressWarnings("null")
     @Transactional
     public <U extends BaseUserEntity<?>> void hasRole(U user, String roles) {
         List<String> groups = new ArrayList<>();
         if (user != null) {
             groups = user.getProfiles().stream().map(profile -> profile.roles.split(","))
-                    .flatMap(Arrays::stream).toList();
+                .flatMap(Arrays::stream).toList();
         }
         if (StringUtils.isNotBlank(roles)) {
             if (groups.stream().filter(profil -> profil.equals("ADMIN")).count() == 0) {

@@ -22,7 +22,7 @@ import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
-@Path("/file")
+@Path("/files")
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
@@ -50,8 +50,9 @@ public class FileResource extends BaseCrudResource<FileEntity, UserEntity> {
     @Path(value = "/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Transactional
-    public Response handleFileUpload(@QueryParam(value = "directory") String directory,
-            MultipartFormDataInput fileForm) {
+    public Response handleFileUpload(
+        @QueryParam(value = "directory") String directory,
+        MultipartFormDataInput fileForm) {
         var userConnected = getUserConnected();
 
         var entry = fileForm.getValues().entrySet().stream().toList();

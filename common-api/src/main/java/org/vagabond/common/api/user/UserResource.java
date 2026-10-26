@@ -23,7 +23,7 @@ import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
-@Path("/user")
+@Path("/users")
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
@@ -55,7 +55,7 @@ public class UserResource extends BaseCrudResource<UserEntity, UserEntity> {
         UserEntity userConnected = getUserConnected();
         verifyUserConnected(userConnected, passwordRequest.id());
         return responseOk(userService.updatePassword(passwordRequest.id(),
-                passwordRequest.password(), passwordRequest.newPassword()));
+            passwordRequest.password(), passwordRequest.newPassword()));
     }
 
     @POST

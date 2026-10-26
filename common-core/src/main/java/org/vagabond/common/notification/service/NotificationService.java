@@ -41,13 +41,21 @@ public class NotificationService extends BaseService<NotificationEntity> {
     @Inject
     private NotificationKafkaService notificationKafkaService;
 
-    public PageResponse<NotificationResponse> search(Long userId, String category, String type, Long entityId, String search, int page) {
+    @SuppressWarnings("null")
+    public PageResponse<NotificationResponse> search(
+        Long userId,
+        String category,
+        String type,
+        Long entityId,
+        String search,
+        int page) {
         var query = getRepository().search(userId, category, type, entityId, search);
 
         query.page(Page.ofSize(MAX_NOTIFICATIONS));
         var content = query.page(Page.of(page, MAX_NOTIFICATIONS)).list();
-        return new PageResponse<>(page, query.pageCount(), query.count(), MAX_NOTIFICATIONS,
-                MapperUtils.toList(content, NotificationResponse.class));
+        return new PageResponse<>(page, query.pageCount(), query.count(),
+            MAX_NOTIFICATIONS,
+            MapperUtils.toList(content, NotificationResponse.class));
     }
 
     public Long countNotReadByUser(Long userId) {
@@ -66,19 +74,30 @@ public class NotificationService extends BaseService<NotificationEntity> {
         return repository.readAllByUser(userId);
     }
 
-    public void sendNotification(UserEntity userConnected, List<Long> userIds, NotificationRequest notification, Long entityId,
-            String superType, String category, String type) {
+    public void sendNotification(
+        UserEntity userConnected,
+        List<Long> userIds,
+        NotificationRequest notification,
+        Long entityId,
+        String superType,
+        String category,
+        String type) {
 
         var newEntity = new NotificationEntity();
         newEntity.title = notification.title;
         newEntity.message = notification.body;
-        newEntity.url = websiteUrl + (StringUtils.isEmpty(notification.url) ? "/profile" : notification.url);
+        newEntity.url = websiteUrl
+            + (StringUtils.isEmpty(notification.url) ? "/profile" : notification.url);
         newEntity.superType = superType;
         newEntity.category = category;
         newEntity.type = type;
         newEntity.entityId = entityId;
         newEntity.user = userConnected;
-        var joinUserIds = userIds != null ? (String.join(",", userIds.stream().map(Object::toString).toArray(String[]::new)) + ",") : null;
+        @SuppressWarnings("null")
+        var joinUserIds = userIds != null
+            ? (String.join(",",
+                userIds.stream().map(Object::toString).toArray(String[]::new)) + ",")
+            : null;
         newEntity.users = joinUserIds;
         newEntity.creationDate = Instant.now();
         newEntity.updatedDate = Instant.now();
@@ -86,7 +105,8 @@ public class NotificationService extends BaseService<NotificationEntity> {
         persist(newEntity);
 
         if (getCountLastSend(category, userConnected.id) < 2L
-                || userConnected.profiles.stream().filter(profile -> "ADMIN".equals(profile.name)).count() == 1) {
+            || userConnected.profiles.stream()
+                .filter(profile -> "ADMIN".equals(profile.name)).count() == 1) {
             notification.tokens = getTokens(userIds);
             notificationKafkaService.registerNotification(notification);
         }
@@ -94,7 +114,8 @@ public class NotificationService extends BaseService<NotificationEntity> {
 
     @Transactional
     public List<String> getTokens(List<Long> userIds) {
-        var entityTokens = notificationTokenRepository.find("WHERE user.id in ?1", userIds).list();
+        var entityTokens = notificationTokenRepository
+            .find("WHERE user.id in ?1", userIds).list();
         return entityTokens.stream().map(entity -> entity.token).distinct().toList();
     }
 

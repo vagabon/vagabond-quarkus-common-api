@@ -26,10 +26,11 @@ import org.vagabond.engine.crud.response.PageResponse;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
-@Path("/notification")
+@Path("/notifications")
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
-public class NotificationResource extends BaseCrudResource<NotificationEntity, UserEntity> {
+public class NotificationResource
+    extends BaseCrudResource<NotificationEntity, UserEntity> {
 
     @Inject
     NotificationService notificationService;
@@ -38,17 +39,23 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     UserService userService;
 
     @Override
-    public void doBeforeCreate(UserEntity userConnected, NotificationEntity notification) {
+    public void doBeforeCreate(
+        UserEntity userConnected,
+        NotificationEntity notification) {
         verifyUserConnected(userConnected, notification.user.id);
     }
 
     @Override
-    public void doBeforeUpdate(UserEntity userConnected, NotificationEntity notification) {
+    public void doBeforeUpdate(
+        UserEntity userConnected,
+        NotificationEntity notification) {
         verifyUserConnected(userConnected, notification.user.id);
     }
 
     @Override
-    public void doBeforeDelete(UserEntity userConnected, NotificationEntity notification) {
+    public void doBeforeDelete(
+        UserEntity userConnected,
+        NotificationEntity notification) {
         verifyUserConnected(userConnected, notification.user.id);
     }
 
@@ -62,12 +69,15 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     @Path("/search")
     @AuthSecure
     @AuthRole("USER")
-    public PageResponse<NotificationResponse> findBy(@DefaultValue("") @QueryParam("search") String search,
-            @DefaultValue("") @QueryParam("category") String category,
-            @DefaultValue("") @QueryParam("type") String type, @QueryParam("entityId") Long entityId,
-            @DefaultValue("1") @QueryParam("page") Integer page) {
+    public PageResponse<NotificationResponse> findBy(
+        @DefaultValue("") @QueryParam("search") String search,
+        @DefaultValue("") @QueryParam("category") String category,
+        @DefaultValue("") @QueryParam("type") String type,
+        @QueryParam("entityId") Long entityId,
+        @DefaultValue("1") @QueryParam("page") Integer page) {
         var userConnected = getUserConnected();
-        return notificationService.search(userConnected.id, category, type, entityId, search, page - 1);
+        return notificationService.search(userConnected.id, category, type, entityId,
+            search, page - 1);
     }
 
     @GET
@@ -115,8 +125,9 @@ public class NotificationResource extends BaseCrudResource<NotificationEntity, U
     public Response sendNotification() {
         UserEntity userConnected = getUserConnected();
         var notification = new NotificationRequest("test", "test", "/notification");
-        notificationService.sendNotification(userConnected, Arrays.asList(userConnected.id), notification,
-                null, "test", "test", "test");
+        notificationService.sendNotification(userConnected,
+            Arrays.asList(userConnected.id), notification,
+            null, "test", "test", "test");
         return responseOkJson();
     }
 }

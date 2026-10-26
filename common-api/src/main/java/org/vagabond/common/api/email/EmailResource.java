@@ -17,7 +17,7 @@ import org.vagabond.engine.crud.resource.BaseSecurityResource;
 import io.smallrye.common.annotation.RunOnVirtualThread;
 import lombok.extern.slf4j.Slf4j;
 
-@Path("/email")
+@Path("/emails")
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 @Slf4j
@@ -34,7 +34,7 @@ public class EmailResource extends BaseSecurityResource<NotificationEntity, User
         UserEntity userConnected = getUserConnected();
         log.info("{}", userConnected.username);
         EmailRequest mail = emailService.sendEmailOutgoing(
-                new EmailRequest(userConnected.email, "test", "test", userConnected));
+            new EmailRequest(userConnected.email, "test", "test", userConnected));
         return Response.ok(mail).build();
     }
 

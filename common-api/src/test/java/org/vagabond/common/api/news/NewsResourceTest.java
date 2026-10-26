@@ -20,7 +20,8 @@ import io.quarkus.test.security.TestSecurity;
 @QuarkusTest
 class NewsResourceTest extends BaseDataTest {
 
-    private static final File FILE = new File("./src/test/resources/application.properties");
+    private static final File FILE = new File(
+        "./src/test/resources/application.properties");
 
     @Inject
     NewsResource newsResource;
@@ -28,42 +29,51 @@ class NewsResourceTest extends BaseDataTest {
     @Test
     void doSearch() {
         var response = newsResource.doSearch(user,
-                new StringBuilder("from NewsEntity e where e.title like ?1"), ">>id", "null", 0,
-                10);
+            new StringBuilder("from NewsEntity e where e.title like ?1"), ">>id", "null",
+            0,
+            10);
         assertNotNull(response);
     }
 
     @Test
     @TestSecurity(user = "admin")
+    @SuppressWarnings("null")
     void crud() {
         var newsRequest = new NewsEntity();
         newsRequest.description = "description";
         var news = given().body(newsRequest)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when().post("/news")
-                .then().statusCode(200).extract().body().as(NewsEntity.class);
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
+            .post("/news")
+            .then().statusCode(200).extract().body().as(NewsEntity.class);
 
         given().when().get("/news/" + news.id).then().statusCode(200);
 
         newsRequest.id = news.id;
-        given().body(news).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
-                .put("/news").then().statusCode(200);
+        given().body(news).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+            .when()
+            .put("/news").then().statusCode(200);
     }
 
     @Test
     @TestSecurity(user = "admin")
+    @SuppressWarnings("null")
     void upload() {
-        var image = given().header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA)
-                .multiPart("file", FILE, "text/plain").when().post("/file/upload?directory=/news")
-                .then().statusCode(200).extract().body().as(FileEntity.class);
+        var image = given()
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA)
+            .multiPart("file", FILE, "text/plain").when()
+            .post("/files/upload?directory=/news")
+            .then().statusCode(200).extract().body().as(FileEntity.class);
 
-        given().when().get("/file/download?fileName=" + image.path).then().statusCode(200);
+        given().when().get("/files/download?fileName=" + image.path).then()
+            .statusCode(200);
     }
 
     @Test
     @TestSecurity(user = "user")
     void find() {
         given().when().get("/news/1").then().statusCode(200);
-        given().when().get("/news/findBy?fields=active&values=true").then().statusCode(200);
+        given().when().get("/news/findBy?fields=active&values=true").then()
+            .statusCode(200);
 
     }
 }

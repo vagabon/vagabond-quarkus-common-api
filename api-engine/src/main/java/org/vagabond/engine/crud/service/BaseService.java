@@ -16,7 +16,8 @@ import org.vagabond.engine.exeption.MetierException;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 
-public abstract class BaseService<T extends BaseEntity> implements ICrudService<T>, IQueryUtils {
+public abstract class BaseService<T extends BaseEntity>
+    implements ICrudService<T>, IQueryUtils {
 
     @Transactional
     public T persist(T entity) {
@@ -33,7 +34,12 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
         return queryPage("where active = ?1", page, max, sort, true);
     }
 
-    public PageResponse<T> queryPage(String sql, Integer page, Integer max, String sort, Object... values) {
+    public PageResponse<T> queryPage(
+        String sql,
+        Integer page,
+        Integer max,
+        String sort,
+        Object... values) {
         if (sort != null && !sort.isEmpty()) {
             sql += " order by " + sort;
         }
@@ -48,12 +54,12 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
         var numberOfPages = activeQuery.pageCount();
         var count = activeQuery.count();
         return new PageResponse<>(page, numberOfPages, count, max,
-                activeQuery.page(Page.of(page, max)).list());
+            activeQuery.page(Page.of(page, max)).list());
     }
 
     @Transactional
     public T create(T entity) {
-        if (entity.id != null) {
+        if (entity == null || entity.id != null) {
             throw new MetierException("Id is not null");
         }
         doBeforeCreate(entity);
@@ -65,7 +71,7 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
 
     @Transactional
     public T update(T entity) {
-        if (entity.id == null) {
+        if (entity == null || entity.id == null) {
             throw new MetierException("Id is null");
         }
         var entityFromBdd = getRepository().findById(entity.id);
@@ -89,11 +95,15 @@ public abstract class BaseService<T extends BaseEntity> implements ICrudService<
     }
 
     @Transactional
-    public PageResponse<T> constructQuery(Integer first, Integer max, String champs, Object... tabValues) {
+    public PageResponse<T> constructQuery(
+        Integer first,
+        Integer max,
+        String champs,
+        Object... tabValues) {
         var query = getQuery(champs, tabValues);
         query.page(Page.ofSize(max));
         return new PageResponse<>(first, query.pageCount(), query.count(), max,
-                query.page(Page.of(first, max)).list());
+            query.page(Page.of(first, max)).list());
     }
 
     private PanacheQuery<T> getQuery(String champs, Object... tabValues) {

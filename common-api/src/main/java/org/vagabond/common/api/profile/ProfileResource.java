@@ -13,7 +13,7 @@ import org.vagabond.engine.crud.resource.BaseCrudResource;
 
 import io.smallrye.common.annotation.RunOnVirtualThread;
 
-@Path("/profile")
+@Path("/roles")
 @SecurityRequirement(name = "SecurityScheme")
 @RunOnVirtualThread
 public class ProfileResource extends BaseCrudResource<ProfileEntity, UserEntity> {
