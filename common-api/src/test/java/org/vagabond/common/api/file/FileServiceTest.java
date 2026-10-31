@@ -38,14 +38,15 @@ class FileServiceTest {
     void cleanup() throws IOException {
         Path testDir = Path.of(System.getProperty("java.io.tmpdir"), "tmp");
         if (Files.exists(testDir)) {
-            Files.walk(testDir).sorted(Comparator.reverseOrder()).forEach(p -> p.toFile().delete());
+            Files.walk(testDir).sorted(Comparator.reverseOrder())
+                .forEach(p -> p.toFile().delete());
         }
     }
 
     @Test
     void uploadFile_retourne_le_chemin() {
         var path = fileService.uploadFile("image.jpg",
-                new ByteArrayInputStream(new byte[] { 1, 2, 3 }), "test");
+            new ByteArrayInputStream(new byte[] { 1, 2, 3 }), "test");
         assertEquals("/test/image.jpg", path);
     }
 
@@ -64,7 +65,8 @@ class FileServiceTest {
     @Test
     void uploadFile_formValue_ioexception_leve_MetierException() throws IOException {
         FormValue broken = buildBrokenFormValue();
-        assertThrows(MetierException.class, () -> fileService.uploadFile(broken, "/test"));
+        assertThrows(MetierException.class,
+            () -> fileService.uploadFile(broken, "/test"));
     }
 
     @Test
@@ -76,7 +78,7 @@ class FileServiceTest {
             }
         };
         assertThrows(MetierException.class,
-                () -> fileService.uploadFile("image.jpg", broken, "test"));
+            () -> fileService.uploadFile("image.jpg", broken, "test"));
     }
 
     @Test
@@ -120,6 +122,7 @@ class FileServiceTest {
         };
     }
 
+    @SuppressWarnings("null")
     private FormValue buildBrokenFormValue() throws IOException {
         FileItem brokenFileItem = mock(FileItem.class);
         when(brokenFileItem.getInputStream()).thenThrow(new IOException("stream error"));
