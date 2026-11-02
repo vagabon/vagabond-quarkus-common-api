@@ -40,6 +40,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
     @Inject
     private NotificationKafkaService notificationKafkaService;
 
+    @SuppressWarnings("null")
     public PageResponse<NotificationResponse> search(
         Long userId,
         String category,
@@ -81,6 +82,7 @@ public class NotificationService extends BaseService<NotificationEntity> {
         sendNotification(notification, entityId, superType, category, type, false);
     }
 
+    @SuppressWarnings("null")
     public void sendNotification(
         NotificationRequest notification,
         Long entityId,

@@ -12,6 +12,7 @@ public class MapperUtils {
     private MapperUtils() {
     }
 
+    @SuppressWarnings("null")
     public static <T, U> U toDto(T data, Class<U> dtoClass) {
         return data != null ? mapper.map(data, dtoClass) : null;
     }
