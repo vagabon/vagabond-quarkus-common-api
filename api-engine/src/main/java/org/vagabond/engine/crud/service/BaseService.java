@@ -75,11 +75,15 @@ public abstract class BaseService<T extends BaseIdEntity>
         if (entity.id == null) {
             throw new MetierException("Id is null");
         }
+        var em = getRepository().getEntityManager();
+        if (em.contains(entity)) {
+            em.detach(entity);
+        }
         var entityFromBdd = getRepository().findById(entity.id);
         doBeforeMerge(entity, entityFromBdd);
         EntityUtils.setEntity(entityFromBdd, entity, true);
         doAfterMerge(entityFromBdd);
-        return getRepository().getEntityManager().merge(entityFromBdd);
+        return em.merge(entityFromBdd);
     }
 
     public void doBeforeMerge(T entity, T entityNew) {

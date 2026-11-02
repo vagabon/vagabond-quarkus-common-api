@@ -2,7 +2,6 @@ package org.vagabond.engine.crud.utils;
 
 import java.time.Instant;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.vagabond.engine.crud.entity.BaseIdEntity;
 
@@ -30,21 +29,21 @@ class EntityUtilsTest {
 
         EntityUtils.setEntity(entity1, entity2, true);
 
-        Assertions.assertEquals("name2", entity1.name);
-        Assertions.assertEquals("username", entity1.username);
-        Assertions.assertEquals(now, entity1.myDate);
+        assertEquals("name2", entity1.name);
+        assertEquals("username", entity1.username);
+        assertEquals(now, entity1.myDate);
 
         entity2.myDate = null;
         EntityUtils.setEntity(entity1, entity2, true);
-        Assertions.assertEquals(null, entity1.myDate);
+        assertEquals(null, entity1.myDate);
     }
 
     @Test
     void Given_EntityUtilsTest_When_isObjectDiff_Then_return_correcValue() {
-        Assertions.assertEquals(false, EntityUtils.isObjectDiff(null, null));
-        Assertions.assertEquals(true, EntityUtils.isObjectDiff(null, "test"));
-        Assertions.assertEquals(false, EntityUtils.isObjectDiff("test", "test"));
-        Assertions.assertEquals(true, EntityUtils.isObjectDiff("test", "test2"));
+        assertEquals(false, EntityUtils.isObjectDiff(null, null));
+        assertEquals(true, EntityUtils.isObjectDiff(null, "test"));
+        assertEquals(false, EntityUtils.isObjectDiff("test", "test"));
+        assertEquals(true, EntityUtils.isObjectDiff("test", "test2"));
     }
 
     @Getter

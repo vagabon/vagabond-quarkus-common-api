@@ -23,6 +23,8 @@ import org.vagabond.engine.user.CurrentUser;
 @ApplicationScoped
 public class FileService extends BaseService<FileEntity> {
 
+    private static final String SLASH = "/";
+
     @ConfigProperty(name = "upload.directory", defaultValue = "/tmp")
     private String uploadDirectory;
 
@@ -30,7 +32,7 @@ public class FileService extends BaseService<FileEntity> {
     FileRepository fileRepository;
 
     public String uploadFile(FormValue file, String directory, Long id) {
-        return uploadFile(file, String.format("%s/%s", directory, id));
+        return uploadFile(file, directory + SLASH + id);
     }
 
     public String uploadFile(FormValue file, String directory) {
@@ -47,7 +49,7 @@ public class FileService extends BaseService<FileEntity> {
         String fileName,
         InputStream fileInputStream,
         String directory) {
-        String updloadDirectory = String.format("%s/%s", uploadDirectory, directory);
+        String updloadDirectory = uploadDirectory + SLASH + directory;
         Path uploadPath = Paths.get(updloadDirectory);
         if (!Files.exists(uploadPath)) {
             try {
@@ -63,7 +65,7 @@ public class FileService extends BaseService<FileEntity> {
         } catch (IOException exception) {
             throw new MetierException("Could not save file: " + fileName, exception);
         }
-        return String.format("/%s/%s", directory, fileName);
+        return SLASH + directory + SLASH + fileName;
     }
 
     public File downloadFile(String fileName) {

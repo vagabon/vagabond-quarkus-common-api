@@ -43,8 +43,7 @@ public class EntityUtils {
                 && !"serialVersionUID".equals(field.getName())
                 && !"quarkusSyntheticLogger".equals(field.getName())) {
                 Object value = null;
-                var getterName = String.format("%s%s", "get",
-                    StringUtils.capitalize(field.getName()));
+                var getterName = "get" + StringUtils.capitalize(field.getName());
                 try {
                     value = entity2.getClass().getMethod(getterName).invoke(entity2);
                 } catch (IllegalAccessException | InvocationTargetException
@@ -62,8 +61,7 @@ public class EntityUtils {
         Object value,
         Field field,
         boolean forceNull) {
-        var setterName = String.format("%s%s", "set",
-            StringUtils.capitalize(field.getName()));
+        var setterName = "set" + StringUtils.capitalize(field.getName());
         try {
             var newValue = value;
             Log.debug("setValue: " + setterName + " " + newValue);

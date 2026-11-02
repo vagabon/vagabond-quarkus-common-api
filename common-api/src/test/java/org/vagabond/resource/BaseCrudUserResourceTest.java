@@ -57,5 +57,11 @@ class BaseCrudUserResourceTest extends BaseDataTest {
             .header("X-User-Roles", user.roles()).when()
             .delete(url + "/desactivate?id=" + emailPersist.id).then()
             .statusCode(200);
+
+        given()
+            .header("X-User-Id", user.id())
+            .header("X-User-Roles", user.roles()).when()
+            .get(url + "/").then()
+            .statusCode(200);
     }
 }

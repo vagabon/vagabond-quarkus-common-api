@@ -40,7 +40,7 @@
         <sonar.issue.ignore.multicriteria.e3.ruleKey>java:S3252</sonar.issue.ignore.multicriteria.e3.ruleKey>
         <sonar.issue.ignore.multicriteria.e3.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e3.resourceKey>
         <sonar.coverage.exclusions>
-            **/*Configuration.java,**/*Component*.java,**/*Response*.java,**/*Request*.java,**/*Dto.java,**/*Entity.java
+            **/*Configuration.java,**/*Component*.java,**/*Converter*.java,**/*Response*.java,**/*Request*.java,**/*Dto.java,**/*Entity.java
         </sonar.coverage.exclusions>
         <sonar.coverage.jacoco.xmlReportPaths>
             ${maven.multiModuleProjectDirectory}/target/coverage/jacoco.xml

@@ -10,7 +10,6 @@ import org.vagabond.utils.BaseDataTest;
 import static io.restassured.RestAssured.given;
 
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.security.TestSecurity;
 
 @QuarkusTest
 class NotificationResourceTest extends BaseDataTest {
@@ -27,7 +26,6 @@ class NotificationResourceTest extends BaseDataTest {
 
     @Test
     @SuppressWarnings("null")
-    @TestSecurity(user = "admin")
     void notificationCrud() {
         var notification = new NotificationEntity();
         notification.userId = user.id();
@@ -48,6 +46,12 @@ class NotificationResourceTest extends BaseDataTest {
             .header("X-User-Id", admin.id())
             .header("X-User-Roles", admin.roles()).when()
             .get("/notifications/" + notificationPersist.id).then()
+            .statusCode(200);
+
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when()
+            .put("/notifications/read/" + notificationPersist.id).then()
             .statusCode(200);
         given()
             .header("X-User-Id", admin.id())
@@ -85,6 +89,13 @@ class NotificationResourceTest extends BaseDataTest {
             .header("X-User-Id", admin.id())
             .header("X-User-Roles", admin.roles()).when()
             .delete("/notifications/desactivate?id=" + notificationPersist.id)
+            .then()
+            .statusCode(200);
+
+        given()
+            .header("X-User-Id", admin.id())
+            .header("X-User-Roles", admin.roles()).when()
+            .delete("/notifications?id=" + notificationPersist.id)
             .then()
             .statusCode(200);
     }

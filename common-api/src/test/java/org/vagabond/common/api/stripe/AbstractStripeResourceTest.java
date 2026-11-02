@@ -17,6 +17,7 @@ import org.vagabond.utils.StripeResource;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -34,7 +35,7 @@ class AbstractStripeResourceTest extends BaseDataTest {
     void doPaiement() throws StripeException {
         var paymentIntent = new PaymentIntent();
         paymentIntent.setClientSecret("clientSecret");
-        Mockito.when(stripeConfiguration.create(Mockito.anyMap()))
+        when(stripeConfiguration.create(Mockito.anyMap()))
             .thenReturn(paymentIntent);
 
         given()
@@ -43,7 +44,7 @@ class AbstractStripeResourceTest extends BaseDataTest {
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).when()
             .post("/stripes/payment-intent").then().statusCode(200);
 
-        Mockito.when(stripeConfiguration.retrieve(Mockito.any()))
+        when(stripeConfiguration.retrieve(Mockito.any()))
             .thenReturn(paymentIntent);
 
         given()
@@ -64,7 +65,7 @@ class AbstractStripeResourceTest extends BaseDataTest {
     void testValidatePaypmentIntentWithError() throws StripeException {
         var paymentIntent = new PaymentIntent();
         paymentIntent.setClientSecret("clientSecret");
-        Mockito.when(stripeConfiguration.retrieve(Mockito.any()))
+        when(stripeConfiguration.retrieve(Mockito.any()))
             .thenReturn(paymentIntent);
 
         var response = resource.validatePaypmentIntent("payment_intent", "clientSecret",

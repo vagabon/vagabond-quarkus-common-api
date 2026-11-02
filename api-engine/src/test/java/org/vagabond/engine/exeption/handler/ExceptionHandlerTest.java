@@ -44,7 +44,6 @@ class ExceptionHandlerTest {
     MockedStatic<Log> logMock;
 
     @BeforeEach
-    @SuppressWarnings("null")
     void setUp() {
         logMock = mockStatic(Log.class);
         when(uriInfo.getRequestUri())
@@ -57,7 +56,6 @@ class ExceptionHandlerTest {
     }
 
     @Test
-    @SuppressWarnings("null")
     void clientWebApplicationException404_returnsNotFoundWithoutEntity() {
         var clientResponse = mock(Response.class);
         when(clientResponse.getStatus()).thenReturn(404);
@@ -72,7 +70,6 @@ class ExceptionHandlerTest {
     }
 
     @Test
-    @SuppressWarnings("null")
     void clientWebApplicationExceptionNon404_fallsBackToBadRequest() {
         var clientResponse = mock(Response.class);
         when(clientResponse.getStatus()).thenReturn(500);

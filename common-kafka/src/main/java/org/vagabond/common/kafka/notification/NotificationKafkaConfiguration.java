@@ -39,8 +39,9 @@ public class NotificationKafkaConfiguration {
         var serviceAccount = Files.newInputStream(Paths.get(firebasePath));
         FirebaseOptions options = null;
         try {
-            options = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
+            options = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .build();
 
         } catch (IOException _) {
             return;
@@ -56,13 +57,15 @@ public class NotificationKafkaConfiguration {
 
     @Incoming("notification")
     public void consume(NotificationRequest notification) {
-        log.info("kafka receive notification {} {}", notification.title, notification.tokens);
+        log.info("kafka receive notification : {} {}", notification.title,
+            notification.tokens);
 
         if (!notification.tokens.isEmpty()) {
             var notificationToSend = Notification.builder().setTitle(notification.title)
-                    .setBody(notification.body).build();
+                .setBody(notification.body).build();
             var message = MulticastMessage.builder().addAllFids(notification.tokens)
-                    .setNotification(notificationToSend).putData("url", notification.url).build();
+                .setNotification(notificationToSend).putData("url", notification.url)
+                .build();
 
             try {
                 messaging.sendEachForMulticast(message);

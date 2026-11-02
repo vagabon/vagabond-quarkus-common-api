@@ -12,7 +12,6 @@ public class MapperUtils {
     private MapperUtils() {
     }
 
-    @SuppressWarnings("null")
     public static <T, U> U toDto(T data, Class<U> dtoClass) {
         return data != null ? mapper.map(data, dtoClass) : null;
     }
@@ -23,7 +22,7 @@ public class MapperUtils {
             : new ArrayList<>();
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     public static <T> PageResponse<T> toPage(
         PageResponse<?> response,
         Class<?> dtoClass) {

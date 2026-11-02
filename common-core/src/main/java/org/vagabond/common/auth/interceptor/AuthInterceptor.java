@@ -23,7 +23,6 @@ public class AuthInterceptor {
     private GatewayUser gatewayUser;
 
     @AroundInvoke
-    @SuppressWarnings({ "null", "unused" })
     public Object validateToken(InvocationContext ctx) throws Exception {
         Assert.notNull(gatewayUser);
 

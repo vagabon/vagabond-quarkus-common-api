@@ -30,4 +30,13 @@ public abstract class BaseCrudUserResource<T extends BaseEntity>
     public Response desactivate(@QueryParam("id") Long id) {
         return super.desactivate(id);
     }
+
+    @Override
+    @AuthRole("USER")
+    public Response findAll(
+        @QueryParam("page") Integer page,
+        @QueryParam("max") Integer max,
+        @QueryParam("sort") String sort) {
+        return super.findAll(page, max, sort);
+    }
 }

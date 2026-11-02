@@ -18,7 +18,6 @@ import org.vagabond.common.notification.token.NotificationTokenRepository;
 import org.vagabond.engine.crud.response.PageResponse;
 import org.vagabond.engine.crud.service.BaseService;
 import org.vagabond.engine.mapper.MapperUtils;
-import org.vagabond.engine.user.CurrentUser;
 
 import io.quarkus.panache.common.Page;
 import lombok.Getter;
@@ -41,7 +40,6 @@ public class NotificationService extends BaseService<NotificationEntity> {
     @Inject
     private NotificationKafkaService notificationKafkaService;
 
-    @SuppressWarnings("null")
     public PageResponse<NotificationResponse> search(
         Long userId,
         String category,
@@ -74,15 +72,22 @@ public class NotificationService extends BaseService<NotificationEntity> {
         return repository.readAllByUser(userId);
     }
 
-    @SuppressWarnings("null")
     public void sendNotification(
-        CurrentUser userConnected,
-        List<Long> userIds,
         NotificationRequest notification,
         Long entityId,
         String superType,
         String category,
         String type) {
+        sendNotification(notification, entityId, superType, category, type, false);
+    }
+
+    public void sendNotification(
+        NotificationRequest notification,
+        Long entityId,
+        String superType,
+        String category,
+        String type,
+        boolean forceNotification) {
 
         var newEntity = new NotificationEntity();
         newEntity.title = notification.title;
@@ -93,10 +98,12 @@ public class NotificationService extends BaseService<NotificationEntity> {
         newEntity.category = category;
         newEntity.type = type;
         newEntity.entityId = entityId;
-        newEntity.userId = userConnected.id();
-        var joinUserIds = userIds != null
+        newEntity.userId = notification.userConnected.id();
+        var joinUserIds = notification.userIds != null
             ? (String.join(",",
-                userIds.stream().map(Object::toString).toArray(String[]::new)) + ",")
+                notification.userIds.stream().map(Object::toString)
+                    .toArray(String[]::new))
+                + ",")
             : null;
         newEntity.users = joinUserIds;
         newEntity.creationDate = Instant.now();
@@ -104,17 +111,22 @@ public class NotificationService extends BaseService<NotificationEntity> {
         newEntity.active = true;
         persist(newEntity);
 
-        if (getCountLastSend(category, userConnected.id()) < 2L
-            || userConnected.hasRole("ADMIN")) {
-            notification.tokens = getTokens(userIds);
-            notificationKafkaService.registerNotification(notification);
+        if (getCountLastSend(category, notification.userConnected.id()) < 2L
+            || notification.userConnected.hasRole("ADMIN")) {
+            notification.tokens = getTokens(notification.userIds.stream()
+                .filter(userId -> !userId.equals(notification.userConnected.id())
+                    || forceNotification)
+                .toList());
+            if (!notification.tokens.isEmpty()) {
+                notificationKafkaService.registerNotification(notification);
+            }
         }
     }
 
     @Transactional
     public List<String> getTokens(List<Long> userIds) {
-        var entityTokens = notificationTokenRepository
-            .find("WHERE userId in ?1", userIds).list();
+        var entityTokens = notificationTokenRepository.find("WHERE userId in ?1", userIds)
+            .list();
         return entityTokens.stream().map(entity -> entity.token).distinct().toList();
     }
 

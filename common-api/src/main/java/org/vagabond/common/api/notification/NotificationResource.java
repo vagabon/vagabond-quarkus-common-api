@@ -115,13 +115,13 @@ public class NotificationResource
     @POST
     @Path("/send")
     @AuthSecure
-    @AuthRole("USER")
+    @AuthRole("ADMIN")
     public Response sendNotification() {
         var userConnected = getUserConnected();
-        var notification = new NotificationRequest("test", "test", "/notification");
-        notificationService.sendNotification(userConnected,
-            Arrays.asList(userConnected.id()), notification,
-            null, "test", "test", "test");
+        var notification = new NotificationRequest("test", "test", "/notification",
+            userConnected, Arrays.asList(userConnected.id()));
+        notificationService.sendNotification(notification,
+            null, "test", "test", "test", true);
         return responseOkJson();
     }
 }

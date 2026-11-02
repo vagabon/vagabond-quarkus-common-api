@@ -34,12 +34,12 @@ public class NotificationRepository extends BaseRepository<NotificationEntity> {
         var order = " order by id desc";
 
         if (entityId != null) {
-            sql = String.format("%s AND entityId = ?5", sql);
-            return find(String.format("%s %s", sql, order), userIdLike, categoryLike,
+            sql = "%s AND entityId = ?5".formatted(sql);
+            return find(sql + " " + order, userIdLike, categoryLike,
                 typeLike, searchLike, entityId);
         }
 
-        return find(String.format("%s %s", sql, order), userIdLike, categoryLike,
+        return find(sql + " " + order, userIdLike, categoryLike,
             typeLike, searchLike);
     }
 

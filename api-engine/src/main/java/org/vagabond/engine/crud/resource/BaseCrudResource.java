@@ -104,7 +104,7 @@ public abstract class BaseCrudResource<T extends BaseEntity>
     @GET
     @Path("/")
     @AuthSecure
-    @AuthRole("USER")
+    @AuthRole("ADMIN")
     public Response findAll(
         @QueryParam("page") Integer page,
         @QueryParam("max") Integer max,

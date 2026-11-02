@@ -1,7 +1,8 @@
 package org.vagabond.engine.exeption;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -13,8 +14,9 @@ class MetierExceptionTest {
     void testInstanciate() {
         exception = new MetierException();
         exception = new MetierException("MESSAGE");
-        Assertions.assertEquals("MESSAGE", exception.getMessage());
+        assertEquals("MESSAGE", exception.getMessage());
+
         exception = new MetierException("MESSAGE", new Throwable());
-        Assertions.assertEquals("MESSAGE", exception.getMessage());
+        assertEquals("MESSAGE", exception.getMessage());
     }
 }
